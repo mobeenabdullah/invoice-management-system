@@ -5,8 +5,11 @@ import { addUser } from '../store/features/user/userSlice';
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import { RootState } from '../store/store';
 import { useCookies } from 'react-cookie';
-
 import { useState } from 'react';
+import { FC } from "react";  
+import styled from "styled-components";
+import Container from '@mui/material/Container';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 import { 
   Avatar, 
@@ -17,8 +20,27 @@ import {
   Grid, 
   Typography,
   Stack } from "@mui/material";
+
+  const Wrapper = styled.section`
+        height: 100vh;
+        background-image: url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+        background-color: #cecece;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .avatar {            
+            background-color: #1976d2;
+        }       
+        .submit {
+          margin-top: 1rem;
+          padding: 1rem;
+        }
+    `;
     
-const Register = ()=> {
+const Register: FC = ()=> {
   const dispatch = useAppDispatch();
   const [cookies] = useCookies(['token']);
 
@@ -83,6 +105,8 @@ const Register = ()=> {
   }
 
     return (
+      <Wrapper>
+        <Container fixed>
         <Grid container alignItems='center' justifyContent='center' component="main" className="form_login" sx={{ height: "100vh"}}>
       
       <Grid
@@ -100,8 +124,7 @@ const Register = ()=> {
           <Stack spacing={2}>
             <Stack className="avatar_alignment" sx={{display: "flex", alignItems: "center"}} spacing={1}>
               <Avatar className="avatar">
-                {/* <LockOutlinedIcon />             */}
-                A
+                <LockOutlinedIcon />
               </Avatar>
             </Stack>
             <Stack spacing={1} sx={{textAlign: "center"}}>
@@ -193,6 +216,8 @@ const Register = ()=> {
         </div>
       </Grid>
     </Grid> 
+    </Container>
+    </Wrapper>
     )
   }
   

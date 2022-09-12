@@ -7,7 +7,10 @@ import { useCookies } from 'react-cookie';
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import { RootState } from '../store/store';
 import Loading from './Loading';
-
+import { FC } from "react";  
+import styled from "styled-components";
+import Container from '@mui/material/Container';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 import { 
     Avatar, 
@@ -18,40 +21,27 @@ import {
     Grid, 
     Typography,
     Stack } from "@mui/material";
-
-    import styled from 'styled-components';
-    
-    /*
-    const Wrapper = styled.cover`
-        height: "100vh";
-        background-image: url('https://images.unsplash.com/photo-1662723797266-1649be2dc89f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80');
-        background-repeat: "no-repeat";
-        background-position: "center";
-        background-size: "cover";
-        background-color: '#cecece';
-        display: "flex";
-        align-items: "center";
-        justify-content: "center";
-        .size {
-            display: "flex";
-            flex-direction: "column";
-            align-items: "center";
-            justify-content: "center";
-        }
-        .paper {            
-            display: "flex";
-            flex-direction: "column";
-            align-items: "center";
-        }
+  
+    const Wrapper = styled.section`
+        height: 100vh;
+        background-image: url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+        background-color: #cecece;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         .avatar {            
-            background-color: red;
-        }
-        .form {
-            width: "100%";            
+            background-color: #1976d2;
+        }       
+        .submit {
+          margin-top: 1rem;
+          padding: 1rem;
         }
     `;
-*/
-const SignIn =  ()=> {
+
+const SignIn: FC =  ()=> {
 
   const dispatch = useAppDispatch();
   const userState = useAppSelector((state:RootState) => state.user); 
@@ -114,7 +104,9 @@ const SignIn =  ()=> {
     return <Navigate to="/dashboard" />
   }
 
-  return (    
+  return ( 
+    <Wrapper>
+      <Container fixed>
     <Grid container alignItems='center' justifyContent='center' component="main" className="form_login" sx={{ height: "100vh"}}>    
      
       <Grid
@@ -132,8 +124,7 @@ const SignIn =  ()=> {
           <Stack spacing={2}>
             <Stack className="avatar_alignment" sx={{display: "flex", alignItems: "center"}} spacing={1}>
               <Avatar className="avatar">
-                {/* <LockOutlinedIcon />             */}
-                A
+                <LockOutlinedIcon />                
               </Avatar>
             </Stack>
             <Stack spacing={1} sx={{textAlign: "center"}}>
@@ -202,7 +193,9 @@ const SignIn =  ()=> {
           </form>
         </div>
       </Grid>
-    </Grid>   
+    </Grid> 
+    </Container>
+    </Wrapper>     
   )
 }
 

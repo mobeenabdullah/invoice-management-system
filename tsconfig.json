@@ -22,5 +22,6 @@
   },
   "include": [
     "src"
-  ]
+  ],
+  "types": ["styled-components-react-native"]
 }
