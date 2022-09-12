@@ -4,6 +4,10 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import Container from '@mui/material/Container';
+import { CookiesProvider } from "react-cookie";
+import { Provider } from 'react-redux'
+import { store } from './store/store';
+import { ToastContainer } from 'react-toastify';
 
 
 const root = ReactDOM.createRoot(
@@ -11,9 +15,14 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <Container fixed>
-      <App />      
-    </Container>
+     <Provider store={store}>
+      <CookiesProvider>
+        <Container fixed>
+        <ToastContainer /> 
+          <App />      
+        </Container>
+      </CookiesProvider>
+    </Provider>
   </React.StrictMode>
 );
 
