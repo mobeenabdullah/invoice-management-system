@@ -1,7 +1,7 @@
 import { toast } from 'react-toastify';
-import { signin } from '../store/features/user/userThunks';
-import { addUser } from '../store/features/user/userSlice';
-import { useState } from 'react';
+import { signin, userDetail } from '../features/user/userThunks';
+import { addUser } from '../features/user/userSlice';
+import { useState, useEffect } from 'react';
 import { Navigate } from "react-router-dom"
 import { useCookies } from 'react-cookie';
 import { useAppDispatch, useAppSelector } from '../store/hooks'
@@ -21,6 +21,7 @@ import {
     Grid, 
     Typography,
     Stack } from "@mui/material";
+import { has } from 'immer/dist/internal';
   
     const Wrapper = styled.section`
         height: 100vh;
@@ -42,73 +43,100 @@ import {
     `;
 
 const SignIn: FC =  ()=> {
-
   const dispatch = useAppDispatch();
   const userState = useAppSelector((state:RootState) => state.user); 
+  const userRegistered = useAppSelector((state:RootState) => state.user.registeredUser);
+  const signUpSuccessMessage = useAppSelector((state:RootState) => state.user.signUpMessage);
+  
   const [inValidEmail, setInValidEmail] = useState(false);
   const [inValidPassword, setInValidPassword] = useState(false);
   const [inValidPasswordMessage, setInValidPasswordMessage] = useState('');
+  const [inValidEmailMessage, setInValidEmailMessage] = useState('')
   const [userEmail, setUserEmail] = useState('');
   const [userPassword, setUserPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  
+  const [isloggedIn, setIsloggedIn] = useState(false);
 
+  useEffect(() => {
+    // signup message
+    if(userRegistered) {
+      toast.success(signUpSuccessMessage);
+    }
+
+      // has Logged in 
+      const hasloggedIn : any =  userDetail(cookies.token);
+
+      hasloggedIn.then((user: any) => {
+        if(cookies.token && user.status === 200) {
+          setIsloggedIn(true);
+        }
+      });
+      
+  }, [])
+
+  
   // cookies Token
   const [cookies, setCookie] = useCookies(['token']);
-
-
-  // signup message
-  if(userState.registeredUser) {
-    toast.success(userState.signUpMessage);
-  }
 
   // Handle submit
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     const emailValidRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
-    if(!userEmail || !userPassword) {
-      toast.error("Please fill all fields!");
+    if(userEmail === '') {
+      setInValidEmail(true);
+      setInValidEmailMessage('Email is required!');
       return;
     }
 
     if (!userEmail.match(emailValidRegex)) {
       setInValidEmail(true);
+      setInValidEmailMessage('Email format is inValid!');
       return;
     }
 
     if(userPassword.length < 6 ) {
       setInValidPassword(true);
-      setInValidPasswordMessage("Password Must be 6 Character Long!")
+      setInValidPasswordMessage("Password Must be 6 Character Long!");
       return;
     }
 
-    const userData = {
-      email: userEmail,
-      password: userPassword,
-    }
-    setIsLoading(true);
-    const isLoggedIn = await signin(userData);
+    try{
+      const userData = {
+        email: userEmail,
+        password: userPassword,
+      }
 
-    if(isLoggedIn && isLoggedIn.status === 200) {
-          
-          const {email, name, user_id} = isLoggedIn.data;
-          dispatch(addUser({...userState, email, name,user_id}));
-          setCookie('token', isLoggedIn.data.token);
-          setIsLoading(false);
-    }
-
+      setIsLoading(true);
+      const isLoggedIn = await signin(userData);
+      if(isLoggedIn && isLoggedIn.status === 200) {
+        const {email, name, user_id} = isLoggedIn.data;
+        dispatch(addUser({...userState, email, name,user_id}));
+        setCookie('token', isLoggedIn.data.token);
+        setIsLoading(false);
+        setIsloggedIn(true);
+      }
+    } catch (error: any) {
+        if(error.status === 500) {
+          toast.error('No internet connectivity');
+        } else {
+          toast.error(error.response.data);
+        } 
+        setIsLoading(false);
+        setUserEmail('');
+        setUserPassword('');
+    }      
   }
 
-  if(cookies.token) { 
-    return <Navigate to="/dashboard" />
+  // redirect to dashboard if logged in
+  if(isloggedIn) { 
+    return <Navigate to="/" />
   }
 
   return ( 
     <Wrapper>
       <Container fixed>
     <Grid container alignItems='center' justifyContent='center' component="main" className="form_login" sx={{ height: "100vh"}}>    
-     
       <Grid
         className="size"
         item
@@ -135,12 +163,10 @@ const SignIn: FC =  ()=> {
           </Stack>         
           
           <form className="form" noValidate onSubmit={handleSubmit}   >
-            
-              <Typography component="p" data-test='form-error'></Typography>
-
+            <Typography component="p" data-test='form-error'></Typography>
             <TextField            
               error= {inValidEmail  ? true : false }
-              helperText={inValidEmail  ? 'Invalid email format!' : '' }
+              helperText={inValidEmail  ? inValidEmailMessage : '' }
               variant="outlined"
               margin="normal"
               required

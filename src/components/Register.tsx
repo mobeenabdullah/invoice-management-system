@@ -1,15 +1,17 @@
 import { toast } from 'react-toastify';
-import { signup } from '../store/features/user/userThunks';
+import { signup } from '../features/user/userThunks';
 import { Navigate } from "react-router-dom"
-import { addUser } from '../store/features/user/userSlice';
+import { addUser } from '../features/user/userSlice';
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import { RootState } from '../store/store';
 import { useCookies } from 'react-cookie';
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { FC } from "react";  
 import styled from "styled-components";
 import Container from '@mui/material/Container';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Loading from './Loading';
+import { userDetail } from '../features/user/userThunks';
 
 import { 
   Avatar, 
@@ -45,15 +47,34 @@ const Register: FC = ()=> {
   const [cookies] = useCookies(['token']);
 
   const userState = useAppSelector((state:RootState) => state.user); 
-  const userRegistereed = useAppSelector((state:RootState) => state.user.registeredUser);
+  const userRegistered = useAppSelector((state:RootState) => state.user.registeredUser);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmpassword, setConfirmpassword] = useState('');
+
+  const [inValidName, setInValidName] = useState(false);
   const [inValidEmail, setInValidEmail] = useState(false);
+  const [inValidEmailMessage, setInValidEmailMessage] = useState('');
   const [inValidPassword, setInValidPassword] = useState(false);
   const [inValidPasswordMessage, setInValidPasswordMessage] = useState('');
+  const [inValidConfirmPassword, setInValidConfirmPassword] = useState(false);
+  const [inValidConfirmPasswordMessage, setInValidConfirmPasswordMessage] = useState('');
+  const [isloggedIn, setIsloggedIn] = useState(false);
+
+  useEffect(() => {
+    // has Logged in 
+    const hasloggedIn : any =  userDetail(cookies.token);
+
+    hasloggedIn.then((user: any) => {
+      if(cookies.token && user.status === 200) {
+        setIsloggedIn(true);
+      }
+    });
+  }, [])
+  
   
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -61,26 +82,47 @@ const Register: FC = ()=> {
     const emailValidRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
 
-    if(!name || !email || !password || !confirmpassword) {
-      toast.error("Please fill all fields!")
+    if(name === '') {
+      setInValidName(true);
       return;
+    } else {
+      setInValidName(false);
+    }
+
+    if(email === '') {
+      setInValidEmail(true);
+      setInValidEmailMessage('Name is required!');
+      return;
+    } else {
+      setInValidEmail(false);
     }
 
     if (!email.match(emailValidRegex)) {
       setInValidEmail(true);
+      setInValidEmailMessage('Email format is invalid!');
       return;
+    } else {
+      setInValidEmail(false);
+      setInValidEmailMessage('');
     }
 
-    if(password !== confirmpassword) {
-      setInValidPassword(true);
-      setInValidPasswordMessage("Password not match!")
-      return;
-    }
     if(password.length < 6 ) {
       setInValidPassword(true);
       setInValidPasswordMessage("Password Must be 6 Character Long!")
       return;
+    } else {
+      setInValidPassword(false);
+      setInValidPasswordMessage("")
     }
+
+    if(password !== confirmpassword) {
+      setInValidPassword(true);
+      setInValidConfirmPassword(true);
+      setInValidConfirmPasswordMessage("Password not match!");
+      setInValidPasswordMessage("Password not match!")
+      return;
+    }
+
 
     const user = {
       name : name,
@@ -89,19 +131,33 @@ const Register: FC = ()=> {
       confirmPassword : confirmpassword
     }
 
-    const registeredUser = await signup(user);
+    try{
+      const registeredUser = await signup(user);
 
-    if(registeredUser && registeredUser.status === 200) {
-      dispatch(addUser({...userState, registeredUser: true, signUpMessage: 'Signup Successfuly!'}))
-    }
+      if(registeredUser && registeredUser.status === 200) {
+        dispatch(addUser({...userState, registeredUser: true, signUpMessage: 'Signup Successfuly!'}))
+      }
+
+    } catch (error: any) {
+
+        if(error.status === 500) {
+          toast.error('No internet connectivity');
+        } 
+        toast.error(error.response.data);
+        setIsLoading(false);
+        
+    } 
+
+
   }
 
-  if(userRegistereed) {
+  if(userRegistered) {
     return <Navigate to='/login' />
   }
 
-  if(cookies.token) { 
-    return <Navigate to="/dashboard" />
+  // redirect to dashboard if logged in
+  if(isloggedIn) { 
+    return <Navigate to="/" />
   }
 
     return (
@@ -136,7 +192,9 @@ const Register: FC = ()=> {
           <form className="form" onSubmit={handleSubmit}>
           <Typography component="p" data-test='form-error'></Typography>
 
-            <TextField            
+            <TextField  
+              error= {inValidName  ? true : false }
+              helperText={inValidName  ? 'Name is required!' : '' }          
               variant="outlined"
               margin="normal"
               fullWidth
@@ -151,13 +209,12 @@ const Register: FC = ()=> {
 
             <TextField       
               error= {inValidEmail  ? true : false }
-              helperText={inValidEmail  ? 'Invalid email format!' : '' }
+              helperText={inValidEmail  ? inValidEmailMessage : '' }
               variant="outlined"
               margin="normal"
               fullWidth
               name="email"
               label="Email"
-              type="email"
               id="email"       
               onChange={(e: any) => setEmail(e.target.value)}
               data-test='email'
@@ -180,8 +237,8 @@ const Register: FC = ()=> {
             <Typography component="p" data-test='password-error'></Typography>
 
             <TextField            
-              error= {inValidPassword  ? true : false }   
-              helperText={inValidPassword  ? inValidPasswordMessage : '' }
+              error= {inValidConfirmPassword  ? true : false }   
+              helperText={inValidConfirmPassword  ? inValidConfirmPasswordMessage : '' }
               variant="outlined"
               margin="normal"
               fullWidth
@@ -201,9 +258,9 @@ const Register: FC = ()=> {
               variant="contained"
               color="primary"
               className="submit"     
-              data-test='submit-sign-up'         
+              disabled= {isLoading  ? true : false }
             >
-              Register
+              {isLoading ? <Loading /> : 'Register'}
             </Button>
             <Grid container  sx={{ padding: '20px', justifyContent: "center"}}>
               <Grid item>
