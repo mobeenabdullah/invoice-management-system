@@ -12,10 +12,11 @@ import Container from '@mui/material/Container';
 import Header from './Header'; 
 import { updateUser } from "../features/user/userThunks";
 import { useCookies } from 'react-cookie';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Loading from "./Loading";
 import { toast } from "react-toastify";
 import { Navigate } from "react-router-dom";
+import { userDetail } from "../features/user/userThunks";
 
   const Wrapper = styled.section`
         width:100%;
@@ -68,6 +69,28 @@ import { Navigate } from "react-router-dom";
 
     const [isLoading, setIsLoading] = useState(false);
     const [companyAdded, setCompanyAdded] = useState(false);
+
+
+    useEffect( () => {
+      const userDetailsFetch : any  = async (token: string) => {
+        if(token) {
+
+          const response =  await userDetail(token);
+          if(response.status === 200) {
+            if(response.data.companyDetails !== null) {
+              const companyDetails = response.data.companyDetails;
+              setName(companyDetails.name);
+              setAddress(companyDetails.address);
+              setIban(companyDetails.iban);
+              setVat(companyDetails.vatNumber);
+              setRegistrationNumber(companyDetails.regNumber);
+              setSwift(companyDetails.swift);
+            }
+          }
+        }
+      }
+        userDetailsFetch(cookies.token);  
+    }, [])
 
     const handleSubmit = async (e: any) => {
       e.preventDefault();
@@ -132,9 +155,6 @@ import { Navigate } from "react-router-dom";
             toast.error(error.response.data);
         }     
   
-      
-
-
     }
 
     if(companyAdded) {
