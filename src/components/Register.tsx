@@ -24,21 +24,39 @@ import {
   Stack } from "@mui/material";
 
   const Wrapper = styled.section`
-        height: 100vh;
-        background-image: url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80');
-        background-repeat: no-repeat;
-        background-position: center;
-        background-size: cover;
-        background-color: #cecece;
+        height: 100vh;      
         display: flex;
         align-items: center;
         justify-content: center;
+        padding: 0 2%;
         .avatar {            
             background-color: #1976d2;
         }       
         .submit {
           margin-top: 1rem;
           padding: 1rem;
+        }
+        .login_image {
+          height: 95vh;
+          border-radius: 16px;
+          overflow: hidden;
+          background-image: url('sign-up-image.jpg');
+          background-repeat: no-repeat;
+          background-size: cover;
+        }
+        .login_image li {
+          height: 100% !important;
+        }
+        .login_image img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+        }
+        .login_form .paper {
+          max-width: 50%;
+          width: 100%;
+          margin: 0 auto;
         }
     `;
     
@@ -161,119 +179,111 @@ const Register: FC = ()=> {
   }
 
     return (
-      <Wrapper>
-        <Container fixed>
-        <Grid container alignItems='center' justifyContent='center' component="main" className="form_login" sx={{ height: "100vh"}}>
-      
-      <Grid
-        className="size"
-        item
-        xs={12}
-        sm={8}
-        md={5}
-        component={Paper}
-        elevation={1}
-        square
-        sx={{ padding: "30px" }}
-      >
-        <div className="paper">
-          <Stack spacing={2}>
-            <Stack className="avatar_alignment" sx={{display: "flex", alignItems: "center"}} spacing={1}>
-              <Avatar className="avatar">
-                <LockOutlinedIcon />
-              </Avatar>
-            </Stack>
-            <Stack spacing={1} sx={{textAlign: "center"}}>
-              <Typography component="h1" variant="h5">
-                Register
-              </Typography>
-            </Stack>           
-          </Stack>         
-          <form className="form" onSubmit={handleSubmit}>
-          <Typography component="p" data-test='form-error'></Typography>
+      <Wrapper>        
+        <Grid container rowSpacing={1} alignItems="center" columnSpacing={{ xs: 1, sm: 2, md: 3, p: 2 }}>
+        <Grid item xs={6} className="login_form">
+          <Stack className="paper">          
+            <Stack spacing={2}>
+              <Stack className="avatar_alignment" sx={{display: "flex", alignItems: "center"}} spacing={1}>
+                <Avatar className="avatar">
+                  <LockOutlinedIcon />
+                </Avatar>
+              </Stack>
+              <Stack spacing={1} sx={{textAlign: "center"}}>
+                <Typography component="h1" variant="h5">
+                  Register
+                </Typography>
+              </Stack>           
+            </Stack>         
+            <form className="form" onSubmit={handleSubmit}>
+            <Typography component="p" data-test='form-error'></Typography>
 
-            <TextField  
-              error= {inValidName  ? true : false }
-              helperText={inValidName  ? 'Name is required!' : '' }          
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              id="name"
-              label="Name"
-              name="name"
-              autoFocus
-              onChange={(e) => setName(e.target.value)}
-              data-test='name'
-            />
-            <Typography component="p" data-test='name-error'></Typography>
+              <TextField  
+                error= {inValidName  ? true : false }
+                helperText={inValidName  ? 'Name is required!' : '' }          
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                id="name"
+                label="Name"
+                name="name"
+                autoFocus
+                onChange={(e) => setName(e.target.value)}
+                data-test='name'
+              />
+              <Typography component="p" data-test='name-error'></Typography>
 
-            <TextField       
-              error= {inValidEmail  ? true : false }
-              helperText={inValidEmail  ? inValidEmailMessage : '' }
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              name="email"
-              label="Email"
-              id="email"       
-              onChange={(e: any) => setEmail(e.target.value)}
-              data-test='email'
-            />
-            <Typography component="p" data-test='email-error'></Typography>
-            <TextField         
-              error= {inValidPassword  ? true : false }   
-              helperText={inValidPassword  ? inValidPasswordMessage : '' }
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              onChange={(e) => setPassword(e.target.value)}
-              data-test='password'
-            />
-            <Typography component="p" data-test='password-error'></Typography>
+              <TextField       
+                error= {inValidEmail  ? true : false }
+                helperText={inValidEmail  ? inValidEmailMessage : '' }
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                name="email"
+                label="Email"
+                id="email"       
+                onChange={(e: any) => setEmail(e.target.value)}
+                data-test='email'
+              />
+              <Typography component="p" data-test='email-error'></Typography>
+              <TextField         
+                error= {inValidPassword  ? true : false }   
+                helperText={inValidPassword  ? inValidPasswordMessage : '' }
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+                onChange={(e) => setPassword(e.target.value)}
+                data-test='password'
+              />
+              <Typography component="p" data-test='password-error'></Typography>
 
-            <TextField            
-              error= {inValidConfirmPassword  ? true : false }   
-              helperText={inValidConfirmPassword  ? inValidConfirmPasswordMessage : '' }
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              name="confirm-password"
-              label="Confirm Password"
-              type="password"
-              id="confirm-password"
-              autoComplete="current-password"
-              onChange={(e) => setConfirmpassword(e.target.value)}
-              data-test='confirm-password'
-            />
-            <Typography component="p" data-test='confirm-password-error'></Typography>
-           
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              className="submit"     
-              disabled= {isLoading  ? true : false }
-            >
-              {isLoading ? <Loading /> : 'Register'}
-            </Button>
-            <Grid container  sx={{ padding: '20px', justifyContent: "center"}}>
-              <Grid item>
-                <Link href="/login" variant="body2">
-                  {"You already have account? Sign In"}
-                </Link>
-              </Grid>
-            </Grid>         
-          </form>
-        </div>
-      </Grid>
+              <TextField            
+                error= {inValidConfirmPassword  ? true : false }   
+                helperText={inValidConfirmPassword  ? inValidConfirmPasswordMessage : '' }
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                name="confirm-password"
+                label="Confirm Password"
+                type="password"
+                id="confirm-password"
+                autoComplete="current-password"
+                onChange={(e) => setConfirmpassword(e.target.value)}
+                data-test='confirm-password'
+              />
+              <Typography component="p" data-test='confirm-password-error'></Typography>
+            
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                className="submit"     
+                disabled= {isLoading  ? true : false }
+              >
+                {isLoading ? <Loading /> : 'Register'}
+              </Button>
+              <Grid container  sx={{ padding: '20px', justifyContent: "center"}}>
+                <Grid item  display="flex" sx={{gap: "10px"}}>
+                  <Typography component="p" variant="body2">You already have account?</Typography>
+                  <Link href="/login" variant="body2">
+                    {"Sign In"}
+                  </Link>
+                </Grid>
+              </Grid>         
+            </form>
+          </Stack>
+        </Grid>
+        <Grid item xs={6}>
+          <Stack className="login_image"></Stack>
+        </Grid>    
     </Grid> 
-    </Container>
+    
     </Wrapper>
     )
   }
