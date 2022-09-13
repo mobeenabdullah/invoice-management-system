@@ -39,7 +39,7 @@ const Header: FC = () => {
           >            
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Photos
+            Invoice Management System
           </Typography>
           {auth && (
             <div>
