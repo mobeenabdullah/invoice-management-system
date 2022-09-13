@@ -11,11 +11,18 @@ type propstype = {
 
 const Protected = ({ component } : propstype) => {
     const [cookies] = useCookies(['token']);
-
-    try{
-        const userReponse = userDetail(cookies.token);
-        return component
-    } catch (error) {
+    if(cookies.token) {
+        try{
+            const userReponse: any = userDetail(cookies.token);
+            if(userReponse.status === 200) {
+                return component 
+            } else {
+                return <Navigate to='/login' />
+            }
+        } catch (error) {
+            return <Navigate to='/login' />
+        }
+    } else {
         return <Navigate to='/login' />
     }
 }
