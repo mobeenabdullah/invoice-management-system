@@ -2,7 +2,7 @@ import { Navigate } from 'react-router-dom';
 import { useAppSelector } from '../store/hooks';
 import { RootState } from '../store/store';
 import { useCookies } from 'react-cookie';
-import { userDetail } from '../store/features/user/userThunks'
+import { userDetail } from '../features/user/userThunks'
 import { useState, useEffect } from 'react';
 
 type propstype = {
@@ -12,10 +12,12 @@ type propstype = {
 const Protected = ({ component } : propstype) => {
     const [cookies] = useCookies(['token']);
 
-    if(cookies.token) {
-        return component;
+    try{
+        const userReponse = userDetail(cookies.token);
+        return component
+    } catch (error) {
+        return <Navigate to='/login' />
     }
-    return <Navigate to='/login' />
 }
 
 export default Protected
