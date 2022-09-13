@@ -12,7 +12,8 @@ function App() {
       <Routes>
         <Route path="login" element={<SignIn />} />
         <Route path="register" element={<Register />} />
-        <Route path="company-details" element={<Protected component={<CompanyDetails/>} />} />
+        {/* <Route path="company-details" element={<Protected component={<CompanyDetails/>} />} /> */}
+        <Route path="company-details" element={<CompanyDetails/>} />
       </Routes>
     </BrowserRouter>
   );

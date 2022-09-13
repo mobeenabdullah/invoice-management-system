@@ -9,8 +9,6 @@ import { RootState } from '../store/store';
 import Loading from './Loading';
 import { FC } from "react";  
 import styled from "styled-components";
-import ImageListItem from '@mui/material/ImageListItem';
-
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 import { 
@@ -31,7 +29,7 @@ import { has } from 'immer/dist/internal';
         justify-content: center;
         padding: 0 2%;
         .avatar {            
-            background-color: #1976d2;
+            background-color: #13A800;
         }       
         .submit {
           margin-top: 1rem;

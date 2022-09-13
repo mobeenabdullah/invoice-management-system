@@ -9,8 +9,19 @@ import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import { FC } from "react"; 
 import Link from '@mui/material/Link';
-import AccountCircle from '@mui/icons-material/AccountCircle'; 
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import styled from "styled-components";
 
+const MenuWrapper = styled.section`
+  .icon_box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .icon_box:hover {
+    background-color: transparent !important;
+  }
+`;
 
 //const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
@@ -29,20 +40,12 @@ const Header: FC = () => {
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
-        <Toolbar disableGutters sx={{justifyContent: "space-between"}}>          
-        <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-          >            
-          </IconButton>
+        <Toolbar disableGutters sx={{justifyContent: "space-between"}}>               
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Invoice Management System
           </Typography>
           {auth && (
-            <div>
+            <MenuWrapper className="dropdown_menu">                
               <IconButton
                 size="large"
                 aria-label="account of current user"
@@ -50,9 +53,11 @@ const Header: FC = () => {
                 aria-haspopup="true"
                 onClick={handleMenu}
                 color="inherit"
+                className="icon_box"
               >
-                <AccountCircle />
-              </IconButton>
+                <AccountCircle /> 
+                <Typography variant="body1" component="p" sx={{ flexGrow: 1 }} onClick={handleMenu} className="profile_name">John Doe</Typography>               
+              </IconButton>              
               <Menu
                 id="menu-appbar"
                 anchorEl={anchorEl}
@@ -67,12 +72,10 @@ const Header: FC = () => {
                 }}
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
-              >
-                <MenuItem onClick={handleClose}><Link href="#" underline="none" color="#141414">Profile</Link></MenuItem>
-                <MenuItem onClick={handleClose}><Link href="#" underline="none" color="#141414">My Account</Link></MenuItem>
+              >                
                 <MenuItem onClick={handleClose}><Link href="#" underline="none" color="#141414">Logout</Link></MenuItem>
               </Menu>
-            </div>
+            </MenuWrapper>
           )}
         </Toolbar>
       </Container>
