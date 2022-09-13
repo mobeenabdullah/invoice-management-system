@@ -1,14 +1,12 @@
 import {
     Button,     
-    TextField,        
-    Paper,      
+    TextField,            
     Grid, 
     Typography,
     Stack } from "@mui/material";
 
 import { FC } from "react";  
 import styled from "styled-components";
-import Container from '@mui/material/Container'; 
 import Header from './Header'; 
 import { updateUser } from "../features/user/userThunks";
 import { useCookies } from 'react-cookie';
@@ -19,17 +17,11 @@ import { Navigate } from "react-router-dom";
 import { userDetail } from "../features/user/userThunks";
 
   const Wrapper = styled.section`
-        width:100%;
-        height: 100vh;
-        background-image: url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80');
-        background-repeat: no-repeat !important;
-        background-position: center;
-        background-size: cover;
-        background-color: #cecece;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-              
+      height: calc(100vh - 64px);      
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 2%;
       .size {
           display: flex;
           flex-direction: column;
@@ -50,6 +42,28 @@ import { userDetail } from "../features/user/userThunks";
       .submit {
         margin-top: 1rem;
         padding: 1rem;
+      }
+      .login_image {
+        height: 85vh;
+        border-radius: 16px;
+        overflow: hidden;
+        background-image: url('company.jpg');
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
+      .login_image li {
+        height: 100% !important;
+      }
+      .login_image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .login_form .paper {
+        max-width: 50%;
+        width: 100%;
+        margin: 0 auto;
       }
   `;
 
@@ -164,143 +178,134 @@ import { userDetail } from "../features/user/userThunks";
       return (
         <>
         <Header />
-        <Wrapper>          
-          <Container fixed>          
-            <Grid container alignItems='center' justifyContent='center' component="main" className="form_login" sx={{ height: "100vh"}}>
-              <Grid
-                className="size"
-                item
-                xs={12}
-                sm={8}
-                md={5}
-                component={Paper}
-                elevation={1}
-                square
-                sx={{ padding: "30px" }}
-              >
-                <div className="paper">
-                  <Stack spacing={2}>                               
-                      <Stack spacing={1} sx={{textAlign: "center"}}>
-                          <Typography component="h1" variant="h4">
-                            Let's Get Started
-                          </Typography>
-                          <Typography component="p">
-                              First, we need some information
-                          </Typography>
-                      </Stack>           
-                  </Stack>         
-                  
-                  <form className="form" noValidate onSubmit={handleSubmit}>
-                    <Typography component="p" data-test='success-message'></Typography>
-                    <TextField       
-                      error= {invalidName  ? true : false }   
-                      helperText={invalidName  ? 'Company name is required!' : '' }     
-                      variant="outlined"
-                      margin="normal"
-                      fullWidth
-                      id="company_name"
-                      label="Company Name"
-                      name="company_name"
-                      autoFocus
-                      onChange={(e) => setName(e.target.value)}
-                      value={name}
-                      data-test='company-name'
-                    />
-                    <Typography component="p" data-test='company-name-error'></Typography>
-                    <TextField            
-                      error= {invalidAddress  ? true : false }   
-                      helperText={invalidAddress  ? 'Company address is required!' : '' } 
-                      variant="outlined"
-                      margin="normal"
-                      fullWidth
-                      id="company_address"
-                      label="Company Address"
-                      name="company_address"
-                      autoFocus
-                      onChange={(e) => setAddress(e.target.value)}
-                      value={address}
-                      data-test='company-address'
-                    />
-                    <Typography component="p" data-test='company-address-error'></Typography>
-                    <TextField            
-                      variant="outlined"
-                      margin="normal"
-                      fullWidth
-                      id="company_iban"
-                      label="IBAN"
-                      name="company_iban"
-                      autoFocus
-                      onChange={(e) => setIban(e.target.value)}
-                      value={iban}
-                      data-test='company-iban'
-                    />
-                    <Typography component="p" data-test='company-iban-error'></Typography>
-                    <TextField         
-                      error= {invalidVat  ? true : false }   
-                      helperText={invalidVat  ? 'Vat number is required!' : '' }   
-                      variant="outlined"
-                      margin="normal"
-                      fullWidth
-                      id="vat_number"
-                      label="VAT Number"
-                      name="vat_number"
-                      autoFocus
-                      type='number'
-                      onChange={(e) => setVat(e.target.value)}
-                      value={vat}
-                      data-test='company-vat'
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                    />
-                    <Typography component="p" data-test='company-vat-error'></Typography>
-                    <TextField            
-                      error= {invalidRegistrationNumber  ? true : false }   
-                      helperText={invalidRegistrationNumber  ? 'Registration number is required!' : '' }
-                      variant="outlined"
-                      margin="normal"
-                      fullWidth
-                      id="registry_number"
-                      label="Registry Number"
-                      name="registry_number"
-                      autoFocus
-                      type='number'
-                      onChange={(e) => setRegistrationNumber(e.target.value)}
-                      value={registrationNumber}
-                      data-test='company-reg-number'
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                    />
-                    <Typography component="p" data-test='company-reg-error'></Typography>
-                    <TextField            
-                      variant="outlined"
-                      margin="normal"
-                      fullWidth
-                      id="swift"
-                      label="SWIFT"
-                      name="swift"
-                      autoFocus
-                      onChange={(e) => setSwift(e.target.value)}
-                      value={swift}
-                      data-test='company-swift'
-                    />
-                    <Typography component="p" data-test='company-swift-error'></Typography>
-                    <Button
-                      type="submit"
-                      fullWidth
-                      variant="contained"
-                      color="primary"
-                      className="submit"              
-                      disabled= {isLoading  ? true : false }
-                      >
-                        {isLoading ? <Loading /> : 'submit'}
-                    </Button>                          
-                  </form>
-                </div>
-              </Grid>
+        <Wrapper>   
+          <Grid container rowSpacing={1} alignItems="center" columnSpacing={{ xs: 1, sm: 2, md: 3, p: 2 }}>
+            <Grid item xs={6}>
+              <Stack className="login_image"></Stack>
             </Grid>
-          </Container>
+            <Grid item xs={6} className="login_form">
+              <Stack className="paper">
+                <Stack spacing={2}>                               
+                    <Stack spacing={1} sx={{textAlign: "center"}}>
+                        <Typography component="h1" variant="h4">
+                          Let's Get Started
+                        </Typography>
+                        <Typography component="p">
+                            First, we need some information
+                        </Typography>
+                    </Stack>           
+                </Stack>         
+                
+                <form className="form" noValidate onSubmit={handleSubmit}>
+                  <Typography component="p" data-test='success-message'></Typography>
+                  <TextField       
+                    error= {invalidName  ? true : false }   
+                    helperText={invalidName  ? 'Company name is required!' : '' }     
+                    variant="outlined"
+                    margin="normal"
+                    fullWidth
+                    id="company_name"
+                    label="Company Name"
+                    name="company_name"
+                    autoFocus
+                    onChange={(e) => setName(e.target.value)}
+                    value={name}
+                    data-test='company-name'
+                  />
+                  <Typography component="p" data-test='company-name-error'></Typography>
+                  <TextField            
+                    error= {invalidAddress  ? true : false }   
+                    helperText={invalidAddress  ? 'Company address is required!' : '' } 
+                    variant="outlined"
+                    margin="normal"
+                    fullWidth
+                    id="company_address"
+                    label="Company Address"
+                    name="company_address"
+                    autoFocus
+                    onChange={(e) => setAddress(e.target.value)}
+                    value={address}
+                    data-test='company-address'
+                  />
+                  <Typography component="p" data-test='company-address-error'></Typography>
+                  <TextField            
+                    variant="outlined"
+                    margin="normal"
+                    fullWidth
+                    id="company_iban"
+                    label="IBAN"
+                    name="company_iban"
+                    autoFocus
+                    onChange={(e) => setIban(e.target.value)}
+                    value={iban}
+                    data-test='company-iban'
+                  />
+                  <Typography component="p" data-test='company-iban-error'></Typography>
+                  <TextField         
+                    error= {invalidVat  ? true : false }   
+                    helperText={invalidVat  ? 'Vat number is required!' : '' }   
+                    variant="outlined"
+                    margin="normal"
+                    fullWidth
+                    id="vat_number"
+                    label="VAT Number"
+                    name="vat_number"
+                    autoFocus
+                    type='number'
+                    onChange={(e) => setVat(e.target.value)}
+                    value={vat}
+                    data-test='company-vat'
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+                  <Typography component="p" data-test='company-vat-error'></Typography>
+                  <TextField            
+                    error= {invalidRegistrationNumber  ? true : false }   
+                    helperText={invalidRegistrationNumber  ? 'Registration number is required!' : '' }
+                    variant="outlined"
+                    margin="normal"
+                    fullWidth
+                    id="registry_number"
+                    label="Registry Number"
+                    name="registry_number"
+                    autoFocus
+                    type='number'
+                    onChange={(e) => setRegistrationNumber(e.target.value)}
+                    value={registrationNumber}
+                    data-test='company-reg-number'
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+                  <Typography component="p" data-test='company-reg-error'></Typography>
+                  <TextField            
+                    variant="outlined"
+                    margin="normal"
+                    fullWidth
+                    id="swift"
+                    label="SWIFT"
+                    name="swift"
+                    autoFocus
+                    onChange={(e) => setSwift(e.target.value)}
+                    value={swift}
+                    data-test='company-swift'
+                  />
+                  <Typography component="p" data-test='company-swift-error'></Typography>
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    className="submit"              
+                    disabled= {isLoading  ? true : false }
+                    >
+                      {isLoading ? <Loading /> : 'submit'}
+                  </Button>                          
+                </form>
+              </Stack>
+            </Grid>             
+          </Grid>        
         </Wrapper>
         </>
          

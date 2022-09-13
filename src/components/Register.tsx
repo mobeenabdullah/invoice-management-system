@@ -8,7 +8,6 @@ import { useCookies } from 'react-cookie';
 import { useState,useEffect } from 'react';
 import { FC } from "react";  
 import styled from "styled-components";
-import Container from '@mui/material/Container';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Loading from './Loading';
 import { userDetail } from '../features/user/userThunks';
@@ -17,8 +16,7 @@ import {
   Avatar, 
   Button,     
   TextField,    
-  Link, 
-  Paper,      
+  Link,       
   Grid, 
   Typography,
   Stack } from "@mui/material";
@@ -30,7 +28,7 @@ import {
         justify-content: center;
         padding: 0 2%;
         .avatar {            
-            background-color: #1976d2;
+            background-color:#13A800;
         }       
         .submit {
           margin-top: 1rem;

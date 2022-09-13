@@ -6,6 +6,8 @@ import { CookiesProvider } from "react-cookie";
 import { Provider } from 'react-redux'
 import { store } from './store/store';
 import { ToastContainer } from 'react-toastify';
+import { ThemeProvider } from '@mui/material/styles';
+import { theme } from './CustomTheme/CustomTheme';
 
 
 const root = ReactDOM.createRoot(
@@ -13,11 +15,13 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-     <Provider store={store}>
-      <CookiesProvider>        
-        <ToastContainer /> 
-          <App />
-      </CookiesProvider>
-    </Provider>
+    <ThemeProvider theme={theme}>
+      <Provider store={store}>
+        <CookiesProvider>        
+          <ToastContainer /> 
+            <App />
+        </CookiesProvider>
+      </Provider>
+    </ThemeProvider>
   </React.StrictMode>
 );
