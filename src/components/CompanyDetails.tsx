@@ -172,10 +172,16 @@ import Alert from '@mui/material/Alert';
           
   
         } catch (error: any) {
-            setIsLoading(false);
+
+          console.log(error)
+
+            if(error.code === "ERR_NETWORK") {
+              setErrorMessage(error.message);
+            }
             if(error.status === 500) {
               setErrorMessage('No internet connectivity');
             } 
+            setIsLoading(false);
             setErrorMessage(error.response.data);
         }     
   
@@ -195,18 +201,6 @@ import Alert from '@mui/material/Alert';
             </Grid>
             <Grid item xs={6} className="login_form">
               <Stack className="paper">
-                <Stack spacing={2}>                               
-                    <Stack spacing={1} sx={{textAlign: "center"}}>
-                        <Typography component="h1" variant="h4">
-                          Let's Get Started
-                        </Typography>
-                        <Typography component="p">
-                            First, we need some information
-                        </Typography>
-                    </Stack>           
-                </Stack>         
-                
-                <form className="form" noValidate onSubmit={handleSubmit}>
 
                     {errorMessage && (
                       <Stack sx={{ width: '100%' }} my={2} >
@@ -222,6 +216,21 @@ import Alert from '@mui/material/Alert';
                         </Alert>
                       </Stack>
                     )}
+
+                <Stack spacing={2}>                               
+                    <Stack spacing={1} sx={{textAlign: "center"}}>
+                        <Typography component="h1" variant="h4">
+                          Let's Get Started
+                        </Typography>
+                        <Typography component="p">
+                            First, we need some information
+                        </Typography>
+                    </Stack>           
+                </Stack>         
+                
+                <form className="form" noValidate onSubmit={handleSubmit}>
+
+                    
 
                   <Typography component="p" data-test='success-message'></Typography>
                   <TextField       
