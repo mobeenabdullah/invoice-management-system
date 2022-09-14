@@ -301,7 +301,7 @@ import { userDetail } from "../features/user/userThunks";
                     disabled= {isLoading  ? true : false }
                     >
                       {isLoading ? <Loading /> : 'submit'}
-                  </Button>                          
+                  </Button>                  
                 </form>
               </Stack>
             </Grid>             
