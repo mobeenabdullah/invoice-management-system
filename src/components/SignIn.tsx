@@ -1,4 +1,3 @@
-import { toast } from 'react-toastify';
 import { signin, userDetail } from '../features/user/userThunks';
 import { addUser } from '../features/user/userSlice';
 import { useState, useEffect } from 'react';
@@ -10,17 +9,17 @@ import Loading from './Loading';
 import { FC } from "react";  
 import styled from "styled-components";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Alert from '@mui/material/Alert';
+import jwt_decode from "jwt-decode";
 
 import { 
     Avatar, 
     Button,     
     TextField,    
     Link, 
-    Paper,      
     Grid, 
     Typography,
     Stack } from "@mui/material";
-import { has } from 'immer/dist/internal';
   
     const Wrapper = styled.section`
         height: 100vh;      
@@ -74,25 +73,40 @@ const SignIn: FC =  ()=> {
   const [isLoading, setIsLoading] = useState(false);
   const [isloggedIn, setIsloggedIn] = useState(false);
 
+  const [isError, setIsError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [signupMessage, setSignupMessage] = useState('');
+
+    // cookies Token
+    const [cookies, setCookie] = useCookies(['token']);
+
+
   useEffect(() => {
     // signup message
     if(userRegistered) {
-      toast.success(signUpSuccessMessage);
+      setSignupMessage(signUpSuccessMessage);
     }
     if(cookies.token) {
-       // has Logged in 
-       const hasloggedIn : any =  userDetail(cookies.token);
-       hasloggedIn.then((user: any) => {
-         if(cookies.token && user.status === 200) {
-           setIsloggedIn(true);
-         }
-       });
-    } 
-  }, [])
+      const decodedToken : any = jwt_decode(cookies.token);
+      const dateNow = new Date();
+      if(decodedToken.exp < dateNow.getTime()) {
+        setIsloggedIn(true);
+      } else {
+        setIsloggedIn(false);
+      }
+    }
+
+    const timer = setTimeout(() => {
+      setIsError(false);
+      setErrorMessage('');
+      setSignupMessage('');
+      clearTimeout(timer)
+    }, 3000);
+
+  }, [isError, cookies.token])
 
   
-  // cookies Token
-  const [cookies, setCookie] = useCookies(['token']);
+
 
   // Handle submit
   const handleSubmit = async (e: any) => {
@@ -133,10 +147,11 @@ const SignIn: FC =  ()=> {
         setIsloggedIn(true);
       }
     } catch (error: any) {
+        setIsError(true);
         if(error.status === 500) {
-          toast.error('No internet connectivity');
+          setErrorMessage('No internet connectivity');
         } else {
-          toast.error(error.response.data);
+          setErrorMessage(error.response.data);
         } 
         setIsLoading(false);
         setUserEmail('');
@@ -157,6 +172,20 @@ const SignIn: FC =  ()=> {
         </Grid>
         <Grid item xs={6} className="login_form">
           <Stack className="paper">
+            {signupMessage && (
+              <Stack sx={{ width: '100%' }} mb={2}>
+                <Alert severity="success">
+                  {signupMessage}
+                </Alert>
+              </Stack>
+            )}
+            {isError && (
+                <Stack sx={{ width: '100%' }} mb={2} >
+                  <Alert severity="error">
+                    {errorMessage}
+                  </Alert>
+                </Stack>
+              )}
             <Stack spacing={2}>
               <Stack className="avatar_alignment" sx={{display: "flex", alignItems: "center"}} spacing={1}>
                 <Avatar className="avatar">
@@ -170,8 +199,8 @@ const SignIn: FC =  ()=> {
               </Stack>           
             </Stack>         
             
-            <form className="form" noValidate onSubmit={handleSubmit}   >
-              <Typography component="p" data-test='form-error'></Typography>
+            <form className="form" noValidate onSubmit={handleSubmit}>
+              <Typography component="p" color='error' data-test='form-error'></Typography>
               <TextField            
                 error= {inValidEmail  ? true : false }
                 helperText={inValidEmail  ? inValidEmailMessage : '' }

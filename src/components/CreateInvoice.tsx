@@ -13,8 +13,6 @@ import { useState, useEffect } from 'react';
 import Loading from "./Loading";
 import { updateUser } from "../features/user/userThunks";
 import { useCookies } from 'react-cookie';
-
-import { toast } from "react-toastify";
 import { Navigate } from "react-router-dom";
 import { userDetail } from "../features/user/userThunks";
 
