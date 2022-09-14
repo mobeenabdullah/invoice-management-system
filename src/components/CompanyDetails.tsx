@@ -172,10 +172,13 @@ import Alert from '@mui/material/Alert';
           
   
         } catch (error: any) {
-            setIsLoading(false);
+            if(error.code === "ERR_NETWORK") {
+              setErrorMessage(error.message);
+            }
             if(error.status === 500) {
               setErrorMessage('No internet connectivity');
             } 
+            setIsLoading(false);
             setErrorMessage(error.response.data);
         }     
   
