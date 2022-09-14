@@ -5,7 +5,6 @@ import App from './App';
 import { CookiesProvider } from "react-cookie";
 import { Provider } from 'react-redux'
 import { store } from './store/store';
-import { ToastContainer } from 'react-toastify';
 import { ThemeProvider } from '@mui/material/styles';
 import { theme } from './CustomTheme/CustomTheme';
 
@@ -18,7 +17,6 @@ root.render(
     <ThemeProvider theme={theme}>
       <Provider store={store}>
         <CookiesProvider>        
-          <ToastContainer /> 
             <App />
         </CookiesProvider>
       </Provider>

@@ -12,7 +12,6 @@ import { updateUser } from "../features/user/userThunks";
 import { useCookies } from 'react-cookie';
 import { useState, useEffect } from 'react';
 import Loading from "./Loading";
-import { toast } from "react-toastify";
 import { Navigate } from "react-router-dom";
 import { userDetail } from "../features/user/userThunks";
 
@@ -153,7 +152,7 @@ import { userDetail } from "../features/user/userThunks";
   
           if(userUpdated && userUpdated.response && userUpdated.response.status === 200 && userUpdated.type === 'updated') { 
             setIsLoading(false);
-            toast.success('Successfully company details updated!')
+            // toast.success('Successfully company details updated!')
           } else if(userUpdated && userUpdated.response && userUpdated.response.status === 200 && userUpdated.type === 'added'){
             setIsLoading(false);
             setCompanyAdded(true);
@@ -164,9 +163,9 @@ import { userDetail } from "../features/user/userThunks";
         } catch (error: any) {
   
             if(error.status === 500) {
-              toast.error('No internet connectivity');
+              // toast.error('No internet connectivity');
             } 
-            toast.error(error.response.data);
+            // toast.error(error.response.data);
         }     
   
     }

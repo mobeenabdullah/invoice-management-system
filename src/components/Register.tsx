@@ -1,4 +1,3 @@
-import { toast } from 'react-toastify';
 import { signup } from '../features/user/userThunks';
 import { Navigate } from "react-router-dom"
 import { addUser } from '../features/user/userSlice';
@@ -11,6 +10,8 @@ import styled from "styled-components";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Loading from './Loading';
 import { userDetail } from '../features/user/userThunks';
+import Alert from '@mui/material/Alert';
+import jwt_decode from "jwt-decode";
 
 import { 
   Avatar, 
@@ -80,23 +81,33 @@ const Register: FC = ()=> {
   const [inValidConfirmPasswordMessage, setInValidConfirmPasswordMessage] = useState('');
   const [isloggedIn, setIsloggedIn] = useState(false);
 
-  useEffect(() => {
-    // has Logged in 
-    const hasloggedIn : any =  userDetail(cookies.token);
+  const [isError, setIsError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
-    hasloggedIn.then((user: any) => {
-      if(cookies.token && user.status === 200) {
+  useEffect(() => {
+
+    if(cookies.token) {
+      const decodedToken : any = jwt_decode(cookies.token);
+      const dateNow = new Date();
+      if(decodedToken.exp < dateNow.getTime()) {
         setIsloggedIn(true);
+      } else {
+        setIsloggedIn(false);
       }
-    });
-  }, [])
-  
+    }
+
+    const timer = setTimeout(() => {
+      setIsError(false);
+      setErrorMessage('');
+      setIsError(false);
+      clearTimeout(timer)
+    }, 3000);
+
+  }, [isError])
   
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-
     const emailValidRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-
 
     if(name === '') {
       setInValidName(true);
@@ -104,7 +115,6 @@ const Register: FC = ()=> {
     } else {
       setInValidName(false);
     }
-
     if(email === '') {
       setInValidEmail(true);
       setInValidEmailMessage('Name is required!');
@@ -112,7 +122,6 @@ const Register: FC = ()=> {
     } else {
       setInValidEmail(false);
     }
-
     if (!email.match(emailValidRegex)) {
       setInValidEmail(true);
       setInValidEmailMessage('Email format is invalid!');
@@ -121,7 +130,6 @@ const Register: FC = ()=> {
       setInValidEmail(false);
       setInValidEmailMessage('');
     }
-
     if(password.length < 6 ) {
       setInValidPassword(true);
       setInValidPasswordMessage("Password Must be 6 Character Long!")
@@ -130,7 +138,6 @@ const Register: FC = ()=> {
       setInValidPassword(false);
       setInValidPasswordMessage("")
     }
-
     if(password !== confirmpassword) {
       setInValidPassword(true);
       setInValidConfirmPassword(true);
@@ -138,7 +145,6 @@ const Register: FC = ()=> {
       setInValidPasswordMessage("Password not match!")
       return;
     }
-
 
     const user = {
       name : name,
@@ -148,23 +154,24 @@ const Register: FC = ()=> {
     }
 
     try{
+      setIsLoading(true);
       const registeredUser = await signup(user);
-
       if(registeredUser && registeredUser.status === 200) {
         dispatch(addUser({...userState, registeredUser: true, signUpMessage: 'Signup Successfuly!'}))
       }
-
+      setIsLoading(false);
     } catch (error: any) {
-
-        if(error.status === 500) {
-          toast.error('No internet connectivity');
-        } 
-        toast.error(error.response.data);
-        setIsLoading(false);
-        
+      setIsError(true);
+      if(error.code === "ERR_NETWORK") {
+        setErrorMessage(error.message);
+      }
+      if(error.status === 500) {
+        setErrorMessage('No internet connectivity');
+      } else {
+        setErrorMessage(error.response.data);
+      }
+      setIsLoading(false);
     } 
-
-
   }
 
   if(userRegistered) {
@@ -182,6 +189,13 @@ const Register: FC = ()=> {
         <Grid item xs={6} className="login_form">
           <Stack className="paper">          
             <Stack spacing={2}>
+            {isError && (
+                <Stack sx={{ width: '100%' }} my={2} >
+                  <Alert severity="error">
+                    {errorMessage}
+                  </Alert>
+                </Stack>
+              )}
               <Stack className="avatar_alignment" sx={{display: "flex", alignItems: "center"}} spacing={1}>
                 <Avatar className="avatar">
                   <LockOutlinedIcon />
@@ -194,8 +208,7 @@ const Register: FC = ()=> {
               </Stack>           
             </Stack>         
             <form className="form" onSubmit={handleSubmit}>
-            <Typography component="p" data-test='form-error'></Typography>
-
+              <Typography component="p" color='error' data-test='form-error'></Typography>
               <TextField  
                 error= {inValidName  ? true : false }
                 helperText={inValidName  ? 'Name is required!' : '' }          

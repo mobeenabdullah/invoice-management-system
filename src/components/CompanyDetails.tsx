@@ -12,9 +12,9 @@ import { updateUser } from "../features/user/userThunks";
 import { useCookies } from 'react-cookie';
 import { useState, useEffect } from 'react';
 import Loading from "./Loading";
-import { toast } from "react-toastify";
 import { Navigate } from "react-router-dom";
 import { userDetail } from "../features/user/userThunks";
+import Alert from '@mui/material/Alert';
 
   const Wrapper = styled.section`
       height: calc(100vh - 64px);      
@@ -84,6 +84,9 @@ import { userDetail } from "../features/user/userThunks";
     const [isLoading, setIsLoading] = useState(false);
     const [companyAdded, setCompanyAdded] = useState(false);
 
+    const [errorMessage, setErrorMessage] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
+
 
     useEffect( () => {
       const userDetailsFetch : any  = async (token: string) => {
@@ -104,7 +107,14 @@ import { userDetail } from "../features/user/userThunks";
         }
       }
         userDetailsFetch(cookies.token);  
-    }, [])
+
+      const timer = setTimeout(() => {
+        setErrorMessage('');
+        setSuccessMessage('');
+        clearTimeout(timer)
+      }, 3000);
+
+    }, [errorMessage, successMessage, cookies.token])
 
     const handleSubmit = async (e: any) => {
       e.preventDefault();
@@ -153,7 +163,7 @@ import { userDetail } from "../features/user/userThunks";
   
           if(userUpdated && userUpdated.response && userUpdated.response.status === 200 && userUpdated.type === 'updated') { 
             setIsLoading(false);
-            toast.success('Successfully company details updated!')
+            setSuccessMessage('Successfully company details updated!')
           } else if(userUpdated && userUpdated.response && userUpdated.response.status === 200 && userUpdated.type === 'added'){
             setIsLoading(false);
             setCompanyAdded(true);
@@ -162,11 +172,11 @@ import { userDetail } from "../features/user/userThunks";
           
   
         } catch (error: any) {
-  
+            setIsLoading(false);
             if(error.status === 500) {
-              toast.error('No internet connectivity');
+              setErrorMessage('No internet connectivity');
             } 
-            toast.error(error.response.data);
+            setErrorMessage(error.response.data);
         }     
   
     }
@@ -197,6 +207,22 @@ import { userDetail } from "../features/user/userThunks";
                 </Stack>         
                 
                 <form className="form" noValidate onSubmit={handleSubmit}>
+
+                    {errorMessage && (
+                      <Stack sx={{ width: '100%' }} my={2} >
+                        <Alert severity="error">
+                          {errorMessage}
+                        </Alert>
+                      </Stack>
+                    )}
+                    {successMessage && (
+                      <Stack sx={{ width: '100%' }} my={2} >
+                        <Alert severity="success">
+                          {successMessage}
+                        </Alert>
+                      </Stack>
+                    )}
+
                   <Typography component="p" data-test='success-message'></Typography>
                   <TextField       
                     error= {invalidName  ? true : false }   

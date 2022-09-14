@@ -4,6 +4,7 @@ import { RootState } from '../store/store';
 import { useCookies } from 'react-cookie';
 import { userDetail } from '../features/user/userThunks'
 import { useState, useEffect } from 'react';
+import jwt_decode from "jwt-decode";
 
 type propstype = {
     component: JSX.Element,
@@ -12,14 +13,11 @@ type propstype = {
 const Protected = ({ component } : propstype) => {
     const [cookies] = useCookies(['token']);
     if(cookies.token) {
-        try{
-            const userReponse: any = userDetail(cookies.token);
-            if(userReponse.status === 200) {
-                return component 
-            } else {
-                return <Navigate to='/login' />
-            }
-        } catch (error) {
+        const decodedToken : any = jwt_decode(cookies.token);
+        const dateNow = new Date();
+        if(decodedToken.exp < dateNow.getTime()) {
+            return component;
+        } else {
             return <Navigate to='/login' />
         }
     } else {
