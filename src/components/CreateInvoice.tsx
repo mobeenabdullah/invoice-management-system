@@ -48,7 +48,7 @@ import { userDetail } from "../features/user/userThunks";
         height: 85vh;
         border-radius: 16px;
         overflow: hidden;
-        background-image: url('company.jpg');
+        background-image: url('invoice.jpg');
         background-repeat: no-repeat;
         background-size: cover;
       }
@@ -95,8 +95,7 @@ import { userDetail } from "../features/user/userThunks";
                     fullWidth
                     id="client"
                     label="Client"
-                    name="client"
-                    autoFocus                    
+                    name="client"                   
                     value=""
                     
                   />
@@ -107,8 +106,7 @@ import { userDetail } from "../features/user/userThunks";
                     fullWidth
                     id="company"
                     label="Company"
-                    name="company"
-                    autoFocus                    
+                    name="company"                   
                     value=""                    
                   />
                   <TextField
@@ -118,7 +116,6 @@ import { userDetail } from "../features/user/userThunks";
                     id="company_value"
                     label="Value"
                     name="company_value"
-                    autoFocus
                     type='number'                    
                     value=""  
                   /> 
@@ -129,7 +126,6 @@ import { userDetail } from "../features/user/userThunks";
                     id="date"
                     label="Date"
                     name="date"
-                    autoFocus
                     type='text'                    
                     value=""  
                   /> 
@@ -140,7 +136,6 @@ import { userDetail } from "../features/user/userThunks";
                     id="due_date"
                     label="Due Date"
                     name="due_date"
-                    autoFocus
                     type='text'                    
                     value=""  
                   />                

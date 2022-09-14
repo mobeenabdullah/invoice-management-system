@@ -4,13 +4,13 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import { FC } from "react"; 
 import Link from '@mui/material/Link';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import styled from "styled-components";
+import { useCookies } from 'react-cookie';
 
 const MenuWrapper = styled.section`
   .icon_box {
@@ -26,6 +26,7 @@ const MenuWrapper = styled.section`
 //const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const Header: FC = () => {
+  const [cookies, removeCookie] = useCookies(['token']);
   const [auth, setAuth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
  
@@ -35,13 +36,20 @@ const Header: FC = () => {
 
   const handleClose = () => {
     setAnchorEl(null);
+    removeCookie('token', []);
   };
 
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
-        <Toolbar disableGutters sx={{justifyContent: "space-between"}}>               
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+        <Toolbar disableGutters sx={{justifyContent: "space-between"}}>
+          <Typography
+            variant="h6"
+            noWrap
+            component="a"
+            href="/"
+            sx={{ flexGrow: 1, color: "#ffffff", textDecoration: "none" }}
+          >
             Invoice Management System
           </Typography>
           {auth && (
@@ -56,7 +64,7 @@ const Header: FC = () => {
                 className="icon_box"
               >
                 <AccountCircle /> 
-                <Typography variant="body1" component="p" sx={{ flexGrow: 1 }} onClick={handleMenu} className="profile_name">John Doe</Typography>               
+                <Typography variant="body1" component="p" sx={{ flexGrow: 1, textTransform: 'capitalize' }} onClick={handleMenu} className="profile_name">john doe</Typography>               
               </IconButton>              
               <Menu
                 id="menu-appbar"
@@ -73,7 +81,7 @@ const Header: FC = () => {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >                
-                <MenuItem onClick={handleClose}><Link href="#" underline="none" color="#141414">Logout</Link></MenuItem>
+                <MenuItem onClick={handleClose}><Link underline="none" color="#141414">Logout</Link></MenuItem>
               </Menu>
             </MenuWrapper>
           )}

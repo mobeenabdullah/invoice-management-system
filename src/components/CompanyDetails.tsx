@@ -233,7 +233,6 @@ import Alert from '@mui/material/Alert';
                     id="company_name"
                     label="Company Name"
                     name="company_name"
-                    autoFocus
                     onChange={(e) => setName(e.target.value)}
                     value={name}
                     data-test='company-name'
@@ -248,7 +247,6 @@ import Alert from '@mui/material/Alert';
                     id="company_address"
                     label="Company Address"
                     name="company_address"
-                    autoFocus
                     onChange={(e) => setAddress(e.target.value)}
                     value={address}
                     data-test='company-address'
@@ -261,7 +259,6 @@ import Alert from '@mui/material/Alert';
                     id="company_iban"
                     label="IBAN"
                     name="company_iban"
-                    autoFocus
                     onChange={(e) => setIban(e.target.value)}
                     value={iban}
                     data-test='company-iban'
@@ -276,7 +273,6 @@ import Alert from '@mui/material/Alert';
                     id="vat_number"
                     label="VAT Number"
                     name="vat_number"
-                    autoFocus
                     type='number'
                     onChange={(e) => setVat(e.target.value)}
                     value={vat}
@@ -295,7 +291,6 @@ import Alert from '@mui/material/Alert';
                     id="registry_number"
                     label="Registry Number"
                     name="registry_number"
-                    autoFocus
                     type='number'
                     onChange={(e) => setRegistrationNumber(e.target.value)}
                     value={registrationNumber}
@@ -312,7 +307,6 @@ import Alert from '@mui/material/Alert';
                     id="swift"
                     label="SWIFT"
                     name="swift"
-                    autoFocus
                     onChange={(e) => setSwift(e.target.value)}
                     value={swift}
                     data-test='company-swift'
