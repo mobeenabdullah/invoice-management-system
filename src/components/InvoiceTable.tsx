@@ -21,7 +21,7 @@ import MenuItem from '@mui/material/MenuItem';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
-import Box from '@mui/material/Box';
+import { Grid } from "@mui/material";
 
 
 const Wrapper = styled.section`
@@ -74,13 +74,13 @@ const InvoiceTable: FC = ()=> {
             <Wrapper>
                 <Card sx={{ minWidth: 275 }}>
                     <CardContent>
-                        <Box component="div" className="TableHeader">
-                            <Typography variant="h6">Latest Clients</Typography>
-                            <Box component="div" className="TableButtons">
+                        <Grid container rowSpacing={1} alignItems="center" columnSpacing={{ xs: 1, sm: 2, md: 3, p: 2 }}>
+                            <Grid item xs={12} sm={12} md={6}><Typography variant="h6">Latest Clients</Typography></Grid>
+                            <Grid item xs={12} sm={12} md={6} display="flex" justifyContent="end" gap="10px">
                                 <Button variant="contained">New Client</Button>
-                                <Button variant="contained">ALl Client</Button>
-                            </Box>
-                        </Box>
+                                <Button variant="contained">ALl Clients</Button>
+                            </Grid>
+                        </Grid>                        
                         <TableContainer>
                             <Table sx={{ minWidth: 650 }} aria-label="simple table">
                                 <TableHead>
