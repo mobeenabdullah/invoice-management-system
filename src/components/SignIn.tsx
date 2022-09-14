@@ -87,13 +87,17 @@ const SignIn: FC =  ()=> {
       setSignupMessage(signUpSuccessMessage);
     }
     if(cookies.token) {
-      const decodedToken : any = jwt_decode(cookies.token);
-      const dateNow = new Date();
-      if(decodedToken.exp < dateNow.getTime()) {
-        setIsloggedIn(true);
-      } else {
-        setIsloggedIn(false);
-      }
+      try {
+          const decodedToken : any = jwt_decode(cookies.token);
+          const dateNow = new Date();
+          if(decodedToken.exp < dateNow.getTime()) {
+            setIsloggedIn(true);
+          } else {
+            setIsloggedIn(false);
+          }
+        } catch (error) {
+          setIsloggedIn(false);
+        }
     }
 
     const timer = setTimeout(() => {
@@ -213,7 +217,6 @@ const SignIn: FC =  ()=> {
                 name="email"
                 type='email'
                 value={userEmail}
-                autoFocus
                 onChange={(e) => setUserEmail(e.target.value)}
                 data-test='email'
               />

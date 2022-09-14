@@ -13,11 +13,15 @@ type propstype = {
 const Protected = ({ component } : propstype) => {
     const [cookies] = useCookies(['token']);
     if(cookies.token) {
-        const decodedToken : any = jwt_decode(cookies.token);
-        const dateNow = new Date();
-        if(decodedToken.exp < dateNow.getTime()) {
-            return component;
-        } else {
+        try{
+            const decodedToken : any = jwt_decode(cookies.token);
+            const dateNow = new Date();
+            if(decodedToken.exp < dateNow.getTime()) {
+                return component;
+            } else {
+                return <Navigate to='/login' />
+            }
+        } catch (error) {
             return <Navigate to='/login' />
         }
     } else {

@@ -46,7 +46,7 @@ import { userDetail } from "../features/user/userThunks";
         height: 85vh;
         border-radius: 16px;
         overflow: hidden;
-        background-image: url('company.jpg');
+        background-image: url('clients.jpg');
         background-repeat: no-repeat;
         background-size: cover;
       }
@@ -203,7 +203,6 @@ import { userDetail } from "../features/user/userThunks";
                     id="name"
                     label="Name"
                     name="name"
-                    autoFocus
                     onChange={(e) => setName(e.target.value)}
                     value={name}
                     data-test='name'
@@ -218,7 +217,6 @@ import { userDetail } from "../features/user/userThunks";
                     id="email"
                     label="Email"
                     name="email"
-                    autoFocus
                     onChange={(e) => setName(e.target.value)}
                     value={name}
                     data-test='email'
@@ -233,7 +231,6 @@ import { userDetail } from "../features/user/userThunks";
                     id="company_name"
                     label="Company Name"
                     name="company_name"
-                    autoFocus
                     onChange={(e) => setName(e.target.value)}
                     value={name}
                     data-test='company-name'
@@ -249,7 +246,6 @@ import { userDetail } from "../features/user/userThunks";
                     id="company_address"
                     label="Company Address"
                     name="company_address"
-                    autoFocus
                     onChange={(e) => setAddress(e.target.value)}
                     value={address}
                     data-test='company-address'
@@ -262,7 +258,6 @@ import { userDetail } from "../features/user/userThunks";
                     id="company_iban"
                     label="IBAN"
                     name="company_iban"
-                    autoFocus
                     onChange={(e) => setIban(e.target.value)}
                     value={iban}
                     data-test='company-iban'
@@ -278,7 +273,6 @@ import { userDetail } from "../features/user/userThunks";
                     id="registry_number"
                     label="Registry Number"
                     name="registry_number"
-                    autoFocus
                     type='number'
                     onChange={(e) => setRegistrationNumber(e.target.value)}
                     value={registrationNumber}
@@ -295,7 +289,6 @@ import { userDetail } from "../features/user/userThunks";
                     id="swift"
                     label="SWIFT"
                     name="swift"
-                    autoFocus
                     onChange={(e) => setSwift(e.target.value)}
                     value={swift}
                     data-test='company-swift'
@@ -310,7 +303,6 @@ import { userDetail } from "../features/user/userThunks";
                     id="vat_number"
                     label="VAT Number"
                     name="vat_number"
-                    autoFocus
                     type='number'
                     onChange={(e) => setVat(e.target.value)}
                     value={vat}

@@ -9,7 +9,6 @@ import { FC } from "react";
 import styled from "styled-components";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Loading from './Loading';
-import { userDetail } from '../features/user/userThunks';
 import Alert from '@mui/material/Alert';
 import jwt_decode from "jwt-decode";
 
@@ -87,11 +86,15 @@ const Register: FC = ()=> {
   useEffect(() => {
 
     if(cookies.token) {
-      const decodedToken : any = jwt_decode(cookies.token);
-      const dateNow = new Date();
-      if(decodedToken.exp < dateNow.getTime()) {
-        setIsloggedIn(true);
-      } else {
+      try {
+        const decodedToken : any = jwt_decode(cookies.token);
+        const dateNow = new Date();
+        if(decodedToken.exp < dateNow.getTime()) {
+          setIsloggedIn(true);
+        } else {
+          setIsloggedIn(false);
+        }
+      } catch (error) {
         setIsloggedIn(false);
       }
     }
@@ -218,7 +221,6 @@ const Register: FC = ()=> {
                 id="name"
                 label="Name"
                 name="name"
-                autoFocus
                 onChange={(e) => setName(e.target.value)}
                 data-test='name'
               />

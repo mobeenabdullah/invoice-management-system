@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { FC } from "react"; 
 import styled from "styled-components";
-import { Typography } from "@mui/material";
+import { Typography, Button } from "@mui/material";
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Table from '@mui/material/Table';
@@ -70,11 +70,14 @@ const InvoiceTable: FC = ()=> {
     return (
         <>  
             <Wrapper>
+                <Grid container rowSpacing={1} alignItems="center" m={2} columnSpacing={{ xs: 1, sm: 2, md: 3, p: 2 }}>
+                    <Grid item xs={12} sm={12} md={6}><Typography variant="h6">Latest Invoices</Typography></Grid>
+                    <Grid item xs={12} sm={12} md={6} display="flex" justifyContent="end" gap="10px">
+                        <Button variant="contained" href="/create-invoice">Create Invoice</Button>
+                    </Grid>
+                </Grid>
                 <Card sx={{ minWidth: 275 }}>
-                    <CardContent>
-                        <Grid container rowSpacing={1} alignItems="center" columnSpacing={{ xs: 1, sm: 2, md: 3, p: 2 }}>
-                            <Grid item xs={12} sm={12} md={12    }><Typography variant="h6">Latest Invoices</Typography></Grid>                           
-                        </Grid>                        
+                    <CardContent>         
                         <TableContainer>
                             <Table sx={{ minWidth: 650 }} aria-label="simple table">
                                 <TableHead>
