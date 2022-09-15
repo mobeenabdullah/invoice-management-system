@@ -8,12 +8,13 @@ import {
 import { FC } from "react";  
 import styled from "styled-components";
 import Header from './Header'; 
-import { updateUser } from "../features/user/userThunks";
 import { useCookies } from 'react-cookie';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Loading from "./Loading";
 import { Navigate } from "react-router-dom";
-import { userDetail } from "../features/user/userThunks";
+import { createClient } from "../features/clients/clientThunks";
+import { useAppSelector } from "../store/hooks";
+import { RootState } from "../store/store";
 
   const Wrapper = styled.section`
       height: calc(100vh - 64px);      
@@ -69,52 +70,57 @@ import { userDetail } from "../features/user/userThunks";
   const CreateClient: FC = ()=> {
     const [cookies] = useCookies(['token']);
     const [name, setName] = useState('');
+    const [companyName, setCompanyName] = useState('');
     const [address, setAddress] = useState('');
     const [iban, setIban] = useState('');
     const [vat, setVat] = useState('');
     const [registrationNumber, setRegistrationNumber] = useState('');
     const [swift, setSwift] = useState('');
+    const [email, setEmail] = useState('');
 
     const [invalidName, setInvalidName] = useState(false);
+    const [invalidCompanyName, setInvalidCommpanyName] = useState(false);
     const [invalidAddress, setInvalidAddress] = useState(false);
     const [invalidVat, setInvalidVat] = useState(false);
     const [invalidRegistrationNumber, setInvalidRegistrationNumber] = useState(false);
+    const [inValidEmail, setInValidEmail] = useState(false);
+    const [inValidEmailMessage, setInValidEmailMessage] = useState('');
+    const [invalidIban, setInvalidIban] = useState(false);
+    const [invalidSwift, setInvalidSwift] = useState(false);
 
     const [isLoading, setIsLoading] = useState(false);
-    const [companyAdded, setCompanyAdded] = useState(false);
+    const userId = useAppSelector((state:RootState) => state.user.user_id); 
+    const [errorMessage, setErrorMessage] = useState('');
+    const [isError, setIsError] = useState(false);
 
 
-    useEffect( () => {
-      const userDetailsFetch : any  = async (token: string) => {
-        if(token) {
-
-          const response =  await userDetail(token);
-          if(response.status === 200) {
-            if(response.data.companyDetails !== null) {
-              const companyDetails = response.data.companyDetails;
-              setName(companyDetails.name);
-              setAddress(companyDetails.address);
-              setIban(companyDetails.iban);
-              setVat(companyDetails.vatNumber);
-              setRegistrationNumber(companyDetails.regNumber);
-              setSwift(companyDetails.swift);
-            }
-          }
-        }
-      }
-        userDetailsFetch(cookies.token);  
-    }, [])
 
     const handleSubmit = async (e: any) => {
       e.preventDefault();
+      const emailValidRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
-      if(name === '' || name.length < 3 || name.length > 16 ) {
+      if(name === '' || name.length > 3) {
         setInvalidName(true);
         return;
        } else {
           setInvalidName(false)
        };
 
+       if(!email.match(emailValidRegex)) {
+        setInValidEmail(true);
+        setInValidEmailMessage('Email format is invalid!');
+        return;
+      } else {
+        setInValidEmail(false);
+        setInValidEmailMessage('');
+      }
+
+       if(companyName === '') {
+        setInvalidCommpanyName(true);
+        return;
+       } else {
+        setInvalidCommpanyName(false)
+       };
 
        if(address === '') {
         setInvalidAddress(true)
@@ -123,11 +129,11 @@ import { userDetail } from "../features/user/userThunks";
         setInvalidAddress(false)
        };
 
-       if(vat === '') {
-        setInvalidVat(true)
+       if(iban === '') {
+        setInvalidIban(true)
         return;
        } else {
-        setInvalidVat(false)
+        setInvalidIban(false)
        };
 
        if(registrationNumber === '') {
@@ -137,41 +143,54 @@ import { userDetail } from "../features/user/userThunks";
         setInvalidRegistrationNumber(false);
        };
 
-        const companyData = {
-          name: name,
-          address: address,
-          vatNumber: vat,
-          regNumber: registrationNumber,
-          iban: iban,
-          swift: swift
+       if(swift === '') {
+          setInvalidSwift(true)
+          return;
+       } else {
+          setInvalidSwift(false)
+       };
+
+       if(vat === '') {
+        setInvalidVat(true)
+        return;
+       } else {
+        setInvalidVat(false)
+       };
+
+
+      const clientData = {
+        user_id: userId,
+        email: email,
+        name: name,
+        companyDetails: {
+            name: companyName,
+            vatNumber: vat,
+            regNumber: registrationNumber,
+            address: address
         }
+      }
   
         try{
           setIsLoading(true);
-          const userUpdated = await updateUser(companyData, cookies.token);
-  
-          if(userUpdated && userUpdated.response && userUpdated.response.status === 200 && userUpdated.type === 'updated') { 
+          const response = await createClient(clientData, cookies.token);
+          if(response && response.status === 200) { 
             setIsLoading(false);
-            // toast.success('Successfully company details updated!')
-          } else if(userUpdated && userUpdated.response && userUpdated.response.status === 200 && userUpdated.type === 'added'){
-            setIsLoading(false);
-            setCompanyAdded(true);
+
           }
 
-          
-  
         } catch (error: any) {
-  
+            setIsLoading(false);
+            setIsError(true);
+            if(error.code === "ERR_NETWORK") {
+              setErrorMessage(error.message);
+            }
             if(error.status === 500) {
-              // toast.error('No internet connectivity');
-            } 
-            // toast.error(error.response.data);
+              setErrorMessage('No internet connectivity');
+            } else {
+              setErrorMessage(error.response.data);
+            }
         }     
   
-    }
-
-    if(companyAdded) {
-      return <Navigate to='/' />
     }
 
       return (
@@ -205,37 +224,36 @@ import { userDetail } from "../features/user/userThunks";
                     name="name"
                     onChange={(e) => setName(e.target.value)}
                     value={name}
-                    data-test='name'
+                    data-test='client-name'
                   />
-                  <Typography component="p" data-test='name-error'></Typography>
+                  <Typography component="p" data-test='client-name-error'></Typography>
                   <TextField       
-                    error= {invalidName  ? true : false }   
-                    helperText={invalidName  ? 'Company name is required!' : '' }     
+                    error= {inValidEmail  ? true : false }
+                    helperText={inValidEmail  ? inValidEmailMessage : '' }
                     variant="outlined"
                     margin="normal"
                     fullWidth
-                    id="email"
-                    label="Email"
                     name="email"
-                    onChange={(e) => setName(e.target.value)}
-                    value={name}
-                    data-test='email'
+                    label="Email"
+                    id="email"       
+                    onChange={(e: any) => setEmail(e.target.value)}
+                    data-test='client-email'
                   />
-                  <Typography component="p" data-test='email-error'></Typography>
+                  <Typography component="p" data-test='client-email-error'></Typography>
                   <TextField       
-                    error= {invalidName  ? true : false }   
-                    helperText={invalidName  ? 'Company name is required!' : '' }     
+                    error= {invalidCompanyName  ? true : false }   
+                    helperText={invalidCompanyName  ? 'Company name is required!' : '' }     
                     variant="outlined"
                     margin="normal"
                     fullWidth
                     id="company_name"
                     label="Company Name"
                     name="company_name"
-                    onChange={(e) => setName(e.target.value)}
-                    value={name}
-                    data-test='company-name'
+                    onChange={(e) => setCompanyName(e.target.value)}
+                    value={companyName}
+                    data-test='client-company-name'
                   />
-                  <Typography component="p" data-test='company-name-error'></Typography>
+                  <Typography component="p" data-test='client-company-name-error'></Typography>
                   
                   <TextField            
                     error= {invalidAddress  ? true : false }   
@@ -248,9 +266,9 @@ import { userDetail } from "../features/user/userThunks";
                     name="company_address"
                     onChange={(e) => setAddress(e.target.value)}
                     value={address}
-                    data-test='company-address'
+                    data-test='client-company-address'
                   />
-                  <Typography component="p" data-test='company-address-error'></Typography>
+                  <Typography component="p" data-test='client-company-address-error'></Typography>
                   <TextField            
                     variant="outlined"
                     margin="normal"
@@ -260,9 +278,9 @@ import { userDetail } from "../features/user/userThunks";
                     name="company_iban"
                     onChange={(e) => setIban(e.target.value)}
                     value={iban}
-                    data-test='company-iban'
+                    data-test='client-company-iban'
                   />
-                  <Typography component="p" data-test='company-iban-error'></Typography>
+                  <Typography component="p" data-test='client-company-iban-error'></Typography>
                   
                   <TextField            
                     error= {invalidRegistrationNumber  ? true : false }   
@@ -276,12 +294,12 @@ import { userDetail } from "../features/user/userThunks";
                     type='number'
                     onChange={(e) => setRegistrationNumber(e.target.value)}
                     value={registrationNumber}
-                    data-test='company-reg-number'
+                    data-test='client-company-reg'
                     InputLabelProps={{
                       shrink: true,
                     }}
                   />
-                  <Typography component="p" data-test='company-reg-error'></Typography>
+                  <Typography component="p" data-test='client-company-reg-error'></Typography>
                   <TextField            
                     variant="outlined"
                     margin="normal"
@@ -291,9 +309,9 @@ import { userDetail } from "../features/user/userThunks";
                     name="swift"
                     onChange={(e) => setSwift(e.target.value)}
                     value={swift}
-                    data-test='company-swift'
+                    data-test='client-company-swift'
                   />
-                  <Typography component="p" data-test='company-swift-error'></Typography>
+                  <Typography component="p" data-test='client-company-swift-error'></Typography>
                   <TextField         
                     error= {invalidVat  ? true : false }   
                     helperText={invalidVat  ? 'Vat number is required!' : '' }   
@@ -306,18 +324,19 @@ import { userDetail } from "../features/user/userThunks";
                     type='number'
                     onChange={(e) => setVat(e.target.value)}
                     value={vat}
-                    data-test='company-vat'
+                    data-test='client-company-vat'
                     InputLabelProps={{
                       shrink: true,
                     }}
                   />
-                  <Typography component="p" data-test='company-vat-error'></Typography>
+                  <Typography component="p" data-test='client-company-vat-error'></Typography>
                   <Button
                     type="submit"
                     fullWidth
                     variant="contained"
                     color="primary"
-                    className="submit"              
+                    className="submit"      
+                    data-test='submit-client'        
                     disabled= {isLoading  ? true : false }
                     >
                       {isLoading ? <Loading /> : 'submit'}

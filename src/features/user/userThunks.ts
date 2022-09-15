@@ -1,8 +1,8 @@
-import axiox from 'axios';
+import axios from 'axios';
 
 export const signup = async (user: any) => {
     const url = "http://localhost:3139/register";
-    const registeredUser = await axiox.post(url, user, {
+    const registeredUser = await axios.post(url, user, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -14,7 +14,7 @@ export const signup = async (user: any) => {
 
 export const signin = async (user: any) => {
     const url = "http://localhost:3139/login";
-    const response = await axiox.post(url, user, {
+    const response = await axios.post(url, user, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -25,7 +25,7 @@ export const signin = async (user: any) => {
 
 export const userDetail = async (token: string) => {
         const url = "http://localhost:3139/me";
-        const response = await axiox.get(url, {
+        const response = await axios.get(url, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -41,7 +41,7 @@ export const updateUser = async (data: any, token: string) => {
     let userHascompanyDetail =  (userDetails && userDetails.data.companyDetails) ? true : false;
 
         const url = "http://localhost:3139/me/company";
-        const response = await axiox.put(url, data, {
+        const response = await axios.put(url, data, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
