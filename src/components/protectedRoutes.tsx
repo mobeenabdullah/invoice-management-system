@@ -1,10 +1,7 @@
 import { Navigate } from 'react-router-dom';
-import { useAppSelector } from '../store/hooks';
-import { RootState } from '../store/store';
 import { useCookies } from 'react-cookie';
-import { userDetail } from '../features/user/userThunks'
-import { useState, useEffect } from 'react';
 import jwt_decode from "jwt-decode";
+import useAddUser from '../hooks/customHooks'
 
 type propstype = {
     component: JSX.Element,
@@ -12,6 +9,7 @@ type propstype = {
 
 const Protected = ({ component } : propstype) => {
     const [cookies] = useCookies(['token']);
+    useAddUser();
     if(cookies.token) {
         try{
             const decodedToken : any = jwt_decode(cookies.token);
