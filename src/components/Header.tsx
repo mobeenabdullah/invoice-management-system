@@ -48,7 +48,7 @@ const Header: FC = () => {
             noWrap
             component="a"
             href="/"
-            sx={{ flexGrow: 1, color: "#ffffff", textDecoration: "none" }}
+            sx={{ color: "#ffffff", textDecoration: "none", display: "inline-block" }}
           >
             Invoice Management System
           </Typography>

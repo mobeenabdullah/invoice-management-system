@@ -50,7 +50,7 @@ import { useNavigate } from "react-router-dom";
         height: 85vh;
         border-radius: 16px;
         overflow: hidden;
-        background-image: url('clients.jpg');
+        background-image: url('../company.jpg');
         background-repeat: no-repeat;
         background-size: cover;
       }
@@ -269,8 +269,8 @@ import { useNavigate } from "react-router-dom";
         <Wrapper>   
           <Grid container rowSpacing={1} alignItems="center" columnSpacing={{ xs: 1, sm: 2, md: 3, p: 2 }}>
             <Grid item xs={6}>
-              <Stack className="login_image"></Stack>
-            </Grid>
+`              <Stack className="login_image"></Stack>
+`            </Grid>
             <Grid item xs={6} className="login_form">
 
               { isError && (
