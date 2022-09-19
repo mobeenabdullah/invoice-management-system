@@ -143,10 +143,10 @@ const DashboardClients: FC = ()=> {
                                             data-test={`client-row-${row.id}`}
                                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                             >
-                                                <TableCell component="th" scope="row" data-test='client-name' onClick={() => navigate(`/clients/${row.id}`)}>{row.name}</TableCell>
-                                                <TableCell align="left" data-test='client-companyName' onClick={() => navigate(`/clients/${row.id}`)} >{row.companyDetails.name}</TableCell>
-                                                <TableCell align="left" data-test='client-totalBilled'onClick={() => navigate(`/clients/${row.id}`)} >{row.totalBilled}</TableCell>
-                                                <TableCell align="left" data-test='client-invoicesCount' onClick={() => navigate(`/clients/${row.id}`)}>{row.invoicesCount}</TableCell>
+                                                <TableCell component="th" scope="row" data-test='client-name' onClick={() => navigate(`/clients/${row.id}`)} sx={{ cursor: "pointer" }}>{row.name}</TableCell>
+                                                <TableCell align="left" data-test='client-companyName' onClick={() => navigate(`/clients/${row.id}`)} sx={{ cursor: "pointer" }}>{row.companyDetails.name}</TableCell>
+                                                <TableCell align="left" data-test='client-totalBilled'onClick={() => navigate(`/clients/${row.id}`)} sx={{ cursor: "pointer" }}>{row.totalBilled}</TableCell>
+                                                <TableCell align="left" data-test='client-invoicesCount' onClick={() => navigate(`/clients/${row.id}`)} sx={{ cursor: "pointer" }}>{row.invoicesCount}</TableCell>
                                                 <TableCell align="left">                                    
                                                     <IconButton
                                                     id="basic-button"
@@ -182,7 +182,7 @@ const DashboardClients: FC = ()=> {
                                                             <ListItemText>Add new invoice</ListItemText>                                                    
                                                         </MenuItem>
                                                         <Divider />
-                                                        <MenuItem onClick={() => navigate(`edit-client/${row.id}`)} data-test='client-actions' >
+                                                        <MenuItem onClick={() => navigate(`clients/${row.id}`)} data-test='client-actions' >
                                                             <ListItemIcon>
                                                                 <RemoveRedEyeOutlinedIcon fontSize="small" />
                                                             </ListItemIcon>
