@@ -21,6 +21,7 @@ function App() {
         <Route path="/invoices" element={<Protected component={<Invoices/>} />} />
         <Route path="/clients" element={<Protected component={<Clients/>} />} />
         <Route path="/create-client" element={<Protected component={<CreateClient />} />} />
+        <Route path="/clients/:clientId" element={<Protected component={<CreateClient />} />} />
         <Route path="/create-invoice" element={<Protected component={<CreateInvoice />} />} />
       </Routes>
     </BrowserRouter>  
