@@ -25,8 +25,9 @@ import { useCookies } from 'react-cookie';
 import { getClients } from '../features/clients/clientThunks';
 import { useNavigate } from 'react-router-dom';
 import Loading from './Loading';
+import CircularProgress from '@mui/material/CircularProgress';
 
-const Wrapper = styled.section`
+const Wrapper = styled.div`
     padding: 30px 0;
     .TableHeader {
         display: flex;
@@ -36,6 +37,19 @@ const Wrapper = styled.section`
         display: flex;
         gap: 10px;
     }
+`;
+
+const LoadingWrapper = styled.div`
+    width: 100%;    
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0,0,0,0.6);
 `;
 
 
@@ -97,88 +111,93 @@ const DashboardClients: FC = ()=> {
                         <Button variant="contained" href="/clients" data-test='view-all-clients' >ALl Clients</Button>
                     </Grid>
                 </Grid>
-                {isLoading && <Loading />}
-                <Card sx={{ minWidth: 275 }}>    
-                    {isError && errorMessage}
+                
+
+                {isError && errorMessage}
                     {isLoading && (
-                        <p>No client found...</p>
+                        <Card sx={{ minWidth: 275, minHeight: "388px", display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>    
+                            <LoadingWrapper>
+                                <CircularProgress color="primary" size="60px" />
+                            </LoadingWrapper>
+                            <p>No client found...</p>
+                        </Card>               
                     )}
                     {!isLoading && !isError && (
-                    <CardContent>                                                
-                         <TableContainer>
-                             <Table sx={{ minWidth: 650 }} aria-label="simple table" data-test='clients-table' >
-                                 <TableHead>
-                                 <TableRow>
-                                     <TableCell>Name</TableCell>
-                                     <TableCell align="left">Company name</TableCell>
-                                     <TableCell align="left">Total billed</TableCell>
-                                     <TableCell align="left">Invoices</TableCell>
-                                     <TableCell align="left"></TableCell>
-                                 </TableRow>
-                                 </TableHead>
-                                 <TableBody>
-                                 {clientRows.map((row: any) => (
-                                     <TableRow
-                                     key={row.id}
-                                     data-test={`client-row-${row.id}`}
-                                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                     >
-                                         <TableCell component="th" scope="row" data-test='client-name' onClick={() => navigate(`/clients/${row.id}`)}>{row.name}</TableCell>
-                                         <TableCell align="left" data-test='client-companyName' onClick={() => navigate(`/clients/${row.id}`)} >{row.companyDetails.name}</TableCell>
-                                         <TableCell align="left" data-test='client-totalBilled'onClick={() => navigate(`/clients/${row.id}`)} >{row.totalBilled}</TableCell>
-                                         <TableCell align="left" data-test='client-invoicesCount' onClick={() => navigate(`/clients/${row.id}`)}>{row.invoicesCount}</TableCell>
-                                         <TableCell align="left">                                    
-                                             <IconButton
-                                             id="basic-button"
-                                             aria-controls={open ? 'basic-menu' : undefined}
-                                             aria-haspopup="true"
-                                             aria-expanded={open ? 'true' : undefined}
-                                             onClick={handleClick}
-                                             >
-                                                 <MoreVertIcon />
-                                             </IconButton>
-                                             <Menu
-                                             id="basic-menu"
-                                             anchorEl={anchorEl}
-                                             open={open}
-                                             elevation={1}
-                                             anchorOrigin={{
-                                                 vertical: 'top',
-                                                 horizontal: 'left',
-                                             }}
-                                             keepMounted
-                                             transformOrigin={{
-                                                 vertical: 'top',
-                                                 horizontal: 'right',
-                                             }}
-                                             onClose={handleClose}
-                                             MenuListProps={{
-                                             'aria-labelledby': 'basic-button',
-                                             }}                                                                               
-                                         >     <MenuItem onClick={() => navigate('create-invoice')} data-test='client-actions'>
-                                                     <ListItemIcon>
-                                                         <BorderColorOutlinedIcon fontSize="small" />
-                                                     </ListItemIcon>
-                                                     <ListItemText>Add new invoice</ListItemText>                                                    
-                                                 </MenuItem>
-                                                 <Divider />
-                                                 <MenuItem onClick={() => navigate(`edit-client/${row.id}`)} data-test='client-actions' >
-                                                     <ListItemIcon>
-                                                         <RemoveRedEyeOutlinedIcon fontSize="small" />
-                                                     </ListItemIcon>
-                                                     <ListItemText>Edit client</ListItemText>
-                                                 </MenuItem>                           
-                                             </Menu>                                       
-                                         </TableCell>
-                                     </TableRow>
-                                 ))}
-                                 </TableBody>
-                             </Table>
-                         </TableContainer> 
-                     </CardContent>
+                        <Card sx={{ minWidth: 275, minHeight: "388px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            <CardContent>                                                
+                                <TableContainer>
+                                    <Table sx={{ minWidth: 650 }} aria-label="simple table" data-test='clients-table' >
+                                        <TableHead>
+                                        <TableRow>
+                                            <TableCell>Name</TableCell>
+                                            <TableCell align="left">Company name</TableCell>
+                                            <TableCell align="left">Total billed</TableCell>
+                                            <TableCell align="left">Invoices</TableCell>
+                                            <TableCell align="left"></TableCell>
+                                        </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                        {clientRows.map((row: any) => (
+                                            <TableRow
+                                            key={row.id}
+                                            data-test={`client-row-${row.id}`}
+                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                            >
+                                                <TableCell component="th" scope="row" data-test='client-name' onClick={() => navigate(`/clients/${row.id}`)}>{row.name}</TableCell>
+                                                <TableCell align="left" data-test='client-companyName' onClick={() => navigate(`/clients/${row.id}`)} >{row.companyDetails.name}</TableCell>
+                                                <TableCell align="left" data-test='client-totalBilled'onClick={() => navigate(`/clients/${row.id}`)} >{row.totalBilled}</TableCell>
+                                                <TableCell align="left" data-test='client-invoicesCount' onClick={() => navigate(`/clients/${row.id}`)}>{row.invoicesCount}</TableCell>
+                                                <TableCell align="left">                                    
+                                                    <IconButton
+                                                    id="basic-button"
+                                                    aria-controls={open ? 'basic-menu' : undefined}
+                                                    aria-haspopup="true"
+                                                    aria-expanded={open ? 'true' : undefined}
+                                                    onClick={handleClick}
+                                                    >
+                                                        <MoreVertIcon />
+                                                    </IconButton>
+                                                    <Menu
+                                                    id="basic-menu"
+                                                    anchorEl={anchorEl}
+                                                    open={open}
+                                                    elevation={1}
+                                                    anchorOrigin={{
+                                                        vertical: 'top',
+                                                        horizontal: 'left',
+                                                    }}
+                                                    keepMounted
+                                                    transformOrigin={{
+                                                        vertical: 'top',
+                                                        horizontal: 'right',
+                                                    }}
+                                                    onClose={handleClose}
+                                                    MenuListProps={{
+                                                    'aria-labelledby': 'basic-button',
+                                                    }}                                                                               
+                                                >     <MenuItem onClick={() => navigate('create-invoice')} data-test='client-actions'>
+                                                            <ListItemIcon>
+                                                                <BorderColorOutlinedIcon fontSize="small" />
+                                                            </ListItemIcon>
+                                                            <ListItemText>Add new invoice</ListItemText>                                                    
+                                                        </MenuItem>
+                                                        <Divider />
+                                                        <MenuItem onClick={() => navigate(`edit-client/${row.id}`)} data-test='client-actions' >
+                                                            <ListItemIcon>
+                                                                <RemoveRedEyeOutlinedIcon fontSize="small" />
+                                                            </ListItemIcon>
+                                                            <ListItemText>Edit client</ListItemText>
+                                                        </MenuItem>                           
+                                                    </Menu>                                       
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer> 
+                            </CardContent>
+                        </Card>
                     )}
-                   
-                </Card>               
             </Wrapper>             
         </>
     );    

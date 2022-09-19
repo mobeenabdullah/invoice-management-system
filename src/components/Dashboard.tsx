@@ -10,7 +10,7 @@ const Dashboard: FC = ()=> {
         <>
         <Header />
         <Container maxWidth="xl">
-            <Grid container rowSpacing={1} alignItems="center" columnSpacing={{ xs: 1, sm: 2, md: 3, p: 2 }}>
+            <Grid container rowSpacing={1} alignItems="start" columnSpacing={{ xs: 1, sm: 2, md: 3, p: 2 }}>
                 <Grid item xs={12} sm={12} md={6}>
                     <DashboardClients />
                 </Grid>
