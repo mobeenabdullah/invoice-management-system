@@ -6,7 +6,7 @@ import { userDetail } from "../features/user/userThunks";
 import { useCookies } from "react-cookie";
 
 const useAddUser = () => {
-  const [cookies] = useCookies(["token"]);
+  const [cookies, removeCookie] = useCookies(["authToken"]);
   const userState = useAppSelector((state: RootState) => state.user);
   const dispatch = useAppDispatch();
   useEffect(() => {
@@ -23,10 +23,12 @@ const useAddUser = () => {
               email: user.email,
             })
           );
+        } else {
+          removeCookie("authToken", []);
         }
       }
     };
-    userDetailsFetch(cookies.token);
+    userDetailsFetch(cookies.authToken);
   }, []);
   return [];
 };

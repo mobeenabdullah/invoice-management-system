@@ -11,6 +11,7 @@ import Link from "@mui/material/Link";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import styled from "styled-components";
 import { useCookies } from "react-cookie";
+import { useState } from "react";
 
 const MenuWrapper = styled.section`
   .icon_box {
@@ -26,9 +27,9 @@ const MenuWrapper = styled.section`
 //const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const Header: FC = () => {
-  const [cookies, removeCookie] = useCookies(["token"]);
-  const [auth, setAuth] = React.useState(true);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [cookies, removeCookie] = useCookies(["authToken"]);
+  const [auth, setAuth] = useState(true);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -36,7 +37,7 @@ const Header: FC = () => {
 
   const handleClose = () => {
     setAnchorEl(null);
-    removeCookie("token", []);
+    removeCookie("authToken", []);
   };
 
   return (

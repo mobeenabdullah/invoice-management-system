@@ -53,7 +53,7 @@ const LoadingWrapper = styled.div`
 `;
 
 const ClientTable: FC = () => {
-  const [cookies] = useCookies(["token"]);
+  const [cookies] = useCookies(["authToken"]);
   const [clientRows, setClientRows] = useState([]);
   const [isLoading, SetIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
@@ -63,7 +63,7 @@ const ClientTable: FC = () => {
   useEffect(() => {
     const fetchClientsList = async () => {
       try {
-        const clientsList = await getClients(cookies.token);
+        const clientsList = await getClients(cookies.authToken);
         setClientRows(clientsList.data.clients.slice(0, 11));
         SetIsLoading(false);
       } catch (error: any) {

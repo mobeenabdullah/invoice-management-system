@@ -83,16 +83,16 @@ const SignIn: FC = () => {
   const [signupMessage, setSignupMessage] = useState("");
 
   // cookies Token
-  const [cookies, setCookie] = useCookies(["token"]);
+  const [cookies, setCookie] = useCookies(["authToken"]);
 
   useEffect(() => {
     // signup message
     if (userRegistered) {
       setSignupMessage(signUpSuccessMessage);
     }
-    if (cookies.token) {
+    if (cookies.authToken) {
       try {
-        const decodedToken: any = jwt_decode(cookies.token);
+        const decodedToken: any = jwt_decode(cookies.authToken);
         const dateNow = new Date();
         if (decodedToken.exp < dateNow.getTime()) {
           setIsloggedIn(true);
@@ -110,7 +110,7 @@ const SignIn: FC = () => {
       setSignupMessage("");
       clearTimeout(timer);
     }, 3000);
-  }, [isError, cookies.token]);
+  }, [isError, cookies.authToken]);
 
   // Handle submit
   const handleSubmit = async (e: any) => {
@@ -147,7 +147,7 @@ const SignIn: FC = () => {
       if (isLoggedIn && isLoggedIn.status === 200) {
         const { email, name, user_id } = isLoggedIn.data;
         dispatch(addUser({ ...userState, email, name, user_id }));
-        setCookie("token", isLoggedIn.data.token);
+        setCookie("authToken", isLoggedIn.data.token);
         setIsLoading(false);
         setIsloggedIn(true);
       }
