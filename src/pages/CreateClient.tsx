@@ -111,7 +111,7 @@ const CreateClient: FC = () => {
         setRegistrationNumber(client.companyDetails.regNumber);
         setSwift(client.swift);
       } else {
-        navigate("/");
+        navigate("/", {replace: true});
       }
     };
 

@@ -1,7 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
 import Protected from "./components/protectedRoutes";
-
 import {
   Home,
   CompanyDetail,
@@ -17,12 +15,12 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Protected component={<Home />} />} />
+        <Route path="/"  element={<Protected component={<Home />} />} />
         <Route path="/login" element={<SignIn />} />
         <Route path="/register" element={<Register />} />
         <Route
           path="/company-detail"
-          element={<Protected component={<CompanyDetail />} />}
+          element={<Protected component={<CompanyDetail /> } />}
         />
         <Route
           path="/invoices"
@@ -30,7 +28,7 @@ function App() {
         />
         <Route
           path="/clients"
-          element={<Protected component={<Clients />} />}
+          element={<Protected  component={<Clients />} />}
         />
         <Route
           path="/create-client"

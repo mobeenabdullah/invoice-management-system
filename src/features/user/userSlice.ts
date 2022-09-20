@@ -10,6 +10,7 @@ interface userState {
   registeredUser: boolean;
   signUpMessage: string;
   error: boolean;
+  companyDetails: object;
 }
 
 // Define the initial state using that type
@@ -20,6 +21,7 @@ const initialState: userState = {
   registeredUser: false,
   signUpMessage: "",
   error: false,
+  companyDetails : {},
 };
 
 export const userSlice = createSlice({
