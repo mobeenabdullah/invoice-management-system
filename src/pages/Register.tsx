@@ -61,7 +61,7 @@ const Wrapper = styled.section`
 
 const Register: FC = () => {
   const dispatch = useAppDispatch();
-  const [cookies] = useCookies(["token"]);
+  const [cookies] = useCookies(["authToken"]);
 
   const userState = useAppSelector((state: RootState) => state.user);
   const userRegistered = useAppSelector(
@@ -88,9 +88,9 @@ const Register: FC = () => {
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    if (cookies.token) {
+    if (cookies.authToken) {
       try {
-        const decodedToken: any = jwt_decode(cookies.token);
+        const decodedToken: any = jwt_decode(cookies.authToken);
         const dateNow = new Date();
         if (decodedToken.exp < dateNow.getTime()) {
           setIsloggedIn(true);

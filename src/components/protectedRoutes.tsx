@@ -8,13 +8,14 @@ type propstype = {
 };
 
 const Protected = ({ component }: propstype) => {
-  const [cookies] = useCookies(["token"]);
+  const [cookies] = useCookies(["authToken"]);
   useAddUser();
-  if (cookies.token) {
+  if (cookies.authToken) {
     try {
-      const decodedToken: any = jwt_decode(cookies.token);
+      const decodedToken: any = jwt_decode(cookies.authToken);
       const dateNow = new Date();
-      if (decodedToken.exp < dateNow.getTime()) {
+
+      if (decodedToken.exp * 1000 > dateNow.getTime()) {
         return component;
       } else {
         return <Navigate to="/login" />;

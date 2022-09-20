@@ -62,7 +62,7 @@ const Wrapper = styled.section`
 `;
 
 const CompanyDetail: FC = () => {
-  const [cookies] = useCookies(["token"]);
+  const [cookies] = useCookies(["authToken"]);
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [iban, setIban] = useState("");
@@ -99,14 +99,14 @@ const CompanyDetail: FC = () => {
         }
       }
     };
-    userDetailsFetch(cookies.token);
+    userDetailsFetch(cookies.authToken);
 
     const timer = setTimeout(() => {
       setErrorMessage("");
       setSuccessMessage("");
       clearTimeout(timer);
     }, 3000);
-  }, [errorMessage, successMessage, cookies.token]);
+  }, [errorMessage, successMessage, cookies.authToken]);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -150,7 +150,7 @@ const CompanyDetail: FC = () => {
 
     try {
       setIsLoading(true);
-      const userUpdated = await updateUser(companyData, cookies.token);
+      const userUpdated = await updateUser(companyData, cookies.authToken);
 
       if (
         userUpdated &&

@@ -68,7 +68,7 @@ const Wrapper = styled.section`
 `;
 
 const CreateClient: FC = () => {
-  const [cookies] = useCookies(["token"]);
+  const [cookies] = useCookies(["authToken"]);
   const { clientId } = useParams();
   const [name, setName] = useState("");
   const [companyName, setCompanyName] = useState("");
@@ -115,8 +115,8 @@ const CreateClient: FC = () => {
       }
     };
 
-    if (clientId && cookies.token) {
-      getSingleClientData(clientId, cookies.token);
+    if (clientId && cookies.authToken) {
+      getSingleClientData(clientId, cookies.authToken);
     }
   }, []);
 
@@ -221,9 +221,9 @@ const CreateClient: FC = () => {
       setIsLoading(true);
       if (clientId) {
         clientData.id = clientId;
-        response = await updateClient(clientData, cookies.token);
+        response = await updateClient(clientData, cookies.authToken);
       } else {
-        response = await createClient(clientData, cookies.token);
+        response = await createClient(clientData, cookies.authToken);
       }
 
       if (response && response.status === 200) {
