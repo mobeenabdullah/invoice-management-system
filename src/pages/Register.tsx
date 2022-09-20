@@ -8,7 +8,7 @@ import { useState,useEffect } from 'react';
 import { FC } from "react";  
 import styled from "styled-components";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Loading from './Loading';
+import Loading from '../components/Loading';
 import Alert from '@mui/material/Alert';
 import jwt_decode from "jwt-decode";
 

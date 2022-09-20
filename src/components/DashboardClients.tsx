@@ -24,8 +24,8 @@ import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { getClients } from '../features/clients/clientThunks';
 import { useNavigate } from 'react-router-dom';
-import Loading from './Loading';
 import CircularProgress from '@mui/material/CircularProgress';
+import Alert from '@mui/material/Alert';
 
 const Wrapper = styled.div`
     padding: 30px 0;
@@ -68,10 +68,6 @@ const DashboardClients: FC = ()=> {
 
             try{
                 const clientsList = await getClients(cookies.token);
-                if(clientsList.data.total === 0) {
-                    setIsError(true);
-                    setErrorMessage('No client found...');
-                }
                 setClientRows(clientsList.data.clients.slice(0, 11));
                 SetIsLoading(false);
             } catch (error: any) {
@@ -113,17 +109,21 @@ const DashboardClients: FC = ()=> {
                 </Grid>
                 
 
-                {isError && errorMessage}
+                {isError && (
+                    <Alert severity="error">
+                        <p date-test='clients-fetch-error'>{errorMessage}</p>    
+                    </Alert>                    
+                )}
                     {isLoading && (
                         <Card sx={{ minWidth: 275, minHeight: "388px", display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>    
-                            <LoadingWrapper>
+                            <LoadingWrapper data-test='loading-overlay'>
                                 <CircularProgress color="primary" size="60px" />
                             </LoadingWrapper>
                             <p>No client found...</p>
                         </Card>               
                     )}
-                    {!isLoading && !isError && (
-                        <Card sx={{ minWidth: 275, minHeight: "388px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    {!isLoading && (
+                        <Card sx={{ minWidth: 275, minHeight: "388px", display: "flex", alignItems: "start", justifyContent: "center" }}>
                             <CardContent>                                                
                                 <TableContainer>
                                     <Table sx={{ minWidth: 650 }} aria-label="simple table" data-test='clients-table' >
@@ -137,7 +137,10 @@ const DashboardClients: FC = ()=> {
                                         </TableRow>
                                         </TableHead>
                                         <TableBody>
-                                        {clientRows.map((row: any) => (
+                                        {clientRows.length === 0 && (
+                                            <p data-test='empty-placeholder'>No client found...</p>
+                                        )}
+                                        {clientRows.length > 0 && clientRows.map((row: any) => (
                                             <TableRow
                                             key={row.id}
                                             data-test={`client-row-${row.id}`}

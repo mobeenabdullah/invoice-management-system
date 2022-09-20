@@ -7,10 +7,10 @@ import {
 
 import { FC } from "react";  
 import styled from "styled-components";
-import Header from './Header'; 
+import Header from '../components/Header'; 
 import { useCookies } from 'react-cookie';
 import { useState, useEffect } from 'react';
-import Loading from "./Loading";
+import Loading from "../components/Loading";
 import { createClient } from "../features/clients/clientThunks";
 import { useAppSelector } from "../store/hooks";
 import { RootState } from "../store/store";

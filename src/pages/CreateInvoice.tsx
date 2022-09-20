@@ -7,14 +7,10 @@ import {
 
 import { FC } from "react";  
 import styled from "styled-components";
-import Header from './Header'; 
-import { useState, useEffect } from 'react';
+import Header from '../components/Header'; 
+import { useState } from 'react';
 
-import Loading from "./Loading";
-import { updateUser } from "../features/user/userThunks";
-import { useCookies } from 'react-cookie';
-import { Navigate } from "react-router-dom";
-import { userDetail } from "../features/user/userThunks";
+import Loading from "../components/Loading";
 
 
   const Wrapper = styled.section`

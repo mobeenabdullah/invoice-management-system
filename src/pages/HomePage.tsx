@@ -1,11 +1,11 @@
 import { FC } from "react";
-import Header from './Header'; 
+import Header from '../components/Header'; 
 import { Container } from "@mui/system";
-import DashboardClients from './DashboardClients';
-import DashboardInvoices from './DashboardInvoices';
+import DashboardClients from '../components/DashboardClients';
+import DashboardInvoices from '../components/DashboardInvoices';
 import { Grid } from "@mui/material";
 
-const Dashboard: FC = ()=> {
+const HomePage: FC = ()=> {
     return (
         <>
         <Header />
@@ -24,4 +24,4 @@ const Dashboard: FC = ()=> {
     );    
 }
 
-export default Dashboard;
+export default HomePage;

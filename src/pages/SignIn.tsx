@@ -1,11 +1,11 @@
-import { signin, userDetail } from '../features/user/userThunks';
+import { signin } from '../features/user/userThunks';
 import { addUser } from '../features/user/userSlice';
 import { useState, useEffect } from 'react';
 import { Navigate } from "react-router-dom"
 import { useCookies } from 'react-cookie';
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import { RootState } from '../store/store';
-import Loading from './Loading';
+import Loading from '../components/Loading';
 import { FC } from "react";  
 import styled from "styled-components";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';

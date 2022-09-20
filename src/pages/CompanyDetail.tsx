@@ -7,11 +7,11 @@ import {
 
 import { FC } from "react";  
 import styled from "styled-components";
-import Header from './Header'; 
+import Header from '../components/Header'; 
 import { updateUser } from "../features/user/userThunks";
 import { useCookies } from 'react-cookie';
 import { useState, useEffect } from 'react';
-import Loading from "./Loading";
+import Loading from "../components/Loading";
 import { Navigate } from "react-router-dom";
 import { userDetail } from "../features/user/userThunks";
 import Alert from '@mui/material/Alert';
@@ -67,7 +67,7 @@ import Alert from '@mui/material/Alert';
       }
   `;
 
-  const CompanyDetails: FC = ()=> {
+  const CompanyDetail: FC = ()=> {
     const [cookies] = useCookies(['token']);
     const [name, setName] = useState('');
     const [address, setAddress] = useState('');
@@ -341,4 +341,4 @@ import Alert from '@mui/material/Alert';
       )
     }
     
-    export default CompanyDetails
+    export default CompanyDetail
