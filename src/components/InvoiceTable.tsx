@@ -1,7 +1,7 @@
 import * as React from "react";
 import { FC } from "react";
 import styled from "styled-components";
-import { Typography, Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Table from "@mui/material/Table";
@@ -14,50 +14,66 @@ import Menu from "@mui/material/Menu";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import IconButton from "@mui/material/IconButton";
 import ListItemText from "@mui/material/ListItemText";
+import ListItemIcon from "@mui/material/ListItemIcon";
 import MenuItem from "@mui/material/MenuItem";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
 import { Grid } from "@mui/material";
-
-const Wrapper = styled.section`
-  padding: 30px 0;
-  .TableHeader {
-    display: flex;
-    justify-content: space-between;
-  }
-  .TableButtons {
-    display: flex;
-    gap: 10px;
-  }
-`;
-
-function createData(
-  invoice: number,
-  client: string,
-  company: string,
-  value: number,
-  date: string,
-  due_date: string
-) {
-  return { invoice, client, company, value, date, due_date };
-}
-
-const rows = [
-  createData(1234, "Jhon", "company", 1234, "2022-02-10", "2022-03-12"),
-  createData(1234, "Jhon", "company", 1234, "2022-02-10", "2022-03-12"),
-  createData(1234, "Jhon", "company", 1234, "2022-02-10", "2022-03-12"),
-  createData(1234, "Jhon", "company", 1234, "2022-02-10", "2022-03-12"),
-];
-
-const options = ["None", "Atria", "Callisto"];
+import { useEffect, useState } from "react";
+import { getInvoices } from "../features/invoices/invoiceThunks";
+import { useCookies } from "react-cookie";
+import { useNavigate } from "react-router";
+import Alert from "@mui/material/Alert";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const InvoiceTable: FC = () => {
+
+  const [invoices, setInvoices] = useState([]);
+  const [cookies] = useCookies(["authToken"]);
+  const [isLoading, SetIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("No invoice found...");
+  const navigate = useNavigate();
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const formatDate = (timestamp: string) => {
+    const date = new Date(timestamp);
+    return date.getDate()+"-"+(date.getMonth()+1)+"-"+date.getFullYear();
+  }
+
+  const fetchInvoices = async () => {
+    try {
+      const invoicesList = await getInvoices(cookies.authToken);
+      setInvoices(invoicesList.data.invoices.slice(0, 11));
+      SetIsLoading(false);
+    } catch (error: any) {
+      SetIsLoading(false);
+      setIsError(true);
+      if (error.code === "ERR_NETWORK") {
+        setErrorMessage(error.message);
+      }
+      if (error.status === 500) {
+        setErrorMessage("No internet connectivity");
+      } else {
+        setErrorMessage(error.response.data);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchInvoices();
+  }, []);
+
+
   return (
     <>
       <Wrapper>
@@ -85,83 +101,142 @@ const InvoiceTable: FC = () => {
             </Button>
           </Grid>
         </Grid>
-        <Card sx={{ minWidth: 275 }}>
-          <CardContent>
-            <TableContainer>
-              <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Invoice</TableCell>
-                    <TableCell align="left">Client</TableCell>
-                    <TableCell align="left">Company</TableCell>
-                    <TableCell align="left">value</TableCell>
-                    <TableCell align="left">Date</TableCell>
-                    <TableCell align="left">Due Date</TableCell>
-                    <TableCell align="left"></TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {rows.map((row) => (
-                    <TableRow
-                      key={row.invoice}
-                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                    >
-                      <TableCell component="th" scope="row">
-                        {row.invoice}
-                      </TableCell>
-                      <TableCell align="left">{row.client}</TableCell>
-                      <TableCell align="left">{row.company}</TableCell>
-                      <TableCell align="left">{row.value}</TableCell>
-                      <TableCell align="left">{row.date}</TableCell>
-                      <TableCell align="left">{row.due_date}</TableCell>
-                      <TableCell align="left">
-                        <IconButton
-                          id="basic-button"
-                          aria-controls={open ? "basic-menu" : undefined}
-                          aria-haspopup="true"
-                          aria-expanded={open ? "true" : undefined}
-                          onClick={handleClick}
-                        >
-                          <MoreVertIcon />
-                        </IconButton>
-                        <Menu
-                          id="basic-menu"
-                          anchorEl={anchorEl}
-                          open={open}
-                          elevation={1}
-                          anchorOrigin={{
-                            vertical: "top",
-                            horizontal: "left",
-                          }}
-                          keepMounted
-                          transformOrigin={{
-                            vertical: "top",
-                            horizontal: "right",
-                          }}
-                          onClose={handleClose}
-                          MenuListProps={{
-                            "aria-labelledby": "basic-button",
-                          }}
-                        >
-                          {" "}
-                          <MenuItem onClick={handleClose}>
-                            <ListItemText>Edit Invoice</ListItemText>
-                          </MenuItem>
-                          <MenuItem onClick={handleClose}>
-                            <ListItemText>Print Invoice</ListItemText>
-                          </MenuItem>
-                        </Menu>
-                      </TableCell>
+        {isError && (
+          <Alert severity="error">
+            <p date-test="clients-fetch-error">{errorMessage}</p>
+          </Alert>
+        )}
+        {isLoading && (
+          <Card
+            sx={{
+              minWidth: 275,
+              minHeight: "388px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              position: "relative",
+            }}
+          >
+            <LoadingWrapper data-test="loading-overlay">
+              <CircularProgress color="primary" size="60px" />
+            </LoadingWrapper>
+            <p>Loading Invoices...</p>
+          </Card>
+        )}
+        {!isLoading && (
+          <Card sx={{ minWidth: 275 }}>
+            <CardContent>
+              <TableContainer>
+                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell align="left">Invoice</TableCell>
+                      <TableCell align="left">Client</TableCell>
+                      <TableCell align="left">Company</TableCell>
+                      <TableCell align="left">Value</TableCell>
+                      <TableCell align="left">Date</TableCell>
+                      <TableCell align="left">Due Date</TableCell>
+                      <TableCell align="left"></TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </CardContent>
-        </Card>
+                  </TableHead>
+                  <TableBody>
+                    {invoices.length === 0 && (
+                        <p data-test="empty-placeholder">No invoice found...</p>
+                      )}
+                    {invoices.length > 0 && invoices.map((invoiceItem: any) => (
+                      <TableRow
+                        key={invoiceItem.invoice.id}
+                        data-test={`invoice-row-${invoiceItem.invoice.id}`}
+                        sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                      >
+                        <TableCell component="th" scope="row" data-test='invoice-number' onClick={() => navigate(`/invoice/${invoiceItem.invoice.id}/view`, {replace: true})}>{invoiceItem.invoice.invoice_number}</TableCell>
+                        <TableCell align="left" data-test='invoice-client-name' onClick={() => navigate(`/invoice/${invoiceItem.invoice.id}/view`, {replace: true})}>{invoiceItem.client.name}</TableCell>
+                        <TableCell align="left" data-test='invoice-client-company-name' onClick={() => navigate(`/invoice/${invoiceItem.invoice.id}/view`, {replace: true})}>{invoiceItem.client.companyDetails.name}</TableCell>
+                        <TableCell align="left" data-test='invoice-value' onClick={() => navigate(`/invoice/${invoiceItem.invoice.id}/view`, {replace: true})}>{invoiceItem.invoice.value}</TableCell>
+                        <TableCell align="left" data-test='invoice-date' onClick={() => navigate(`/invoice/${invoiceItem.invoice.id}/view`, {replace: true})}>{formatDate(invoiceItem.invoice.date)}</TableCell>
+                        <TableCell align="left" data-test='invoice-due-date' onClick={() => navigate(`/invoice/${invoiceItem.invoice.id}/view`, {replace: true})}>{formatDate(invoiceItem.invoice.dueDate)}</TableCell>                      
+                        <TableCell align="left">
+                          <IconButton
+                            id="basic-button"
+                            aria-controls={open ? "basic-menu" : undefined}
+                            aria-haspopup="true"
+                            aria-expanded={open ? "true" : undefined}
+                            onClick={handleClick}
+                          >
+                            <MoreVertIcon />
+                          </IconButton>
+                          <Menu
+                            id="basic-menu"
+                            anchorEl={anchorEl}
+                            open={open}
+                            elevation={1}
+                            anchorOrigin={{
+                              vertical: "top",
+                              horizontal: "left",
+                            }}
+                            keepMounted
+                            transformOrigin={{
+                              vertical: "top",
+                              horizontal: "right",
+                            }}
+                            onClose={handleClose}
+                            MenuListProps={{
+                              "aria-labelledby": "basic-button",
+                            }}
+                          >
+                            {" "}
+                            <MenuItem onClick={() => navigate(`/invoice/${invoiceItem.invoice.id}/view`, {replace: true})} data-test='invoice-actions'>
+                              <ListItemIcon>
+                                <BorderColorOutlinedIcon fontSize="small" />
+                              </ListItemIcon>
+                              <ListItemText>Print invoice</ListItemText>
+                            </MenuItem>
+                            <MenuItem onClick={() => navigate(`/invoice/${invoiceItem.invoice.id}/edit`, {replace: true})} data-test='invoice-actions'>
+                              <ListItemIcon>
+                                <DeleteOutlineOutlinedIcon fontSize="small" />
+                              </ListItemIcon>
+                              <ListItemText>Edit invoice</ListItemText>
+                            </MenuItem>
+                          </Menu>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </CardContent>
+          </Card>
+        )}
+        
       </Wrapper>
     </>
   );
 };
+
+
+const Wrapper = styled.section`
+  padding: 30px 0;
+  .TableHeader {
+    display: flex;
+    justify-content: space-between;
+  }
+  .TableButtons {
+    display: flex;
+    gap: 10px;
+  }
+`;
+
+const LoadingWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.6);
+`;
 
 export default InvoiceTable;

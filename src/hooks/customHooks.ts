@@ -9,25 +9,28 @@ const useAddUser = () => {
   const [cookies, removeCookie] = useCookies(["authToken"]);
   const userState = useAppSelector((state: RootState) => state.user);
   const dispatch = useAppDispatch();
-  useEffect(() => {
-    const userDetailsFetch: any = async (token: string) => {
-      if (token) {
-        const response = await userDetail(token);
-        if (response.status === 200) {
-          const user = response.data;
-          dispatch(
-            addUser({
-              ...userState,
-              user_id: user.id,
-              name: user.name,
-              email: user.email,
-            })
-          );
-        } else {
-          removeCookie("authToken", []);
-        }
+
+  const userDetailsFetch: any = async (token: string) => {
+    if (token) {
+      const response = await userDetail(token);
+      if (response.status === 200) {
+        const user = response.data;
+        dispatch(
+          addUser({
+            ...userState,
+            user_id: user.id,
+            name: user.name,
+            email: user.email,
+            companyDetails: user.companyDetails
+          })
+        );
+      } else {
+        removeCookie("authToken", []);
       }
-    };
+    }
+  };
+
+  useEffect(() => {
     userDetailsFetch(cookies.authToken);
   }, []);
   return [];

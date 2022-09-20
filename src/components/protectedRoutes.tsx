@@ -8,7 +8,7 @@ type propstype = {
 };
 
 const Protected = ({ component }: propstype) => {
-  const [cookies] = useCookies(["authToken"]);
+  const [cookies, removeCookie] = useCookies(["authToken"]);
   useAddUser();
   if (cookies.authToken) {
     try {
@@ -16,14 +16,18 @@ const Protected = ({ component }: propstype) => {
       const dateNow = new Date();
 
       if (decodedToken.exp * 1000 > dateNow.getTime()) {
-        return component;
+          return component;
+        
       } else {
+        removeCookie("authToken", []);
         return <Navigate to="/login" />;
       }
     } catch (error) {
+      removeCookie("authToken", []);
       return <Navigate to="/login" />;
     }
   } else {
+    removeCookie("authToken", []);
     return <Navigate to="/login" />;
   }
 };

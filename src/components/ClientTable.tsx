@@ -60,26 +60,26 @@ const ClientTable: FC = () => {
   const [errorMessage, setErrorMessage] = useState("No client found...");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchClientsList = async () => {
-      try {
-        const clientsList = await getClients(cookies.authToken);
-        setClientRows(clientsList.data.clients.slice(0, 11));
-        SetIsLoading(false);
-      } catch (error: any) {
-        SetIsLoading(false);
-        setIsError(true);
-        if (error.code === "ERR_NETWORK") {
-          setErrorMessage(error.message);
-        }
-        if (error.status === 500) {
-          setErrorMessage("No internet connectivity");
-        } else {
-          setErrorMessage(error.response.data);
-        }
+  const fetchClientsList = async () => {
+    try {
+      const clientsList = await getClients(cookies.authToken);
+      setClientRows(clientsList.data.clients.slice(0, 11));
+      SetIsLoading(false);
+    } catch (error: any) {
+      SetIsLoading(false);
+      setIsError(true);
+      if (error.code === "ERR_NETWORK") {
+        setErrorMessage(error.message);
       }
-    };
+      if (error.status === 500) {
+        setErrorMessage("No internet connectivity");
+      } else {
+        setErrorMessage(error.response.data);
+      }
+    }
+  };
 
+  useEffect(() => {
     fetchClientsList();
   }, []);
 
@@ -177,7 +177,7 @@ const ClientTable: FC = () => {
                             component="th"
                             scope="row"
                             data-test="client-name"
-                            onClick={() => navigate(`/clients/${row.id}`)}
+                            onClick={() => navigate(`/clients/${row.id}`, {replace: true})}
                             sx={{ cursor: "pointer" }}
                           >
                             {row.name}
@@ -185,7 +185,7 @@ const ClientTable: FC = () => {
                           <TableCell
                             align="left"
                             data-test="client-companyName"
-                            onClick={() => navigate(`/clients/${row.id}`)}
+                            onClick={() => navigate(`/clients/${row.id}`, {replace: true})}
                             sx={{ cursor: "pointer" }}
                           >
                             {row.companyDetails.name}
@@ -193,7 +193,7 @@ const ClientTable: FC = () => {
                           <TableCell
                             align="left"
                             data-test="client-email"
-                            onClick={() => navigate(`/clients/${row.id}`)}
+                            onClick={() => navigate(`/clients/${row.id}`, {replace: true})}
                             sx={{ cursor: "pointer" }}
                           >
                             {row.email}
@@ -201,7 +201,7 @@ const ClientTable: FC = () => {
                           <TableCell
                             align="left"
                             data-test="client-totalBilled"
-                            onClick={() => navigate(`/clients/${row.id}`)}
+                            onClick={() => navigate(`/clients/${row.id}`, {replace: true})}
                             sx={{ cursor: "pointer" }}
                           >
                             {row.totalBilled}
@@ -209,7 +209,7 @@ const ClientTable: FC = () => {
                           <TableCell
                             align="left"
                             data-test="client-invoicesCount"
-                            onClick={() => navigate(`/clients/${row.id}`)}
+                            onClick={() => navigate(`/clients/${row.id}`, {replace: true})}
                             sx={{ cursor: "pointer" }}
                           >
                             {row.invoicesCount}
@@ -245,7 +245,7 @@ const ClientTable: FC = () => {
                             >
                               {" "}
                               <MenuItem
-                                onClick={() => navigate("create-invoice")}
+                                onClick={() => navigate("create-invoice", {replace: true})}
                                 data-test="client-actions"
                               >
                                 <ListItemIcon>
@@ -255,7 +255,7 @@ const ClientTable: FC = () => {
                               </MenuItem>
                               <Divider />
                               <MenuItem
-                                onClick={() => navigate(`clients/${row.id}`)}
+                                onClick={() => navigate(`clients/${row.id}`, {replace: true})}
                                 data-test="client-actions"
                               >
                                 <ListItemIcon>

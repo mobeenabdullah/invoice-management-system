@@ -94,7 +94,7 @@ const SignIn: FC = () => {
       try {
         const decodedToken: any = jwt_decode(cookies.authToken);
         const dateNow = new Date();
-        if (decodedToken.exp < dateNow.getTime()) {
+        if (decodedToken.exp * 1000 > dateNow.getTime()) {
           setIsloggedIn(true);
         } else {
           setIsloggedIn(false);
