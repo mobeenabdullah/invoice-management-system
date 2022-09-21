@@ -68,6 +68,7 @@ const InvoiceTable: FC = () => {
   const [offset, setOffset] = useState<any>(0);
   const [searchParams, setSearchParams] = useSearchParams();
   const [invoices, setInvoices] = useState([]);
+  const [limit, setLimit] = useState<any>(10);
   const [errorMessage, setErrorMessage] = useState("No invoice found...");
   const [totalInvoices, setTotalInvoices] = useState(0);
 
@@ -124,6 +125,8 @@ const InvoiceTable: FC = () => {
       sort: sortOrder,
       clientId: clientId,
       offset: offset,
+      limit: limit,
+      projectCode: searchParams.get('projectCode') ? searchParams.get('projectCode') : null,
     }
     SetIsLoading(true);
     try {
@@ -151,6 +154,10 @@ const InvoiceTable: FC = () => {
       setPage(searchParams.get('page'));
       setSortOrder(searchParams.get('sort'));
       SetClientId(searchParams.get('clientid'));
+      
+      if(searchParams.get('limit')) {
+        setLimit(searchParams.get('limit'));
+      }
 
       if(searchParams.get('page')) {
         let currentPage : any = searchParams.get('page');
@@ -312,7 +319,7 @@ const InvoiceTable: FC = () => {
         
         <Stack spacing={2} direction="row" justifyContent="center" alignItems="center" mt={6}>
           <Pagination
-            count={Math.ceil(totalInvoices/10)}
+            count={Math.ceil(totalInvoices/limit)}
             color="primary"
             shape="rounded"
             onChange={handlePagination}
