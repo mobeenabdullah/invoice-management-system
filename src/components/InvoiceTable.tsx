@@ -16,44 +16,120 @@ import IconButton from "@mui/material/IconButton";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import MenuItem from "@mui/material/MenuItem";
-import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import { Grid } from "@mui/material";
 import { useEffect, useState } from "react";
-import { getInvoices } from "../features/invoices/invoiceThunks";
 import { useCookies } from "react-cookie";
-import { useNavigate } from "react-router";
-import Alert from "@mui/material/Alert";
+import { getInvoices } from "../features/invoices/invoiceThunks";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
+import Alert from "@mui/material/Alert";
+import Pagination from '@mui/material/Pagination';
+import PaginationItem from '@mui/material/PaginationItem';
+import Stack from '@mui/material/Stack';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+
+const Wrapper = styled.div`
+  padding: 30px 0;
+  .TableHeader {
+    display: flex;
+    justify-content: space-between;
+  }
+  .TableButtons {
+    display: flex;
+    gap: 10px;
+  }
+`;
+
+const LoadingWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.6);
+`;
 
 const InvoiceTable: FC = () => {
-
-  const [invoices, setInvoices] = useState([]);
   const [cookies] = useCookies(["authToken"]);
   const [isLoading, SetIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("No invoice found...");
   const navigate = useNavigate();
-
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  const [page, setPage] = useState<any>(1);
+  const [sortBy, setSortBy] = useState<any>('');
+  const [sortOrder, setSortOrder] = useState<any>('asc');
+  const [clientId, SetClientId] = useState<any>('');
+  const [offset, setOffset] = useState<any>(0);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [invoices, setInvoices] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("No invoice found...");
+  const [totalInvoices, setTotalInvoices] = useState(0);
 
   const formatDate = (timestamp: string) => {
     const date = new Date(timestamp);
     return date.getDate()+"-"+(date.getMonth()+1)+"-"+date.getFullYear();
   }
 
+  const handlePagination = (event: React.ChangeEvent<unknown>, currentPage: number) => {
+    event.preventDefault();
+    setPage(currentPage);
+    setOffset((currentPage * 10) - 10);
+  }
+
+  const companySort = () => {
+    setSortBy('companyName');
+    if(!sortOrder || sortOrder === 'desc') {
+      setSortOrder('asc')
+    } else {
+      setSortOrder('desc');
+    }
+  }
+  
+  const priceSort = () => {
+    setSortBy('price');
+    if(!sortOrder || sortOrder === 'desc') {
+      setSortOrder('asc')
+    } else {
+      setSortOrder('desc');
+    }
+  }
+  const dateSort = () => {
+    setSortBy('date');
+    if(!sortOrder || sortOrder === 'desc') {
+      setSortOrder('asc')
+    } else {
+      setSortOrder('desc');
+    }
+  }
+  const dueDateSort = () => {
+    setSortBy('dueDate');
+    if(!sortOrder || sortOrder === 'desc') {
+      setSortOrder('asc')
+    } else {
+      setSortOrder('desc');
+    }
+  }
+
+
   const fetchInvoices = async () => {
+    const filters = {
+      page: page,
+      sortBy: sortBy,
+      sort: sortOrder,
+      clientId: clientId,
+      offset: offset,
+    }
+    SetIsLoading(true);
     try {
-      const invoicesList = await getInvoices(cookies.authToken);
-      setInvoices(invoicesList.data.invoices.slice(0, 11));
+      const invoicesList = await getInvoices(cookies.authToken, filters);
+      setTotalInvoices(invoicesList.data.total)
+      setInvoices(invoicesList.data.invoices);
       SetIsLoading(false);
     } catch (error: any) {
       SetIsLoading(false);
@@ -69,10 +145,31 @@ const InvoiceTable: FC = () => {
     }
   };
 
+    useEffect(() => {
+      setOffset(searchParams.get('page'))
+      setSortBy(searchParams.get('sortby'));
+      setPage(searchParams.get('page'));
+      setSortOrder(searchParams.get('sort'));
+      SetClientId(searchParams.get('clientid'));
+
+      if(searchParams.get('page')) {
+        let currentPage : any = searchParams.get('page');
+        setOffset((currentPage * 10) - 10);
+      }
+    }, [])
+
   useEffect(() => {
     fetchInvoices();
-  }, []);
+  }, [page, sortBy, clientId , sortOrder]);
 
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   return (
     <>
@@ -85,7 +182,7 @@ const InvoiceTable: FC = () => {
           columnSpacing={{ xs: 1, sm: 2, md: 3, p: 2 }}
         >
           <Grid item xs={12} sm={12} md={6}>
-            <Typography variant="h6">Latest Invoices</Typography>
+            <Typography variant="h6">Latest Invoice</Typography>
           </Grid>
           <Grid
             item
@@ -101,15 +198,15 @@ const InvoiceTable: FC = () => {
             </Button>
           </Grid>
         </Grid>
+
         {isError && (
           <Alert severity="error">
-            <p date-test="clients-fetch-error">{errorMessage}</p>
+            <Typography variant="body1" component="p"  date-test="invoices-fetch-error">{errorMessage}</Typography>
           </Alert>
         )}
         {isLoading && (
           <Card
             sx={{
-              minWidth: 275,
               minHeight: "388px",
               display: "flex",
               alignItems: "center",
@@ -120,28 +217,32 @@ const InvoiceTable: FC = () => {
             <LoadingWrapper data-test="loading-overlay">
               <CircularProgress color="primary" size="60px" />
             </LoadingWrapper>
-            <p>Loading Invoices...</p>
+            <p>Loading invoices...</p>
           </Card>
         )}
         {!isLoading && (
-          <Card sx={{ minWidth: 275 }}>
+          <Card>
             <CardContent>
               <TableContainer>
-                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                <Table
+                  sx={{ minWidth: 650 }}
+                  aria-label="simple table"
+                  data-test="clients-table"
+                >
                   <TableHead>
-                    <TableRow>
+                  <TableRow>
                       <TableCell align="left">Invoice</TableCell>
                       <TableCell align="left">Client</TableCell>
-                      <TableCell align="left">Company</TableCell>
-                      <TableCell align="left">Value</TableCell>
-                      <TableCell align="left">Date</TableCell>
-                      <TableCell align="left">Due Date</TableCell>
+                      <TableCell align="left" data-test='company-name-header' onClick={companySort}>Company</TableCell>
+                      <TableCell align="left" data-test='total-header' onClick={priceSort}>Value</TableCell>
+                      <TableCell align="left" data-test='creation-date-header' onClick={dateSort}>Date</TableCell>
+                      <TableCell align="left" data-test='due-date-header' onClick={dueDateSort}>Due Date</TableCell>
                       <TableCell align="left"></TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {invoices.length === 0 && (
-                        <p data-test="empty-placeholder">No invoice found...</p>
+                        <Typography variant="body1" component="p" data-test="empty-placeholder">No invoice found...</Typography>
                       )}
                     {invoices.length > 0 && invoices.map((invoiceItem: any) => (
                       <TableRow
@@ -207,36 +308,27 @@ const InvoiceTable: FC = () => {
             </CardContent>
           </Card>
         )}
+
         
+        <Stack spacing={2} direction="row" justifyContent="center" alignItems="center" mt={6}>
+          <Pagination
+            count={Math.ceil(totalInvoices/10)}
+            color="primary"
+            shape="rounded"
+            onChange={handlePagination}
+            renderItem={(item) => (
+              <PaginationItem
+                data-test={`page-${item.page}`}
+                components={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}
+                {...item}
+              />
+            )}
+          />
+      </Stack>
+       
       </Wrapper>
     </>
   );
 };
-
-
-const Wrapper = styled.section`
-  padding: 30px 0;
-  .TableHeader {
-    display: flex;
-    justify-content: space-between;
-  }
-  .TableButtons {
-    display: flex;
-    gap: 10px;
-  }
-`;
-
-const LoadingWrapper = styled.div`
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  border-radius: 4px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: rgba(0, 0, 0, 0.6);
-`;
 
 export default InvoiceTable;

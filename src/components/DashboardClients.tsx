@@ -133,7 +133,7 @@ const DashboardClients: FC = () => {
 
         {isError && (
           <Alert severity="error">
-            <p date-test="clients-fetch-error">{errorMessage}</p>
+            <Typography variant="body1" component="p"  date-test="clients-fetch-error">{errorMessage}</Typography>
           </Alert>
         )}
         {isLoading && (
@@ -181,7 +181,7 @@ const DashboardClients: FC = () => {
                   </TableHead>
                   <TableBody>
                     {clientRows.length === 0 && (
-                      <p data-test="empty-placeholder">No client found...</p>
+                      <Typography variant="body1" component="p"  data-test="empty-placeholder">No client found...</Typography>
                     )}
                     {clientRows.length > 0 &&
                       clientRows.map((row: any) => (
