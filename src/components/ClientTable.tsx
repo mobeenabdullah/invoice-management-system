@@ -26,6 +26,11 @@ import { getClients } from "../features/clients/clientThunks";
 import { useNavigate } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
+import Pagination from '@mui/material/Pagination';
+import PaginationItem from '@mui/material/PaginationItem';
+import Stack from '@mui/material/Stack';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 const Wrapper = styled.div`
   padding: 30px 0;
@@ -122,7 +127,7 @@ const ClientTable: FC = () => {
 
         {isError && (
           <Alert severity="error">
-            <p date-test="clients-fetch-error">{errorMessage}</p>
+            <Typography variant="body1" component="p" date-test="clients-fetch-error">{errorMessage}</Typography>
           </Alert>
         )}
         {isLoading && (
@@ -162,7 +167,7 @@ const ClientTable: FC = () => {
                   </TableHead>
                   <TableBody>
                     {clientRows.length === 0 && (
-                      <p data-test="empty-placeholder">No client found...</p>
+                      <Typography variant="body1" component="p"  data-test="empty-placeholder">No client found...</Typography>
                     )}
                     {clientRows.length > 0 &&
                       clientRows.map((row: any) => (
@@ -273,6 +278,19 @@ const ClientTable: FC = () => {
             </CardContent>
           </Card>
         )}
+        <Stack spacing={2} direction="row" justifyContent="center" alignItems="center" mt={6}>
+          <Pagination
+          count={10}
+          color="primary"
+          shape="rounded"
+          renderItem={(item) => (
+            <PaginationItem
+              components={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}
+              {...item}
+            />
+          )}
+        />
+        </Stack>
       </Wrapper>
     </>
   );

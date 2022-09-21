@@ -86,7 +86,7 @@ const DashboardInvoices: FC = () => {
 
   const fetchInvoices = async () => {
     try {
-      const invoicesList = await getInvoices(cookies.authToken);
+      const invoicesList = await getInvoices(cookies.authToken, {});
       setInvoices(invoicesList.data.invoices.slice(0, 11));
       SetIsLoading(false);
     } catch (error: any) {
@@ -149,7 +149,7 @@ const DashboardInvoices: FC = () => {
         </Grid>
         {isError && (
           <Alert severity="error">
-            <p date-test="clients-fetch-error">{errorMessage}</p>
+            <Typography variant="body1" component="p"  date-test="clients-fetch-error">{errorMessage}</Typography>
           </Alert>
         )}
         {isLoading && (
@@ -187,7 +187,7 @@ const DashboardInvoices: FC = () => {
                 </TableHead>
                 <TableBody>
                   {invoices.length === 0 && (
-                      <p data-test="empty-placeholder">No invoice found...</p>
+                      <Typography variant="body1" component="p"  data-test="empty-placeholder">No invoice found...</Typography>
                     )}
                   {invoices.length > 0 && invoices.map((invoiceItem: any) => (
                     <TableRow
