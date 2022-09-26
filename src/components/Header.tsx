@@ -32,6 +32,8 @@ const Header: FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const navigate = useNavigate();
   const userCompanyDetail = useAppSelector((state: RootState) => state.user.companyDetails);
+  const userName = useAppSelector((state: RootState) => state.user.name);
+
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -85,7 +87,7 @@ const Header: FC = () => {
                 onClick={handleMenu}
                 className="profile_name"
               >
-                john doe
+                {userName}
               </Typography>
             </IconButton>
             <Menu

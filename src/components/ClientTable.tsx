@@ -22,8 +22,7 @@ import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import { Grid } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
-import { getClients } from "../features/clients/clientThunks";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
 import Pagination from '@mui/material/Pagination';
@@ -31,6 +30,8 @@ import PaginationItem from '@mui/material/PaginationItem';
 import Stack from '@mui/material/Stack';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { graphqlGetClients } from "../features/clients/clientThunks";
+
 
 const Wrapper = styled.div`
   padding: 30px 0;
@@ -62,37 +63,138 @@ const ClientTable: FC = () => {
   const [clientRows, setClientRows] = useState([]);
   const [isLoading, SetIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("No client found...");
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [totalClients, setTotalClients] = useState(0);
+  const [page, setPage] = useState<any>(1);
+  const [offset, setOffset] = useState<any>(0);
+  const [limit, setLimit] = useState<any>(10);
+  const [sortBy, setSortBy] = useState<any>('creation');
+  const [sortOrder, setSortOrder] = useState<any>('asc');
+
+  const handlePagination = (event: React.ChangeEvent<unknown>, currentPage: number) => {
+    event.preventDefault();
+    setPage(currentPage);
+    setOffset((currentPage * limit) - limit);
+  }
+
+  const companyNameSort = () => {
+    setSortBy('companyName');
+    if(!sortOrder || sortOrder === 'desc') {
+      setSortOrder('asc')
+    } else {
+      setSortOrder('desc');
+    }
+  }
+
+  const clientNameSort = () => {
+    setSortBy('clientName');
+    if(!sortOrder || sortOrder === 'desc') {
+      setSortOrder('asc')
+    } else {
+      setSortOrder('desc');
+    }
+  }
+
+  const invoicesCountSort = () => {
+    setSortBy('invoicesCount');
+    if(!sortOrder || sortOrder === 'desc') {
+      setSortOrder('asc')
+    } else {
+      setSortOrder('desc');
+    }
+  }
+
+  const totalBilledSort = () => {
+    setSortBy('totalBilled');
+    if(!sortOrder || sortOrder === 'desc') {
+      setSortOrder('asc')
+    } else {
+      setSortOrder('desc');
+    }
+  }
 
   const fetchClientsList = async () => {
+
+    let urlParams : any = {};
+    if(limit != 10) {
+      urlParams.limit = limit;
+    }
+    
+    if(sortBy !== 'creation') {
+      urlParams.sortBy = sortBy;
+      urlParams.sortOrder = sortOrder;
+    }
+    if(page > 1) {
+      urlParams.page = page
+    }
+
+    setSearchParams(urlParams);
+
+    SetIsLoading(true);
     try {
-      const clientsList = await getClients(cookies.authToken);
-      setClientRows(clientsList.data.clients.slice(0, 11));
+      const clientsList = await  graphqlGetClients(cookies.authToken, sortOrder, sortBy, limit, offset);
+      setClientRows(clientsList.clients.results);
+      setTotalClients(clientsList.clients.total)
       SetIsLoading(false);
+      setIsError(false);
+      setErrorMessage('');
     } catch (error: any) {
+      console.error(error)
       SetIsLoading(false);
       setIsError(true);
       if (error.code === "ERR_NETWORK") {
         setErrorMessage(error.message);
       }
-      if (error.status === 500) {
+      if (JSON.parse(JSON.stringify(error)).response.status === 500) {
         setErrorMessage("No internet connectivity");
       } else {
-        setErrorMessage(error.response.data);
+        if(JSON.parse(JSON.stringify(error)).response.errors){
+          setErrorMessage(JSON.parse(JSON.stringify(error)).response.errors[0].message);
+        } else {
+          setErrorMessage(JSON.parse(JSON.stringify(error)).response.error);
+        }
+        
       }
     }
   };
 
   useEffect(() => {
-    fetchClientsList();
+    
+    if(searchParams.get('limit')) {
+      setLimit(searchParams.get('limit'));
+    }
+
+    if(searchParams.get('sortOrder')) {
+      setSortOrder(searchParams.get('sortOrder'));
+    }
+
+    if(searchParams.get('sortBy')) {
+      setSortBy(searchParams.get('sortBy'));
+    }
+
+    if(searchParams.get('offset')) {
+      setOffset(searchParams.get('offset'));
+    }
+
+    if(searchParams.get('page')) {
+      setPage(searchParams.get('page'));
+      let currentPage : any = searchParams.get('page');
+      setOffset((currentPage * limit) - limit);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchClientsList(); 
+  }, [sortBy, sortOrder, page, limit]);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -143,7 +245,7 @@ const ClientTable: FC = () => {
             <LoadingWrapper data-test="loading-overlay">
               <CircularProgress color="primary" size="60px" />
             </LoadingWrapper>
-            <p>No client found...</p>
+            <p>Loading clients...</p>
           </Card>
         )}
         {!isLoading && (
@@ -157,11 +259,11 @@ const ClientTable: FC = () => {
                 >
                   <TableHead>
                     <TableRow>
-                      <TableCell>Name</TableCell>
-                      <TableCell align="left">Company name</TableCell>
+                      <TableCell data-test='client-name-header' onClick={clientNameSort}>Name</TableCell>
+                      <TableCell data-test='company-name-header' align="left" onClick={companyNameSort}>Company name</TableCell>
                       <TableCell align="left">Email</TableCell>
-                      <TableCell align="left">Total billed</TableCell>
-                      <TableCell align="left">Invoices</TableCell>
+                      <TableCell align="left" data-test='total-billed-header' onClick={totalBilledSort}>Total billed</TableCell>
+                      <TableCell align="left" data-test='invoices-count-header' onClick={invoicesCountSort}>Invoices</TableCell>
                       <TableCell align="left"></TableCell>
                     </TableRow>
                   </TableHead>
@@ -278,19 +380,24 @@ const ClientTable: FC = () => {
             </CardContent>
           </Card>
         )}
-        <Stack spacing={2} direction="row" justifyContent="center" alignItems="center" mt={6}>
-          <Pagination
-          count={10}
-          color="primary"
-          shape="rounded"
-          renderItem={(item) => (
-            <PaginationItem
-              components={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}
-              {...item}
+        {totalClients/limit > 1 && (
+          <Stack spacing={2} direction="row" justifyContent="center" alignItems="center" mt={6}>
+            <Pagination
+              count={Math.ceil(totalClients/limit)}
+              color="primary"
+              shape="rounded"
+              onChange={handlePagination}
+              renderItem={(item) => (
+                <PaginationItem
+                  data-test={`page-${item.page}`}
+                  components={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}
+                  {...item}
+                />
+              )}
             />
-          )}
-        />
-        </Stack>
+          </Stack>
+        )}
+        
       </Wrapper>
     </>
   );
