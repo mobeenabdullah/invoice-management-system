@@ -57,6 +57,27 @@ const Wrapper = styled.section`
     width: 100%;
     margin: 0 auto;
   }
+  @media screen and (max-width: 992px) {
+    padding: 2rem;
+    align-items: start;
+    .login_image {
+      height: 500px;
+    }  
+    .login_form .paper {
+      max-width: 80%;
+    }  
+  }
+  @media screen and (max-width: 767px) {
+    padding: 2rem;
+    align-items: start;
+    .login_image {
+      height: 300px;
+      width: 100%;
+    }
+    .login_form .paper {
+      max-width: 100%;
+    }
+  }
 `;
 
 const Register: FC = () => {
@@ -200,11 +221,12 @@ const Register: FC = () => {
       <Grid
         container
         rowSpacing={1}
-        alignItems="center"
+        alignItems="stretch"
         columnSpacing={{ xs: 1, sm: 2, md: 3, p: 2 }}
+        sx={{ flexDirection: {xs: 'column-reverse', sm: 'column-reverse', md: 'row', lg: 'row'}, gap: {xs: "30px", sm: "30px", md: '30px', lg: 'inherit'}}}            
       >
-        <Grid item xs={6} className="login_form">
-          <Stack className="paper">
+        <Grid item xs={6} className="login_form" sx={{maxWidth: {xs: "100vw", sm: "100vw"}, width: {xs: '100%', sm: "100%"}}}  display="flex" alignItems="center">
+          <Stack className="paper"  sx={{maxWidth: {xs: "100%", sm: "100%"}}}>
             <Stack spacing={2}>
               {isError && (
                 <Stack sx={{ width: "100%" }} my={2}>
@@ -322,7 +344,7 @@ const Register: FC = () => {
             </form>
           </Stack>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={6} sx={{maxWidth: {xs: "100vw", sm: "100vw"}, width: {xs: '100%', sm: "100%"}}}>
           <Stack className="login_image"></Stack>
         </Grid>
       </Grid>

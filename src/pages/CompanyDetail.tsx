@@ -59,6 +59,25 @@ const Wrapper = styled.section`
     width: 100%;
     margin: 0 auto;
   }
+  @media screen and (max-width: 992px) {
+    padding: 2rem;
+    align-items: start;
+    .login_image {
+      height: 500px;
+    }    
+    .login_form .paper {
+      max-width: 80%;
+    }
+  }
+  @media screen and (max-width: 767px) {
+    .login_image {
+      height: 300px;
+      width: 100%;
+    }
+    .login_form .paper {
+      max-width: 100%;
+    }
+  }
 `;
 
 const CompanyDetail: FC = () => {
@@ -196,12 +215,13 @@ const CompanyDetail: FC = () => {
           rowSpacing={1}
           alignItems="center"
           columnSpacing={{ xs: 1, sm: 2, md: 3, p: 2 }}
+          sx={{ flexDirection: {xs: 'column', sm: 'column', md: 'row', lg: 'row'}, gap: {xs: "30px", sm: "30px", md: 'inherit', lg: 'inherit'}}}            
         >
-          <Grid item xs={6}>
+          <Grid item xs={6} sx={{maxWidth: {xs: "100vw", sm: "100vw"}, width: {xs: '100%', sm: "100%"}}}>
             <Stack className="login_image"></Stack>
           </Grid>
-          <Grid item xs={6} className="login_form">
-            <Stack className="paper">
+          <Grid item xs={6} className="login_form" sx={{maxWidth: {xs: "100vw", sm: "100vw"}, width: {xs: '100%', sm: "100%"}}}  display="flex" alignItems="center">
+            <Stack className="paper" sx={{maxWidth: {xs: "100%", sm: "100%"}, paddingBottom: {xs: '2rem', sm: '2rem'}}}>
               {errorMessage && (
                 <Stack sx={{ width: "100%" }} my={2}>
                   <Alert severity="error">{errorMessage}</Alert>
