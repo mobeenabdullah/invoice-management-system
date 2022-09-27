@@ -23,48 +23,61 @@ import {
 } from "@mui/material";
 
 const Wrapper = styled.section`
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 2%;
-  .avatar {
-    background-color: #13a800;
-  }
-  .submit {
-    margin-top: 1rem;
-    padding: 1rem;
-  }
+height: 100vh;
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 0 2%;
+.avatar {
+  background-color: #13a800;
+}
+.submit {
+  margin-top: 1rem;
+  padding: 1rem;
+}
+.login_image {
+  height: 95vh;
+  border-radius: 16px;
+  overflow: hidden;
+  background-image: url("invoice-login.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.login_image li {
+  height: 100% !important;
+}
+.login_image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.login_form .paper {
+  max-width: 50%;
+  width: 100%;
+  margin: 0 auto;
+}
+@media screen and (max-width: 992px) {
+  padding: 2rem;
+  align-items: start;
   .login_image {
-    height: 95vh;
-    border-radius: 16px;
-    overflow: hidden;
-    background-image: url("invoice-login.jpg");
-    background-repeat: no-repeat;
-    background-size: cover;
-  }
-  .login_image li {
-    height: 100% !important;
-  }
-  .login_image img {
+    height: 500px;
+  }  
+  .login_form .paper {
+    max-width: 80%;
+  }  
+}
+@media screen and (max-width: 767px) {
+  padding: 2rem;
+  align-items: start;
+  .login_image {
+    height: 300px;
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
   }
   .login_form .paper {
-    max-width: 50%;
-    width: 100%;
-    margin: 0 auto;
+    max-width: 100%;
   }
-  @media screen and (max-width: 767px) {
-    padding: 2rem;
-    .login_image {
-      height: 300px;
-      width: 100%;
-    }
-
-  }
+}
 `;
 
 const SignIn: FC = () => {
@@ -182,14 +195,15 @@ const SignIn: FC = () => {
       <Grid
         container
         rowSpacing={1}
-        alignItems="center"
-        columnSpacing={{ xs: 1, sm: 2, md: 3, p: 2 }}        
+        alignItems="stretch"
+        columnSpacing={{ xs: 1, sm: 2, md: 3, p: 2 }}   
+        sx={{ flexDirection: {xs: 'column-reverse', sm: 'column-reverse', md: 'row', lg: 'row'}, gap: {xs: "30px", sm: "30px", md: '30px', lg: 'inherit'}}}            
       >
-        <Grid item xs={6} sx={{maxWidth: {sm: "100vw"}, width: {sm: '100%'}}}>
+        <Grid item xs={6} sx={{maxWidth: {xs: "100vw", sm: "100vw"}, width: {xs: '100%', sm: "100%"}}}>
           <Stack className="login_image"> </Stack>
         </Grid>
-        <Grid item xs={6} className="login_form" sx={{maxWidth: {sm: "100vw"}, width: {sm: '100%'}}}>
-          <Stack className="paper" sx={{width: {sm: '100%'}}}>
+        <Grid item xs={6} className="login_form" sx={{maxWidth: {xs: "100vw", sm: "100vw"}, width: {xs: '100%', sm: "100%"}}} display="flex" alignItems="center">
+          <Stack className="paper" sx={{maxWidth: {xs: "100%", sm: "100%"}}}>
             {signupMessage && (
               <Stack sx={{ width: "100%" }} mb={2}>
                 <Alert severity="success">{signupMessage}</Alert>

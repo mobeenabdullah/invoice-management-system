@@ -214,6 +214,7 @@ const ClientTable: FC = () => {
           alignItems="center"
           m={2}
           columnSpacing={{ xs: 1, sm: 2, md: 3, p: 2 }}
+          sx={{flexWrap: {xs: 'nowrap', sm: 'nowrap', md: 'nowrap'}}}
         >
           <Grid item xs={12} sm={12} md={6}>
             <Typography variant="h6">Latest Clients</Typography>
