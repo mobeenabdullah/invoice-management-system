@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Protected from "./components/protectedRoutes";
+import { useEffect } from 'react'
 import {
   Home,
   CompanyDetail,
@@ -12,6 +13,10 @@ import {
 } from "./pages";
 
 function App() {
+  useEffect(() => {
+    document.title = "Invoice Management System"
+  }, [])
+  
   return (
     <BrowserRouter>
       <Routes>

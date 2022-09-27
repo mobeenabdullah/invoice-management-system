@@ -26,6 +26,7 @@ import { getClients } from "../features/clients/clientThunks";
 import { useNavigate } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
+import { Link } from "react-router-dom";
 
 const Wrapper = styled.div`
   padding: 30px 0;
@@ -50,6 +51,12 @@ const LoadingWrapper = styled.div`
   justify-content: center;
   align-items: center;
   background: rgba(0, 0, 0, 0.6);
+`;
+const ButtonStyle = styled.div`
+  a {
+    text-decoration: none;
+    pointer-event: none;    
+  }
 `;
 
 const DashboardClients: FC = () => {
@@ -114,20 +121,32 @@ const DashboardClients: FC = () => {
             justifyContent="end"
             gap="10px"
           >
-            <Button
-              variant="contained"
-              href="/create-client"
-              data-test="add-client"
-            >
-              Create Client
-            </Button>
-            <Button
-              variant="contained"
-              href="/clients"
-              data-test="view-all-clients"
-            >
-              ALl Clients
-            </Button>
+            <ButtonStyle>
+              <Link
+                  to="/create-client"
+                  data-test="add-client"
+                >
+                <Button
+                  variant="contained"              
+                  data-test="add-client"
+                >              
+                  Create Client
+                </Button>
+              </Link>
+            </ButtonStyle>
+            <ButtonStyle>
+              <Link
+                  to="/clients"
+                  data-test="add-client"
+                >
+              <Button
+                variant="contained"              
+                data-test="view-all-clients"
+              >
+                ALl Clients
+              </Button>
+              </Link>
+            </ButtonStyle>
           </Grid>
         </Grid>
 
@@ -150,14 +169,13 @@ const DashboardClients: FC = () => {
             <LoadingWrapper data-test="loading-overlay">
               <CircularProgress color="primary" size="60px" />
             </LoadingWrapper>
-            <p>Loading client...</p>
+            <p>Loading clients...</p>
           </Card>
         )}
         {!isLoading && (
           <Card
             sx={{
-              minWidth: 275,
-              minHeight: "388px",
+              minWidth: 275,              
               display: "flex",
               alignItems: "start",
               justifyContent: "center",
@@ -181,7 +199,11 @@ const DashboardClients: FC = () => {
                   </TableHead>
                   <TableBody>
                     {clientRows.length === 0 && (
-                      <Typography variant="body1" component="p"  data-test="empty-placeholder">No client found...</Typography>
+                      <TableRow>
+                        <TableCell component="th" scope="row"  sx={{ border: "none" }}>                          
+                          <Typography variant="body1" component="p"  data-test="empty-placeholder">No client found...</Typography>
+                        </TableCell>                        
+                      </TableRow>                      
                     )}
                     {clientRows.length > 0 &&
                       clientRows.map((row: any) => (

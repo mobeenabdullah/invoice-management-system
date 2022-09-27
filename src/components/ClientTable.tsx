@@ -31,7 +31,7 @@ import Stack from '@mui/material/Stack';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { graphqlGetClients } from "../features/clients/clientThunks";
-
+import { Link } from "react-router-dom";
 
 const Wrapper = styled.div`
   padding: 30px 0;
@@ -56,6 +56,12 @@ const LoadingWrapper = styled.div`
   justify-content: center;
   align-items: center;
   background: rgba(0, 0, 0, 0.6);
+`;
+const ButtonStyle = styled.div`
+  a {
+    text-decoration: none;
+    pointer-event: none;    
+  }
 `;
 
 const ClientTable: FC = () => {
@@ -220,10 +226,21 @@ const ClientTable: FC = () => {
             display="flex"
             justifyContent="end"
             gap="10px"
-          >
-            <Button variant="contained" href="/create-client">
-              Create Client
-            </Button>
+          >            
+            <ButtonStyle>
+              <Link
+                  to="/create-client"
+                  data-test="add-client"
+                >
+                <Button
+                  variant="contained"              
+                  data-test="add-client"
+                >              
+                  Create Client
+                </Button>
+              </Link>
+            </ButtonStyle>
+
           </Grid>
         </Grid>
 
@@ -234,8 +251,7 @@ const ClientTable: FC = () => {
         )}
         {isLoading && (
           <Card
-            sx={{
-              minHeight: "388px",
+            sx={{              
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -269,7 +285,11 @@ const ClientTable: FC = () => {
                   </TableHead>
                   <TableBody>
                     {clientRows.length === 0 && (
-                      <Typography variant="body1" component="p"  data-test="empty-placeholder">No client found...</Typography>
+                      <TableRow>
+                        <TableCell component="th" scope="row"  sx={{ border: "none" }}>                          
+                          <Typography variant="body1" component="p"  data-test="empty-placeholder">No client found...</Typography>
+                        </TableCell>                        
+                      </TableRow>                      
                     )}
                     {clientRows.length > 0 &&
                       clientRows.map((row: any) => (
