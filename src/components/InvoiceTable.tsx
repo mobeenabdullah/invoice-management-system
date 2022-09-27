@@ -30,6 +30,7 @@ import PaginationItem from '@mui/material/PaginationItem';
 import Stack from '@mui/material/Stack';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { Link } from "react-router-dom";
 
 const Wrapper = styled.div`
   padding: 30px 0;
@@ -54,6 +55,12 @@ const LoadingWrapper = styled.div`
   justify-content: center;
   align-items: center;
   background: rgba(0, 0, 0, 0.6);
+`;
+const ButtonStyle = styled.div`
+  a {
+    text-decoration: none;
+    pointer-event: none;    
+  }
 `;
 
 const InvoiceTable: FC = () => {
@@ -200,9 +207,20 @@ const InvoiceTable: FC = () => {
             justifyContent="end"
             gap="10px"
           >
-            <Button variant="contained" href="/create-invoice">
-              Create Invoice
-            </Button>
+          
+            <ButtonStyle>
+              <Link
+                  to="/create-invoice"
+                  data-test="add-client"
+                >
+                <Button
+                  variant="contained"              
+                  data-test="add-client"
+                >              
+                  Create Invoice
+                </Button>
+              </Link>
+            </ButtonStyle>
           </Grid>
         </Grid>
 
@@ -213,8 +231,7 @@ const InvoiceTable: FC = () => {
         )}
         {isLoading && (
           <Card
-            sx={{
-              minHeight: "388px",
+            sx={{              
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -249,7 +266,11 @@ const InvoiceTable: FC = () => {
                   </TableHead>
                   <TableBody>
                     {invoices.length === 0 && (
-                        <Typography variant="body1" component="p" data-test="empty-placeholder">No invoice found...</Typography>
+                      <TableRow>
+                        <TableCell component="th" scope="row"   sx={{ border: "none" }}>                          
+                              <Typography variant="body1" component="p" data-test="empty-placeholder">No invoice found...</Typography>                            
+                        </TableCell>                        
+                      </TableRow>
                       )}
                     {invoices.length > 0 && invoices.map((invoiceItem: any) => (
                       <TableRow

@@ -25,6 +25,7 @@ import { useNavigate } from 'react-router-dom'
 import Alert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
 import { getInvoices } from "../features/invoices/invoiceThunks";
+import { Link } from "react-router-dom";
 
 const Wrapper = styled.section`
   padding: 30px 0;
@@ -49,6 +50,13 @@ const LoadingWrapper = styled.div`
   justify-content: center;
   align-items: center;
   background: rgba(0, 0, 0, 0.6);
+`;
+
+const ButtonStyle = styled.div`
+  a {
+    text-decoration: none;
+    pointer-event: none;    
+  }
 `;
 
 function createData(
@@ -138,13 +146,33 @@ const DashboardInvoices: FC = () => {
             display="flex"
             justifyContent="end"
             gap="10px"
-          >
-            <Button variant="contained" href="/create-invoice">
-              Create Invoice
-            </Button>
-            <Button variant="contained" href="/invoices">
-              ALl Invoices
-            </Button>
+          >           
+            <ButtonStyle>
+              <Link
+                  to="/create-invoice"
+                  data-test="add-client"
+                >
+                <Button
+                  variant="contained"              
+                  data-test="add-client"
+                >              
+                  Create Invoice
+                </Button>
+              </Link>
+            </ButtonStyle>
+            <ButtonStyle>
+              <Link
+                  to="/invoices"
+                  data-test="add-client"
+                >
+              <Button
+                variant="contained"              
+                data-test="view-all-clients"
+              >
+                ALl Invoices
+              </Button>
+              </Link>
+            </ButtonStyle>
           </Grid>
         </Grid>
         {isError && (
@@ -155,8 +183,7 @@ const DashboardInvoices: FC = () => {
         {isLoading && (
           <Card
             sx={{
-              minWidth: 275,
-              minHeight: "388px",
+              minWidth: 275,              
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -187,7 +214,12 @@ const DashboardInvoices: FC = () => {
                 </TableHead>
                 <TableBody>
                   {invoices.length === 0 && (
-                      <Typography variant="body1" component="p"  data-test="empty-placeholder">No invoice found...</Typography>
+                    <TableRow>
+                      <TableCell component="th" scope="row"  sx={{ border: "none" }}>                          
+                        <Typography variant="body1" component="p" data-test="empty-placeholder">No invoice found...</Typography>                            
+                      </TableCell>                        
+                    </TableRow>
+                      
                     )}
                   {invoices.length > 0 && invoices.map((invoiceItem: any) => (
                     <TableRow

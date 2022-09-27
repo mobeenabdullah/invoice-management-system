@@ -17,11 +17,11 @@ import {
 import { useNavigate } from "react-router-dom";
 
 const Wrapper = styled.section`
-  height: calc(100vh - 64px);
+  height: calc(100% - 8%);
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
-  padding: 0 2%;
+  padding: 2%;
   .size {
     display: flex;
     flex-direction: column;
@@ -44,7 +44,7 @@ const Wrapper = styled.section`
     padding: 1rem;
   }
   .login_image {
-    height: 85vh;
+    height: 100%;
     border-radius: 16px;
     overflow: hidden;
     background-image: url("../company.jpg");
@@ -64,6 +64,11 @@ const Wrapper = styled.section`
     max-width: 50%;
     width: 100%;
     margin: 0 auto;
+  }
+  @media screen and (max-width: 992px) {
+    .login_form .paper {
+      max-width: 90%;      
+    }
   }
 `;
 
@@ -266,25 +271,22 @@ const CreateClient: FC = () => {
         <Grid
           container
           rowSpacing={1}
-          alignItems="center"
+          alignItems="stretch"
           columnSpacing={{ xs: 1, sm: 2, md: 3, p: 2 }}
         >
           <Grid item xs={6}>
-            ` <Stack className="login_image"></Stack>`{" "}
+            <Stack className="login_image"></Stack>{" "}
           </Grid>
           <Grid item xs={6} className="login_form">
-            {isError && (
-              <Stack sx={{ width: "100%" }} my={2}>
-                <Alert severity="error">{errorMessage}</Alert>
-              </Stack>
-            )}
-            {!isError && successMessage && (
-              <Stack sx={{ width: "100%" }} my={2}>
-                <Alert severity="success">{successMessage}</Alert>
-              </Stack>
-            )}
-
             <Stack className="paper">
+              <Stack spacing={2} sx={{width: '100%',}}>
+                {isError && (
+                  <Alert severity="error">{errorMessage}</Alert>
+                )}
+                {!isError && successMessage && (                
+                  <Alert severity="success">{successMessage}</Alert>                
+                )}
+              </Stack>
               <Stack spacing={2}>
                 <Stack spacing={1} sx={{ textAlign: "center" }}>
                   <Typography component="h1" variant="h4">{`${
