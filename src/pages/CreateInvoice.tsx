@@ -2,8 +2,15 @@ import { Button, TextField, Grid, Typography, Stack } from "@mui/material";
 import { FC } from "react";
 import styled from "styled-components";
 import Header from "../components/Header";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Loading from "../components/Loading";
+import Autocomplete from '@mui/material/Autocomplete';
+import { getClientsName } from "../features/clients/clientThunks";
+import { useCookies } from "react-cookie";
+import { useNavigate } from "react-router-dom";
+import { useAppSelector } from "../store/hooks";
+import { RootState } from "../store/store";
+import { createInvoice } from "../features/invoices/invoiceThunks";
 
 const Wrapper = styled.section`
   height: calc(100vh - 64px);
@@ -58,6 +65,180 @@ const Wrapper = styled.section`
 
 const CreateInvoice: FC = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [cookies] = useCookies(["authToken"]);
+  const [clients, setClient] = useState([]);
+  const [isError, setIsError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
+
+  const [company, setCompany] = useState<any>();
+  const [date, setDate] = useState('');
+  const [dueDate, setDueDate] = useState('');
+  const [invoiceNumber, setInvoiceNumber] = useState('');
+  const [projectCode, setProjectCode] = useState('');
+  const [dueDateError, setDueDateError] = useState('');
+  const [dateError, setDateError] = useState('');
+  const [invoiceNumberError, setInvoiceNumberError] = useState('');
+  const [projectCodeError, setProjectCodeError] = useState('');
+  const [companyError, setCompanyError] = useState('');
+
+  const userId = useAppSelector((state: RootState) => state.user.user_id);
+
+
+  function dateFormat(format: string) {
+    //parse the input date
+    const date = new Date();
+
+    //extract the parts of the date
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();    
+
+    //replace the month
+    format = format.replace("MM", month.toString().padStart(2,"0"));        
+
+    //replace the year
+    if (format.indexOf("yyyy") > -1) {
+        format = format.replace("yyyy", year.toString());
+    } else if (format.indexOf("yy") > -1) {
+        format = format.replace("yy", year.toString().substr(2,2));
+    }
+
+    //replace the day
+    format = format.replace("dd", day.toString().padStart(2,"0"));
+
+    return format;
+  }
+
+
+  const handleClientChange = (event: React.SyntheticEvent, value: any) => {
+    event.preventDefault();
+    setCompany(value);
+  }
+
+  const fetchClientsName = async () => {
+    try {
+      const clientsList = await getClientsName(cookies.authToken);
+
+      if(clientsList.data.clients.length > 0) {
+          let clientsArray = clientsList.data.clients.map((item : any) => {
+            return {
+              id: item.id,
+              label: item.companyName
+            };
+          });
+          setClient(clientsArray);
+      }
+      setIsLoading(false);
+    } catch (error: any) {
+      setIsLoading(false);
+      setIsError(true);
+      if (error.code === "ERR_NETWORK") {
+        setErrorMessage(error.message);
+      }
+      if (error.status === 500) {
+        setErrorMessage("No internet connectivity");
+      } else {
+        setErrorMessage(error.response.data);
+      }
+    }
+  };
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+
+    console.log('here')
+
+    if(!date) {
+      setDateError('Invoice date is required!');
+      return;
+    } else {
+      setDateError('');
+    }
+
+    if(!dueDate) {
+      console.log(dueDate);
+      setDueDateError('Invoice due date is required!');
+      return;
+    } else {
+      setDueDateError('');
+    }
+
+    if(new Date(dueDate).getTime() < new Date(date).getTime()) {
+      setDueDateError('Invoice due date should be greater than invoice date!');
+      return;
+    } else {
+      setDueDateError('');
+    }
+
+    if(invoiceNumber.length < 3) {
+      setInvoiceNumberError('Invoice number must be 3 character long!');
+      return;
+    } else {
+      setInvoiceNumberError('');
+    }
+
+    if(projectCode && projectCode.length < 3) {
+      setProjectCodeError('Project code must be 3 character long!');
+      return;
+    } else {
+      setProjectCodeError('');
+    }
+
+    if(company.id) {
+      setCompanyError('');
+    } else {
+      setCompanyError('Please Select invoice client!');
+      return;
+    }
+
+    const invoiceData = {
+      "user_id": userId,
+      "invoice_number": invoiceNumber,
+      "client_id": company.id,
+      "date": new Date(date).getTime(),
+      "dueDate": new Date(dueDate).getTime(),
+      "value": 1234
+    }
+
+
+    console.log(invoiceData, 'ncasdjkcbjk');
+
+    try {
+      let response: any;
+      setIsLoading(true);
+      
+        response = await createInvoice(invoiceData, cookies.authToken);
+      
+      if (response && response.status === 200) {
+        setIsLoading(false);
+        
+        setErrorMessage("");
+        setIsError(false);
+      }
+    } catch (error: any) {
+      setIsLoading(false);
+      // setSuccessMessage("");
+      setIsError(true);
+      if (error.code === "ERR_NETWORK") {
+        console.log(error.message);
+        setErrorMessage(error.message);
+      } else if (error.status === 500) {
+        setErrorMessage("No internet connectivity");
+      } else {
+        setErrorMessage(error.response.data);
+      }
+    }
+
+
+
+  }
+
+  useEffect(() => {
+    fetchClientsName();
+    setDate(dateFormat('yyyy-MM-dd'));
+  }, []);
+
   return (
     <>
       <Header />
@@ -81,57 +262,76 @@ const CreateInvoice: FC = () => {
                 </Stack>
               </Stack>
 
-              <form className="form" noValidate>
-                <TextField
-                  variant="outlined"
-                  margin="normal"
-                  fullWidth
-                  id="client"
-                  label="Client"
-                  name="client"
-                  value=""
-                />
-                <Typography component="p" data-test="client-error"></Typography>
-                <TextField
-                  variant="outlined"
-                  margin="normal"
-                  fullWidth
-                  id="company"
-                  label="Company"
-                  name="company"
-                  value=""
-                />
-                <TextField
-                  variant="outlined"
-                  margin="normal"
-                  fullWidth
-                  id="company_value"
-                  label="Value"
-                  name="company_value"
-                  type="number"
-                  value=""
-                />
+              <form className="form" noValidate onSubmit={handleSubmit}>
                 <TextField
                   variant="outlined"
                   margin="normal"
                   fullWidth
                   id="date"
-                  label="Date"
+                  label="Invoice Date"
+                  data-test="invoice-date"
                   name="date"
-                  type="text"
-                  value=""
+                  type="date"
+                  value={date}
+                  error={dateError ? true : false}
+                  helperText={dateError ? dateError : ""}
+                  onChange={(e: any) => setDate(e.target.value)}
                 />
+                <Typography component="p" data-test="invoice-date-error"></Typography>
                 <TextField
                   variant="outlined"
                   margin="normal"
                   fullWidth
-                  id="due_date"
-                  label="Due Date"
-                  name="due_date"
-                  type="text"
-                  value=""
+                  id="due-date"
+                  label="Invoice Due Date"
+                  data-test="invoice-due-date"
+                  name="due-date"
+                  type="date"
+                  value={dueDate}
+                  error={dueDateError ? true : false}
+                  helperText={dueDateError ? dueDateError : ""}
+                  onChange={(e) => setDueDate(e.target.value)}
                 />
-
+                <Typography component="p" data-test="invoice-due-date-error"></Typography>
+                <TextField
+                  variant="outlined"
+                  margin="normal"
+                  fullWidth
+                  id="number"
+                  label="Invoice Number"
+                  name="number"
+                  data-test="invoice-number"
+                  value={invoiceNumber}
+                  error={invoiceNumberError ? true : false}
+                  helperText={invoiceNumberError ? invoiceNumberError : ""}
+                  onChange={(e) => setInvoiceNumber(e.target.value)}
+                />
+                <Typography component="p" data-test="invoice-number-error"></Typography>
+                <TextField
+                  variant="outlined"
+                  margin="normal"
+                  fullWidth
+                  id="project-code"
+                  label="Invoice Project Code"
+                  name="project-code"
+                  data-test="invoice-project-code"
+                  value={projectCode}
+                  error={projectCodeError ? true : false}
+                  helperText={projectCodeError ? projectCodeError : ""}
+                  onChange={(e) => setProjectCode(e.target.value)}
+                />
+                <Typography component="p" data-test="invoice-project-code-error"></Typography>
+                
+                <Autocomplete
+                  disablePortal
+                  id="combo-box-demo"
+                  options={clients}
+                  data-test='invoice-company-id'
+                  onChange={handleClientChange}
+                  value={company}
+                  renderInput={(params) => <TextField {...params} label="Invoice Client" />}
+                />
+                <Typography component="p" data-test="invoice-project-code-error">{companyError}</Typography>
                 <Button
                   type="submit"
                   fullWidth
