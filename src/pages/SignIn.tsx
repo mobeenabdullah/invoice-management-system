@@ -57,6 +57,14 @@ const Wrapper = styled.section`
     width: 100%;
     margin: 0 auto;
   }
+  @media screen and (max-width: 767px) {
+    padding: 2rem;
+    .login_image {
+      height: 300px;
+      width: 100%;
+    }
+
+  }
 `;
 
 const SignIn: FC = () => {
@@ -175,13 +183,13 @@ const SignIn: FC = () => {
         container
         rowSpacing={1}
         alignItems="center"
-        columnSpacing={{ xs: 1, sm: 2, md: 3, p: 2 }}
+        columnSpacing={{ xs: 1, sm: 2, md: 3, p: 2 }}        
       >
-        <Grid item xs={6}>
+        <Grid item xs={6} sx={{maxWidth: {sm: "100vw"}, width: {sm: '100%'}}}>
           <Stack className="login_image"> </Stack>
         </Grid>
-        <Grid item xs={6} className="login_form">
-          <Stack className="paper">
+        <Grid item xs={6} className="login_form" sx={{maxWidth: {sm: "100vw"}, width: {sm: '100%'}}}>
+          <Stack className="paper" sx={{width: {sm: '100%'}}}>
             {signupMessage && (
               <Stack sx={{ width: "100%" }} mb={2}>
                 <Alert severity="success">{signupMessage}</Alert>

@@ -65,6 +65,11 @@ const Wrapper = styled.section`
     width: 100%;
     margin: 0 auto;
   }
+  @media screen and (max-width: 992px) {
+    .login_form .paper {
+      max-width: 90%;      
+    }
+  }
 `;
 
 const CreateClient: FC = () => {
