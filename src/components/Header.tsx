@@ -15,6 +15,11 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../store/hooks";
 import { RootState } from "../store/store";
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
+
 
 const MenuWrapper = styled.section`
   .icon_box {
@@ -34,6 +39,8 @@ const Header: FC = () => {
   const userCompanyDetail = useAppSelector((state: RootState) => state.user.companyDetails);
   const userName = useAppSelector((state: RootState) => state.user.name);
 
+  const navItems = ['Home', 'About', 'Contact'];
+
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -50,6 +57,8 @@ const Header: FC = () => {
         navigate('/company-detail')
      }
   }, [])
+
+  
 
   return (
     <AppBar position="static">
@@ -68,6 +77,15 @@ const Header: FC = () => {
           >
             Invoice Management System
           </Typography>
+          <List sx={{display: "flex"}}>
+            {navItems.map((item) => (
+            <ListItem key={item} disablePadding>
+            <ListItemButton sx={{ textAlign: 'center' }}>
+              <ListItemText primary={item} />
+            </ListItemButton>
+            </ListItem>
+            ))}
+          </List>
           
           <MenuWrapper className="dropdown_menu">
             <IconButton
@@ -89,7 +107,7 @@ const Header: FC = () => {
               >
                 {userName}
               </Typography>
-            </IconButton>
+            </IconButton>            
             <Menu
               id="menu-appbar"
               anchorEl={anchorEl}
