@@ -67,7 +67,7 @@ const ButtonStyle = styled.div`
 
 const SortStyling = styled.div`    
   .sort_icon {
-    opacity: 0.6;
+    opacity: 0.2;
     transition: all .2s;    
   }
   &:hover {   
