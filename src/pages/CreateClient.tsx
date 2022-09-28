@@ -34,7 +34,7 @@ padding: 2%;
   height: 95vh;
   border-radius: 16px;
   overflow: hidden;
-  background-image: url("../company.jpg");
+  background-image: url("../clients.jpg");
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -280,7 +280,7 @@ const CreateClient: FC = () => {
           sx={{ flexDirection: {xs: 'column', sm: 'column', md: 'row', lg: 'row'}, gap: {xs: "30px", sm: "30px", md: '30px', lg: 'inherit'}}}            
         >
           <Grid item xs={6} sx={{maxWidth: {xs: "100vw", sm: "100vw"}, width: {xs: '100%', sm: "100%"}, display: {xs: 'none', sm: 'none', md: 'none', lg: 'block'}}}>
-            <Stack className="login_image"></Stack>{" "}
+            <Stack className="login_image"></Stack>
           </Grid>
           <Grid item xs={6} className="login_form" sx={{maxWidth: {xs: "100vw", sm: "100vw"}, width: {xs: '100%', sm: "100%"}}} display="flex" alignItems="center">
             <Stack className="paper" sx={{maxWidth: {xs: "100%", sm: "100%"}, paddingBottom: "2rem"}}>

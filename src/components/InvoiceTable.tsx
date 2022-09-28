@@ -357,7 +357,7 @@ const InvoiceTable: FC = () => {
                         <TableCell align="left" data-test='invoice-value' onClick={() => navigate(`/invoice/${invoiceItem.invoice.id}/view`, {replace: true})}>{invoiceItem.invoice.value}</TableCell>
                         <TableCell align="left" data-test='invoice-date' onClick={() => navigate(`/invoice/${invoiceItem.invoice.id}/view`, {replace: true})}>{formatDate(invoiceItem.invoice.date)}</TableCell>
                         <TableCell align="left" data-test='invoice-due-date' onClick={() => navigate(`/invoice/${invoiceItem.invoice.id}/view`, {replace: true})}>{formatDate(invoiceItem.invoice.dueDate)}</TableCell>                      
-                        <TableCell align="left">
+                        <TableCell align="right">
                           <IconButton
                             id="basic-button"
                             aria-controls={open ? "basic-menu" : undefined}
