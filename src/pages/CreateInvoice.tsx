@@ -7,11 +7,13 @@ import Loading from "../components/Loading";
 import Autocomplete from '@mui/material/Autocomplete';
 import { getClientsName } from "../features/clients/clientThunks";
 import { useCookies } from "react-cookie";
-import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../store/hooks";
 import { RootState } from "../store/store";
 import { createInvoice } from "../features/invoices/invoiceThunks";
 import { useCompanyDetailGuard } from '../hooks/customHooks'
+import Alert from "@mui/material/Alert";
+import { useParams } from "react-router-dom";
+import { getSingleInvoice, updateInvoice } from "../features/invoices/invoiceThunks";
 
 const Wrapper = styled.section`
   height: calc(100vh - 8%);
@@ -44,7 +46,7 @@ const Wrapper = styled.section`
     height: 85vh;
     border-radius: 16px;
     overflow: hidden;
-    background-image: url("invoice.jpg");
+    background-image: url("../../invoice.jpg");
     background-repeat: no-repeat;
     background-size: cover;
   }
@@ -90,9 +92,7 @@ const CreateInvoice: FC = () => {
   const [clients, setClient] = useState([]);
   const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const navigate = useNavigate();
-
-  const [company, setCompany] = useState<any>();
+  const [company, setCompany] = useState<any>({id: '', label: ''}); 
   const [date, setDate] = useState('');
   const [dueDate, setDueDate] = useState('');
   const [invoiceNumber, setInvoiceNumber] = useState('');
@@ -102,13 +102,15 @@ const CreateInvoice: FC = () => {
   const [invoiceNumberError, setInvoiceNumberError] = useState('');
   const [projectCodeError, setProjectCodeError] = useState('');
   const [companyError, setCompanyError] = useState('');
+  const [successMessage, setSuccessMessage] = useState("");
 
   const userId = useAppSelector((state: RootState) => state.user.user_id);
+  const { invoiceId } = useParams();
 
+  function dateFormat(format: string, timeStamp: any) {
 
-  function dateFormat(format: string) {
     //parse the input date
-    const date = new Date();
+      const date = new Date(timeStamp);
 
     //extract the parts of the date
     const day = date.getDate();
@@ -131,6 +133,15 @@ const CreateInvoice: FC = () => {
     return format;
   }
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsError(false);
+      setErrorMessage("");
+      setSuccessMessage("");
+      clearTimeout(timer);
+    }, 3000);
+  }, [isError, successMessage]);
+
 
   const handleClientChange = (event: React.SyntheticEvent, value: any) => {
     event.preventDefault();
@@ -150,9 +161,7 @@ const CreateInvoice: FC = () => {
           });
           setClient(clientsArray);
       }
-      setIsLoading(false);
     } catch (error: any) {
-      setIsLoading(false);
       setIsError(true);
       if (error.code === "ERR_NETWORK") {
         setErrorMessage(error.message);
@@ -168,8 +177,6 @@ const CreateInvoice: FC = () => {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
-    console.log('here')
-
     if(!date) {
       setDateError('Invoice date is required!');
       return;
@@ -178,7 +185,6 @@ const CreateInvoice: FC = () => {
     }
 
     if(!dueDate) {
-      console.log(dueDate);
       setDueDateError('Invoice due date is required!');
       return;
     } else {
@@ -206,7 +212,7 @@ const CreateInvoice: FC = () => {
       setProjectCodeError('');
     }
 
-    if(company.id) {
+    if(company.hasOwnProperty('id') && company.id) {
       setCompanyError('');
     } else {
       setCompanyError('Please Select invoice client!');
@@ -214,32 +220,44 @@ const CreateInvoice: FC = () => {
     }
 
     const invoiceData = {
+      "id": '',
       "user_id": userId,
       "invoice_number": invoiceNumber,
       "client_id": company.id,
       "date": new Date(date).getTime(),
       "dueDate": new Date(dueDate).getTime(),
-      "value": 1234
+      "value": 1234,
+      "projectCode": projectCode
     }
 
-
-    console.log(invoiceData, 'ncasdjkcbjk');
-
     try {
-      let response: any;
       setIsLoading(true);
-      
+      let response : any;
+      if(invoiceId) {
+        invoiceData.id = invoiceId;
+        response = await updateInvoice(invoiceData, cookies.authToken);
+      } else {
         response = await createInvoice(invoiceData, cookies.authToken);
-      
-      if (response && response.status === 200) {
+      }
+      if (response && response.status === 200 && !invoiceId) {
         setIsLoading(false);
-        
+        setSuccessMessage("Invoice created successfully!");
+        setErrorMessage("");
+        setIsError(false);
+        setDate(dateFormat('yyyy-MM-dd', ''));
+        setDueDate('');
+        setInvoiceNumber('');
+        setProjectCode('');
+        setCompany({id: '', label: ''});
+      } else if(response && response.status === 200 && invoiceId) {
+        setIsLoading(false);
+        setSuccessMessage("Invoice updated successfully!");
         setErrorMessage("");
         setIsError(false);
       }
     } catch (error: any) {
       setIsLoading(false);
-      // setSuccessMessage("");
+      setSuccessMessage("");
       setIsError(true);
       if (error.code === "ERR_NETWORK") {
         console.log(error.message);
@@ -251,14 +269,34 @@ const CreateInvoice: FC = () => {
       }
     }
 
+  }
 
-
+  const getSingleInvoiceData = async (id:string, token: string) => {
+    try {
+      const invoice = await getSingleInvoice(token, id);
+      const invoiceData = invoice.data.invoice;
+      setInvoiceNumber(invoiceData.invoice_number);
+      setProjectCode(invoiceData.projectCode);
+      setDate(dateFormat('yyyy-MM-dd', invoiceData.date));
+      setDueDate(dateFormat('yyyy-MM-dd', invoiceData.dueDate));
+      const getClient = clients.filter((client:any) => client.id === invoiceData.client_id);
+      setCompany(getClient[0]);
+    } catch(error: any) {
+        setIsError(true);
+        setErrorMessage('Invalid invoice id!');
+    }
   }
 
   useEffect(() => {
+    setDate(dateFormat('yyyy-MM-dd', ''));
     fetchClientsName();
-    setDate(dateFormat('yyyy-MM-dd'));
   }, []);
+
+  useEffect(() => {
+    if(invoiceId && cookies.authToken) {
+      getSingleInvoiceData(invoiceId, cookies.authToken);
+    }
+  }, [clients]);
 
   return (
     <>
@@ -276,19 +314,31 @@ const CreateInvoice: FC = () => {
           </Grid>
           <Grid item xs={6} className="login_form"  sx={{maxWidth: {xs: "100vw", sm: "100vw"}, width: {xs: '100%', sm: "100%"}}}  display="flex" alignItems="center">
             <Stack className="paper" sx={{maxWidth: {xs: "100%", sm: "100%"}, paddingBottom: {xs: '2rem', sm: '2rem'}}}>
+              <Stack spacing={2} sx={{width: '100%',}}>
+                  {isError && (
+                    <Alert severity="error">{errorMessage}</Alert>
+                  )}
+                  {!isError && successMessage && (      
+                    <Alert severity="success">{successMessage}</Alert>                
+                  )}
+              </Stack>
+              
               <Stack spacing={2}>
                 <Stack spacing={1} sx={{ textAlign: "center" }}>
                   <Typography component="h1" variant="h4">
-                    Create Invoice
+                    {invoiceId ? 'Edit Invoice' : 'Create Invoice'}
                   </Typography>
                 </Stack>
               </Stack>
 
               <form className="form" noValidate onSubmit={handleSubmit}>
+                <Typography component="p" data-test="form-success"></Typography>
+                <Typography component="p" data-test="form-error"></Typography>
                 <TextField
                   variant="outlined"
                   margin="normal"
                   fullWidth
+                  InputLabelProps={{ shrink: true }}
                   id="date"
                   label="Invoice Date"
                   data-test="invoice-date"
@@ -304,6 +354,7 @@ const CreateInvoice: FC = () => {
                   variant="outlined"
                   margin="normal"
                   fullWidth
+                  InputLabelProps={{ shrink: true }}
                   id="due-date"
                   label="Invoice Due Date"
                   data-test="invoice-due-date"
@@ -351,9 +402,13 @@ const CreateInvoice: FC = () => {
                   data-test='invoice-company-id'
                   onChange={handleClientChange}
                   value={company}
+                  isOptionEqualToValue={(option: any, value: any) =>
+                    option === value
+                  }
                   renderInput={(params) => <TextField {...params} label="Invoice Client" />}
                 />
-                <Typography component="p" data-test="invoice-project-code-error">{companyError}</Typography>
+                <Typography component="p" data-test="invoice-company-id-error">{companyError}</Typography>
+
                 <Button
                   type="submit"
                   fullWidth

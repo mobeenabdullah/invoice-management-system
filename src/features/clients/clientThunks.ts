@@ -1,13 +1,14 @@
 import axios from "axios";
 import { GraphQLClient, gql } from 'graphql-request'
 
-export const getClients = async (token: string) => {
+export const getClients = async (token: string, filters: any) => {
   const url = "http://localhost:3139/clients";
   const response = await axios.get(url, {
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
+    params: filters
   });
   return response;
 };

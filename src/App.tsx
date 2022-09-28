@@ -47,6 +47,10 @@ function App() {
           path="/create-invoice"
           element={<Protected component={<CreateInvoice />} />}
         />
+        <Route
+          path="/invoice/:invoiceId/edit"
+          element={<Protected component={<CreateInvoice />} />}
+        />
       </Routes>
     </BrowserRouter>
   );
