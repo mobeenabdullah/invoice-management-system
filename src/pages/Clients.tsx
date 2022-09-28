@@ -3,8 +3,10 @@ import Header from "../components/Header";
 import { Container } from "@mui/system";
 import ClientTable from "../components/ClientTable";
 import { Grid } from "@mui/material";
+import { useCompanyDetailGuard } from "../hooks/customHooks";
 
 const Clients: FC = () => {
+  useCompanyDetailGuard();
   return (
     <>
       <Header />

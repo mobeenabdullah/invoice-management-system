@@ -6,9 +6,12 @@ import { updateUser } from "../features/user/userThunks";
 import { useCookies } from "react-cookie";
 import { useState, useEffect } from "react";
 import Loading from "../components/Loading";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { userDetail } from "../features/user/userThunks";
 import Alert from "@mui/material/Alert";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { addUser } from "../features/user/userSlice";
+import { RootState } from "../store/store";
 
 const Wrapper = styled.section`
   height: calc(100vh - 8%);
@@ -81,6 +84,10 @@ const Wrapper = styled.section`
 `;
 
 const CompanyDetail: FC = () => {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const userState = useAppSelector((state: RootState) => state.user);
+
   const [cookies] = useCookies(["authToken"]);
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
@@ -88,6 +95,7 @@ const CompanyDetail: FC = () => {
   const [vat, setVat] = useState("");
   const [registrationNumber, setRegistrationNumber] = useState("");
   const [swift, setSwift] = useState("");
+  
 
   const [invalidName, setInvalidName] = useState(false);
   const [invalidAddress, setInvalidAddress] = useState(false);
@@ -97,6 +105,12 @@ const CompanyDetail: FC = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [companyAdded, setCompanyAdded] = useState(false);
+
+  useEffect(() => {
+    if(companyAdded) {
+      navigate('/');
+    }
+  }, [companyAdded])
 
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -188,6 +202,17 @@ const CompanyDetail: FC = () => {
         setIsLoading(false);
         setCompanyAdded(true);
       }
+      
+      dispatch(
+        addUser({
+          ...userState,
+          user_id: userUpdated.response.data.user.id,
+          name: userUpdated.response.data.user.name,
+          email: userUpdated.response.data.user.email,
+          companyDetails: userUpdated.response.data.user.companyDetails
+        })
+      );
+
     } catch (error: any) {
       console.log(error);
 
@@ -202,9 +227,9 @@ const CompanyDetail: FC = () => {
     }
   };
 
-  if (companyAdded) {
-    return <Navigate to="/" />;
-  }
+  // if (companyAdded) {
+  //   return <Navigate to="/" />;
+  // }
 
   return (
     <>
