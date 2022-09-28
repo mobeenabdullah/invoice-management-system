@@ -18,7 +18,6 @@ import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../store/hooks";
 import { RootState } from "../store/store";
 import { Link } from "react-router-dom";
-import { useCompanyDetailGuard } from '../hooks/customHooks';
 
 const MenuWrapper = styled.section`
   display: flex;
@@ -57,8 +56,6 @@ const settings: any = [{label: 'Logout', link: "/logout"}];
 const Header = () => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-
-  useCompanyDetailGuard();
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
