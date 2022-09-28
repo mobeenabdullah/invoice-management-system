@@ -12,3 +12,12 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+@media print { 
+  .invoce_buttons {
+    display: none !important;
+  }
+  .table_wrapper {
+    box-shadow: none !important;
+  }
+ }

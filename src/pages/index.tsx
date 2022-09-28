@@ -6,6 +6,7 @@ import CreateClient from "./CreateClient";
 import CreateInvoice from "./CreateInvoice";
 import SignIn from "./SignIn";
 import Register from "./Register";
+import ViewInvoice from "./ViewInvoice";
 
 export {
   Home,
@@ -16,4 +17,5 @@ export {
   CreateInvoice,
   SignIn,
   Register,
+  ViewInvoice,
 };
