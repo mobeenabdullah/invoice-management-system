@@ -31,6 +31,8 @@ import Stack from '@mui/material/Stack';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { Link } from "react-router-dom";
+import ImportExportIcon from '@mui/icons-material/ImportExport';
+import Box from "@mui/material/Box";
 
 const Wrapper = styled.div`
   padding: 30px 0;
@@ -61,6 +63,19 @@ const ButtonStyle = styled.div`
     text-decoration: none;
     pointer-event: none;    
   }
+`;
+
+const SortStyling = styled.div`    
+  .sort_icon {
+    opacity: 0.2;
+    transition: all .2s;    
+  }
+  &:hover {   
+    .sort_icon { 
+      opacity: 1;
+    }
+  }
+  
 `;
 
 const InvoiceTable: FC = () => {
@@ -273,12 +288,52 @@ const InvoiceTable: FC = () => {
                 >
                   <TableHead>
                   <TableRow>
-                      <TableCell align="left">Invoice</TableCell>
-                      <TableCell align="left">Client</TableCell>
-                      <TableCell align="left" data-test='company-name-header' onClick={companySort}>Company</TableCell>
-                      <TableCell align="left" data-test='total-header' onClick={priceSort}>Value</TableCell>
-                      <TableCell align="left" data-test='creation-date-header' onClick={dateSort}>Date</TableCell>
-                      <TableCell align="left" data-test='due-date-header' onClick={dueDateSort}>Due Date</TableCell>
+                      <TableCell align="left">
+                        <SortStyling>
+                          <Box display="flex" alignItems="center" className="table_heading" justifyContent="space-between" sx={{ cursor: 'pointer'}}>
+                            <Typography component="span" sx={{ fontWeight: '700'}}>Invoice</Typography>                            
+                          </Box>
+                        </SortStyling>
+                      </TableCell>
+                      <TableCell align="left">
+                        <SortStyling>
+                          <Box display="flex" alignItems="center" className="table_heading" justifyContent="space-between" sx={{ cursor: 'pointer'}}>
+                            <Typography component="span" sx={{ fontWeight: '700'}}>Client</Typography>                            
+                          </Box>
+                        </SortStyling>
+                      </TableCell>
+                      <TableCell align="left" data-test='company-name-header' onClick={companySort}>
+                        <SortStyling>
+                          <Box display="flex" alignItems="center" className="table_heading" justifyContent="space-between" sx={{ cursor: 'pointer'}}>
+                            <Typography component="span" sx={{ fontWeight: '700'}}>Company</Typography>
+                            <ImportExportIcon className="sort_icon" />
+                          </Box>
+                        </SortStyling>                         
+                      </TableCell>
+                      <TableCell align="left" data-test='total-header' onClick={priceSort}>
+                        <SortStyling>
+                          <Box display="flex" alignItems="center" className="table_heading" justifyContent="space-between" sx={{ cursor: 'pointer'}}>
+                            <Typography component="span" sx={{ fontWeight: '700'}}>Value</Typography>
+                            <ImportExportIcon className="sort_icon" />
+                          </Box>
+                        </SortStyling>                         
+                      </TableCell>
+                      <TableCell align="left" data-test='creation-date-header' onClick={dateSort}>
+                        <SortStyling>
+                          <Box display="flex" alignItems="center" className="table_heading" justifyContent="space-between" sx={{ cursor: 'pointer'}}>
+                            <Typography component="span" sx={{ fontWeight: '700'}}>Date</Typography>
+                            <ImportExportIcon className="sort_icon" />
+                          </Box>
+                        </SortStyling>                         
+                      </TableCell>
+                      <TableCell align="left" data-test='due-date-header' onClick={dueDateSort}>
+                        <SortStyling>
+                          <Box display="flex" alignItems="center" className="table_heading" justifyContent="space-between" sx={{ cursor: 'pointer'}}>
+                            <Typography component="span" sx={{ fontWeight: '700'}}>Due Date</Typography>
+                            <ImportExportIcon className="sort_icon" />
+                          </Box>
+                        </SortStyling>                        
+                      </TableCell>
                       <TableCell align="left"></TableCell>
                     </TableRow>
                   </TableHead>

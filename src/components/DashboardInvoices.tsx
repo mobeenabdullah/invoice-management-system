@@ -205,11 +205,11 @@ const DashboardInvoices: FC = () => {
               <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>
                   <TableRow>
-                    <TableCell align="left">Invoice number</TableCell>
-                    <TableCell align="left">Client</TableCell>
-                    <TableCell align="left">Date</TableCell>
-                    <TableCell align="left">Project</TableCell>
-                    <TableCell align="left">Amount</TableCell>
+                    <TableCell align="left"><Typography component="span" sx={{ fontWeight: '700'}}>Invoice number</Typography></TableCell>
+                    <TableCell align="left"><Typography component="span" sx={{ fontWeight: '700'}}>Client</Typography></TableCell>
+                    <TableCell align="left"><Typography component="span" sx={{ fontWeight: '700'}}>Date</Typography></TableCell>
+                    <TableCell align="left"><Typography component="span" sx={{ fontWeight: '700'}}>Project</Typography></TableCell>
+                    <TableCell align="left"><Typography component="span" sx={{ fontWeight: '700'}}>Amount</Typography></TableCell>
                     <TableCell align="left"></TableCell>
                   </TableRow>
                 </TableHead>
