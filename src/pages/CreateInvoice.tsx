@@ -1,4 +1,4 @@
-import { Button, TextField, Grid, Typography, Stack } from "@mui/material";
+import { Button, TextField, Grid, Typography, Stack, Box } from "@mui/material";
 import { FC } from "react";
 import styled from "styled-components";
 import Header from "../components/Header";
@@ -14,6 +14,8 @@ import { useCompanyDetailGuard } from '../hooks/customHooks'
 import Alert from "@mui/material/Alert";
 import { useParams } from "react-router-dom";
 import { getSingleInvoice, updateInvoice } from "../features/invoices/invoiceThunks";
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import IconButton from "@mui/material/IconButton";
 
 const Wrapper = styled.section`
   height: calc(100vh - 8%);
@@ -103,14 +105,40 @@ const CreateInvoice: FC = () => {
   const [projectCodeError, setProjectCodeError] = useState('');
   const [companyError, setCompanyError] = useState('');
   const [successMessage, setSuccessMessage] = useState("");
-
+  let [invoiceItemFields, setInvoiceItemFields] = useState([
+    { description: '', value: 0 }
+  ]);
   const userId = useAppSelector((state: RootState) => state.user.user_id);
   const { invoiceId } = useParams();
 
+  const handleInvoiceItemChange = (index: number, event: any) => {
+    event.preventDefault();
+    let invoiceItem: any = invoiceItemFields;
+    invoiceItem[index][event.target.name] = event.target.value;
+    setInvoiceItemFields([...invoiceItem]);
+  }
+
+  const addInvoiceItem = () => {
+    let newfield = { description: '', value: 0 }
+    setInvoiceItemFields([...invoiceItemFields, newfield])
+  }
+
+  const removeInvoiceItem = (index: number) => {
+    let invoiceItem: any = invoiceItemFields;
+    invoiceItem.splice(index,1);
+    setInvoiceItemFields([...invoiceItem]);
+  }
+
   function dateFormat(format: string, timeStamp: any) {
 
+    let date;
     //parse the input date
-      const date = new Date(timeStamp);
+    if(timeStamp) {
+      date = new Date(timeStamp);
+    } else {
+      date = new Date();
+    }
+      
 
     //extract the parts of the date
     const day = date.getDate();
@@ -219,6 +247,12 @@ const CreateInvoice: FC = () => {
       return;
     }
 
+    let sumValue = 0;
+
+    invoiceItemFields.map((item) => {
+      sumValue = parseInt(sumValue.toString()) + parseInt(item.value.toString());
+    })
+
     const invoiceData = {
       "id": '',
       "user_id": userId,
@@ -226,10 +260,13 @@ const CreateInvoice: FC = () => {
       "client_id": company.id,
       "date": new Date(date).getTime(),
       "dueDate": new Date(dueDate).getTime(),
-      "value": 1234,
-      "projectCode": projectCode
+      "value": sumValue,
+      "projectCode": projectCode,
+      "meta" : {
+        "items": invoiceItemFields
+      }
     }
-
+    
     try {
       setIsLoading(true);
       let response : any;
@@ -249,6 +286,9 @@ const CreateInvoice: FC = () => {
         setInvoiceNumber('');
         setProjectCode('');
         setCompany({id: '', label: ''});
+        setInvoiceItemFields([
+          { description: '', value: 0 }
+        ]);
       } else if(response && response.status === 200 && invoiceId) {
         setIsLoading(false);
         setSuccessMessage("Invoice updated successfully!");
@@ -281,6 +321,7 @@ const CreateInvoice: FC = () => {
       setDueDate(dateFormat('yyyy-MM-dd', invoiceData.dueDate));
       const getClient = clients.filter((client:any) => client.id === invoiceData.client_id);
       setCompany(getClient[0]);
+      setInvoiceItemFields([...invoiceData.meta.items])
     } catch(error: any) {
         setIsError(true);
         setErrorMessage('Invalid invoice id!');
@@ -409,6 +450,48 @@ const CreateInvoice: FC = () => {
                 />
                 <Typography component="p" data-test="invoice-company-id-error">{companyError}</Typography>
 
+                {invoiceItemFields.map((fields, index) => {
+                  return (
+                    <Box sx={{display: 'flex', alignItems: 'center', gap: '10px'}} key={index}>
+                      <Box>
+                        <TextField
+                          variant="outlined"
+                          margin="normal"
+                          fullWidth
+                          id={`item-description-${index}`}
+                          label="Item Description"
+                          name="description"
+                          value={fields.description}
+                          data-test="invoice-item-description"
+                          onChange={event => handleInvoiceItemChange(index, event)}
+                        />
+                      </Box>
+                      <Box>                  
+                        <TextField
+                          variant="outlined"
+                          margin="normal"
+                          fullWidth
+                          id={`item-value-${index}`}
+                          label="Item value"
+                          name="value"
+                          type="number"
+                          value={fields.value}
+                          data-test="invoice-item-value"
+                          onChange={event => handleInvoiceItemChange(index, event)}
+                        />
+                      </Box>
+                      <Box>
+                        <IconButton
+                            onClick={() => removeInvoiceItem(index)}
+                          >
+                            <DeleteOutlineOutlinedIcon/>
+                          </IconButton>
+                          
+                      </Box>
+                    </Box>
+                  )
+                })}
+                <Button variant="contained" onClick={addInvoiceItem}>Add Invoice Item</Button>
                 <Button
                   type="submit"
                   fullWidth
