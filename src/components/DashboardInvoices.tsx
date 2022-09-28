@@ -94,8 +94,8 @@ const DashboardInvoices: FC = () => {
 
   const fetchInvoices = async () => {
     try {
-      const invoicesList = await getInvoices(cookies.authToken, {});
-      setInvoices(invoicesList.data.invoices.slice(0, 11));
+      const invoicesList = await getInvoices(cookies.authToken, {limit: 10});
+      setInvoices(invoicesList.data.invoices);
       SetIsLoading(false);
     } catch (error: any) {
       SetIsLoading(false);
