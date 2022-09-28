@@ -32,6 +32,8 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { graphqlGetClients } from "../features/clients/clientThunks";
 import { Link } from "react-router-dom";
+import ImportExportIcon from '@mui/icons-material/ImportExport';
+import Box from "@mui/material/Box";
 
 const Wrapper = styled.div`
   padding: 30px 0;
@@ -63,6 +65,19 @@ const ButtonStyle = styled.div`
     pointer-event: none;    
   }
 `;
+const SortStyling = styled.div`    
+  .sort_icon {
+    opacity: 0.6;
+    transition: all .2s;    
+  }
+  &:hover {   
+    .sort_icon { 
+      opacity: 1;
+    }
+  }
+  
+`;
+
 
 const ClientTable: FC = () => {
   const [cookies] = useCookies(["authToken"]);
@@ -275,11 +290,45 @@ const ClientTable: FC = () => {
                 >
                   <TableHead>
                     <TableRow>
-                      <TableCell data-test='client-name-header' onClick={clientNameSort}>Name</TableCell>
-                      <TableCell data-test='company-name-header' align="left" onClick={companyNameSort}>Company name</TableCell>
-                      <TableCell align="left">Email</TableCell>
-                      <TableCell align="left" data-test='total-billed-header' onClick={totalBilledSort}>Total billed</TableCell>
-                      <TableCell align="left" data-test='invoices-count-header' onClick={invoicesCountSort}>Invoices</TableCell>
+                      <TableCell data-test='client-name-header' onClick={clientNameSort}>
+                        <SortStyling>
+                          <Box display="flex" alignItems="center" className="table_heading" justifyContent="space-between" sx={{ cursor: 'pointer'}}>
+                            <Typography component="span" sx={{ fontWeight: '700'}}>Name</Typography>
+                            <ImportExportIcon className="sort_icon" />
+                          </Box>
+                        </SortStyling>
+                      </TableCell>
+                      <TableCell data-test='company-name-header' align="left" onClick={companyNameSort}>
+                        <SortStyling>
+                          <Box display="flex" alignItems="center" className="table_heading" justifyContent="space-between" sx={{ cursor: 'pointer'}}>
+                            <Typography component="span" sx={{ fontWeight: '700'}}>Company name</Typography>
+                            <ImportExportIcon className="sort_icon" />
+                          </Box>
+                        </SortStyling>                        
+                        </TableCell>
+                      <TableCell align="left">
+                        <SortStyling>
+                          <Box display="flex" alignItems="center" className="table_heading" justifyContent="space-between" sx={{ cursor: 'pointer'}}>
+                            <Typography component="span" sx={{ fontWeight: '700'}}>Email</Typography>                            
+                          </Box>
+                        </SortStyling>
+                      </TableCell>
+                      <TableCell align="left" data-test='total-billed-header' onClick={totalBilledSort}>
+                        <SortStyling>
+                          <Box display="flex" alignItems="center" className="table_heading" justifyContent="space-between" sx={{ cursor: 'pointer'}}>
+                            <Typography component="span" sx={{ fontWeight: '700'}}>Total billed</Typography>
+                            <ImportExportIcon className="sort_icon" />
+                          </Box>
+                        </SortStyling>                        
+                      </TableCell>
+                      <TableCell align="left" data-test='invoices-count-header' onClick={invoicesCountSort}>
+                        <SortStyling>
+                          <Box display="flex" alignItems="center" className="table_heading" justifyContent="space-between" sx={{ cursor: 'pointer'}}>
+                            <Typography component="span" sx={{ fontWeight: '700'}}>Invoices</Typography>
+                            <ImportExportIcon className="sort_icon" />
+                          </Box>
+                        </SortStyling>                        
+                      </TableCell>
                       <TableCell align="left"></TableCell>
                     </TableRow>
                   </TableHead>

@@ -190,10 +190,11 @@ const DashboardClients: FC = () => {
                 >
                   <TableHead>
                     <TableRow>
-                      <TableCell>Name</TableCell>
-                      <TableCell align="left">Company name</TableCell>
-                      <TableCell align="left">Total billed</TableCell>
-                      <TableCell align="left">Invoices</TableCell>
+                      <TableCell><Typography component="span" sx={{ fontWeight: '700'}}>Name</Typography></TableCell>
+                      <TableCell align="left">
+                        <Typography component="span" sx={{ fontWeight: '700'}}>Company name</Typography></TableCell>
+                      <TableCell align="left"><Typography component="span" sx={{ fontWeight: '700'}}>Total billed</Typography></TableCell>
+                      <TableCell align="left"><Typography component="span" sx={{ fontWeight: '700'}}>Invoices</Typography></TableCell>
                       <TableCell align="left"></TableCell>
                     </TableRow>
                   </TableHead>
