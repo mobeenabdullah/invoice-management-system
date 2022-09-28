@@ -199,7 +199,7 @@ const SignIn: FC = () => {
         columnSpacing={{ xs: 1, sm: 2, md: 3, p: 2 }}   
         sx={{ flexDirection: {xs: 'column-reverse', sm: 'column-reverse', md: 'row', lg: 'row'}, gap: {xs: "30px", sm: "30px", md: '30px', lg: 'inherit'}}}            
       >
-        <Grid item xs={6} sx={{maxWidth: {xs: "100vw", sm: "100vw"}, width: {xs: '100%', sm: "100%"}}}>
+        <Grid item xs={6} sx={{maxWidth: {xs: "100vw", sm: "100vw"}, width: {xs: '100%', sm: "100%"}, display: {xs: 'none', sm: 'none', md: 'none', lg: 'block'}}}>
           <Stack className="login_image"> </Stack>
         </Grid>
         <Grid item xs={6} className="login_form" sx={{maxWidth: {xs: "100vw", sm: "100vw"}, width: {xs: '100%', sm: "100%"}}} display="flex" alignItems="center">
