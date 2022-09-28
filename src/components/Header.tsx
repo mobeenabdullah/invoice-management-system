@@ -21,6 +21,7 @@ import { Link } from "react-router-dom";
 import { useCompanyDetailGuard } from '../hooks/customHooks';
 
 const MenuWrapper = styled.section`
+  display: flex;
   .icon_box {
     display: flex;
     align-items: center;
@@ -29,7 +30,6 @@ const MenuWrapper = styled.section`
   .icon_box:hover {
     background-color: transparent !important;
   }
-  
 `;
 const MenuItemLink = styled.span`
   .menu_item {
@@ -117,51 +117,8 @@ const Header = () => {
             </Typography>
           </HeaderLogoText>         
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-          
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
-              color="inherit"
-            >
-              <MenuIcon />              
-            </IconButton>          
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              sx={{
-                display: { xs: 'block', md: 'none' },
-              }}
-              data-test='nav-bar'
-            >
-              {pages.map((page: any, index: number) => (
-                <>
-                  <MenuItem key={index} onClick={handleCloseNavMenu}>
-                    <Typography textAlign="center">
-                      <MenuItemLink>
-                        <Link to={page.link} className="menu_item">{page.label}</Link>  
-                      </MenuItemLink>
-                    </Typography>
-                  </MenuItem>
-                </>
-              ))}
-            </Menu>
-          </Box>
-          <HeaderLogoText>
+          <Box sx={{flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+            <HeaderLogoText>
             <Typography
               variant="h5"
               noWrap
@@ -179,10 +136,42 @@ const Header = () => {
             >
               <Link to="/">Invoice Management System</Link>
             </Typography>
-          </HeaderLogoText>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page: any, index: number) => (
-              <>
+          </HeaderLogoText>                    
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorElNav}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+              open={Boolean(anchorElNav)}
+              onClose={handleCloseNavMenu}
+              sx={{
+                display: { xs: 'block', md: 'none' },                
+              }}
+              data-test='nav-bar'
+            >
+              {pages.map((page: any, index: number) => (
+                
+                  <MenuItem key={index} onClick={handleCloseNavMenu}>
+                    <Typography textAlign="center">
+                      <MenuItemLink>
+                        <Link to={page.link} className="menu_item">{page.label}</Link>  
+                      </MenuItemLink>
+                    </Typography>
+                  </MenuItem>
+                
+              ))}
+            </Menu>
+          </Box>
+      
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'center' }}>
+            {pages.map((page: any, index: number) => (              
                 <Button
                   key={index}
                   onClick={handleCloseNavMenu}
@@ -193,7 +182,7 @@ const Header = () => {
                   <Link to={page.link} className="menu_item menu_item-desktop">{page.label}</Link>  
                 </MenuItemLink>
                 </Button>
-              </>
+              
             ))}
           </Box>
 
@@ -205,17 +194,31 @@ const Header = () => {
                 color="inherit"
                 className="icon_box"
                 >
-                  <AccountCircle />
+                  <AccountCircle /> 
+                  <Box sx={{ display: { xs: 'none', sm: 'none', md: 'none', lg: 'block'}}}>
                   <Typography
-                    variant="body1"
-                    component="p"
-                    sx={{ flexGrow: 1, }}
-                    onClick={handleMenu}
-                    className="profile_name"
-                  >
-                    {userName}
-                  </Typography>
+                  variant="body1"
+                  component="p"
+                  sx={{ flexGrow: 1, }}
+                  onClick={handleMenu}
+                  className="profile_name"
+                >
+                  {userName}
+                </Typography>
+                  </Box>                  
                 </IconButton>
+                <Box sx={{ display: { xs: 'block', sm: 'block', md: 'block', lg: 'none'}}}>
+                  <IconButton
+                  size="large"
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  onClick={handleOpenNavMenu}
+                  color="inherit"
+                  >
+                  <MenuIcon />              
+                  </IconButton> 
+                </Box>
               </MenuWrapper>
             </Tooltip>
             <Menu
@@ -235,12 +238,10 @@ const Header = () => {
               onClose={handleCloseUserMenu}
               data-test='nav-bar'
             >
-              {settings.map((setting: any , index: number) => (
-                <>
+              {settings.map((setting: any , index: number) => (                
                   <MenuItem key={index} onClick={handleCloseUserMenu}>
                     <Typography textAlign="center" onClick={logOut} data-test='logout-button'>{setting.label}</Typography>
-                  </MenuItem>
-                </>
+                  </MenuItem>                
               ))}
             </Menu>
           </Box>

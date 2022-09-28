@@ -344,7 +344,7 @@ const Register: FC = () => {
             </form>
           </Stack>
         </Grid>
-        <Grid item xs={6} sx={{maxWidth: {xs: "100vw", sm: "100vw"}, width: {xs: '100%', sm: "100%"}}}>
+        <Grid item xs={6} sx={{maxWidth: {xs: "100vw", sm: "100vw"}, width: {xs: '100%', sm: "100%"}, display: {xs: 'none', sm: 'none', md: 'none', lg: 'block'}}}>
           <Stack className="login_image"></Stack>
         </Grid>
       </Grid>
