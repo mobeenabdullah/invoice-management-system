@@ -152,8 +152,7 @@ const ClientTable: FC = () => {
       setIsError(true);
       if (error.code === "ERR_NETWORK") {
         setErrorMessage(error.message);
-      }
-      if (JSON.parse(JSON.stringify(error)).response.status === 500) {
+      } else if (JSON.parse(JSON.stringify(error)).response.status === 500) {
         setErrorMessage("No internet connectivity");
       } else {
         if(JSON.parse(JSON.stringify(error)).response.errors){
@@ -288,7 +287,7 @@ const ClientTable: FC = () => {
                     {clientRows.length === 0 && (
                       <TableRow>
                         <TableCell component="th" scope="row"  sx={{ border: "none" }}>                          
-                          <Typography variant="body1" component="p"  data-test="empty-placeholder">No client found...</Typography>
+                          <Typography variant="body1" component="p"  data-test="empty-placeholder">No result found...</Typography>
                         </TableCell>                        
                       </TableRow>                      
                     )}
@@ -349,6 +348,7 @@ const ClientTable: FC = () => {
                               aria-haspopup="true"
                               aria-expanded={open ? "true" : undefined}
                               onClick={handleClick}
+                              data-test="client-actions"
                             >
                               <MoreVertIcon />
                             </IconButton>
@@ -374,7 +374,6 @@ const ClientTable: FC = () => {
                               {" "}
                               <MenuItem
                                 onClick={() => navigate("create-invoice", {replace: true})}
-                                data-test="client-actions"
                               >
                                 <ListItemIcon>
                                   <BorderColorOutlinedIcon fontSize="small" />
@@ -384,7 +383,6 @@ const ClientTable: FC = () => {
                               <Divider />
                               <MenuItem
                                 onClick={() => navigate(`clients/${row.id}`, {replace: true})}
-                                data-test="client-actions"
                               >
                                 <ListItemIcon>
                                   <RemoveRedEyeOutlinedIcon fontSize="small" />
