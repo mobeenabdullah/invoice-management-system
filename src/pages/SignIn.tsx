@@ -289,7 +289,7 @@ const SignIn: FC = () => {
                   <Typography component="p" variant="body2">
                     Don't have an account?
                   </Typography>
-                  <Link href="/register" variant="body2">
+                  <Link href="/sign-up" variant="body2">
                     {"Sign Up"}
                   </Link>
                 </Grid>

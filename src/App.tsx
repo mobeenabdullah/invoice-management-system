@@ -22,7 +22,7 @@ function App() {
       <Routes>
         <Route path="/"  element={<Protected component={<Home />} />} />
         <Route path="/login" element={<SignIn />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/sign-up" element={<Register />} />
         <Route
           path="/company-detail"
           element={<Protected component={<CompanyDetail /> } />}

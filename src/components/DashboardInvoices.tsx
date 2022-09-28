@@ -135,7 +135,7 @@ const DashboardInvoices: FC = () => {
           m={2}
           columnSpacing={{ xs: 1, sm: 2, md: 3, p: 2 }}
         >
-          <Grid item xs={12} sm={12} md={6}>
+          <Grid item xs={12} sm={12} md={6}  sx={{ textAlign: {xs: 'center', sm: 'center', md: 'left', lg: 'left'}}}>
             <Typography variant="h6">Latest Invoices</Typography>
           </Grid>
           <Grid
@@ -146,6 +146,7 @@ const DashboardInvoices: FC = () => {
             display="flex"
             justifyContent="end"
             gap="10px"
+            sx={{ justifyContent: {xs: 'center', sm: 'center', md: 'right', lg: 'right'}}}
           >           
             <ButtonStyle>
               <Link
@@ -183,7 +184,8 @@ const DashboardInvoices: FC = () => {
         {isLoading && (
           <Card
             sx={{
-              minWidth: 275,              
+              minWidth: 275,  
+              minHeight: "150px",            
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
