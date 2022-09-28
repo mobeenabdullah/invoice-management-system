@@ -390,7 +390,7 @@ const ClientTable: FC = () => {
                           >
                             {row.invoicesCount}
                           </TableCell>
-                          <TableCell align="left">
+                          <TableCell align="right">
                             <IconButton
                               id="basic-button"
                               aria-controls={open ? "basic-menu" : undefined}

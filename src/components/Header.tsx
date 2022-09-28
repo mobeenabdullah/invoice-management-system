@@ -167,7 +167,7 @@ const Header = () => {
             </Menu>
           </Box>
       
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'center' }}>
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'center', gap: '30px' }}>
             {pages.map((page: any, index: number) => (              
                 <Button
                   key={index}

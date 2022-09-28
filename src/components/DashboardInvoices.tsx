@@ -234,7 +234,7 @@ const DashboardInvoices: FC = () => {
                       <TableCell align="left" data-test='invoice-date' onClick={() => navigate(`/invoice/${invoiceItem.invoice.id}/view`, {replace: true})}>{formatDate(invoiceItem.invoice.date)}</TableCell>
                       <TableCell align="left" data-test='invoice-project' onClick={() => navigate(`/invoice/${invoiceItem.invoice.id}/view`, {replace: true})}>{invoiceItem.invoice.projectCode}</TableCell>
                       <TableCell align="left" data-test='invoice-price' onClick={() => navigate(`/invoice/${invoiceItem.invoice.id}/view`, {replace: true})}>{invoiceItem.invoice.value}</TableCell>
-                      <TableCell align="left">
+                      <TableCell align="right">
                         <IconButton
                           id="basic-button"
                           aria-controls={open ? "basic-menu" : undefined}
