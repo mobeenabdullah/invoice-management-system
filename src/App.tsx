@@ -10,6 +10,7 @@ import {
   CreateInvoice,
   SignIn,
   Register,
+  ViewInvoice,
 } from "./pages";
 
 function App() {
@@ -50,6 +51,10 @@ function App() {
         <Route
           path="/invoice/:invoiceId/edit"
           element={<Protected component={<CreateInvoice />} />}
+        />
+        <Route
+          path="/invoice/:invoiceId/view"
+          element={<Protected component={<ViewInvoice />} />}
         />
       </Routes>
     </BrowserRouter>
