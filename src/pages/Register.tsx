@@ -157,9 +157,9 @@ const Register: FC = () => {
       setInValidEmail(false);
       setInValidEmailMessage("");
     }
-    if (password.length < 6) {
+    if (password.length < 5 || password.length > 16) {
       setInValidPassword(true);
-      setInValidPasswordMessage("Password Must be 6 Character Long!");
+      setInValidPasswordMessage("Password Must be 5-16 Character Long!");
       return;
     } else {
       setInValidPassword(false);

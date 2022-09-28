@@ -77,8 +77,7 @@ const DashboardClients: FC = () => {
       setIsError(true);
       if (error.code === "ERR_NETWORK") {
         setErrorMessage(error.message);
-      }
-      if (error.status === 500) {
+      } else if (error.status === 500) {
         setErrorMessage("No internet connectivity");
       } else {
         setErrorMessage(error.response.data);
@@ -254,6 +253,7 @@ const DashboardClients: FC = () => {
                               aria-controls={open ? "basic-menu" : undefined}
                               aria-haspopup="true"
                               aria-expanded={open ? "true" : undefined}
+                              data-test="client-actions"
                               onClick={handleClick}
                             >
                               <MoreVertIcon />
@@ -280,7 +280,6 @@ const DashboardClients: FC = () => {
                               {" "}
                               <MenuItem
                                 onClick={() => navigate("create-invoice", {replace: true})}
-                                data-test="client-actions"
                               >
                                 <ListItemIcon>
                                   <BorderColorOutlinedIcon fontSize="small" />
@@ -290,7 +289,6 @@ const DashboardClients: FC = () => {
                               <Divider />
                               <MenuItem
                                 onClick={() => navigate(`clients/${row.id}`, {replace: true})}
-                                data-test="client-actions"
                               >
                                 <ListItemIcon>
                                   <RemoveRedEyeOutlinedIcon fontSize="small" />

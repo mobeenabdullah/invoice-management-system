@@ -251,7 +251,7 @@ const CompanyDetail: FC = () => {
                 ></Typography>
                 <TextField
                   error={invalidName ? true : false}
-                  helperText={invalidName ? "Company name is required!" : ""}
+                  helperText={invalidName ? "Company name must be 3-16 character long!" : ""}
                   variant="outlined"
                   margin="normal"
                   fullWidth

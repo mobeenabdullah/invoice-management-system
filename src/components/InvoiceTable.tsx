@@ -76,7 +76,7 @@ const InvoiceTable: FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [invoices, setInvoices] = useState([]);
   const [limit, setLimit] = useState<any>(10);
-  const [errorMessage, setErrorMessage] = useState("No invoice found...");
+  const [errorMessage, setErrorMessage] = useState("No result found...");
   const [totalInvoices, setTotalInvoices] = useState(0);
 
   const formatDate = (timestamp: string) => {
@@ -135,6 +135,23 @@ const InvoiceTable: FC = () => {
       limit: limit,
       projectCode: searchParams.get('projectCode') ? searchParams.get('projectCode') : null,
     }
+
+    let urlParams : any = {};
+    if(limit != 10) {
+      urlParams.limit = limit;
+    }
+    if(clientId) {
+      urlParams.clientId = clientId;
+    }
+    if(sortBy) {
+      urlParams.sortBy = sortBy;
+      urlParams.sortOrder = sortOrder;
+    }
+    if(page > 1) {
+      urlParams.page = page
+    }
+    setSearchParams(urlParams);
+
     SetIsLoading(true);
     try {
       const invoicesList = await getInvoices(cookies.authToken, filters);
@@ -156,10 +173,9 @@ const InvoiceTable: FC = () => {
   };
 
     useEffect(() => {
-      setOffset(searchParams.get('page'))
-      setSortBy(searchParams.get('sortby'));
-      setPage(searchParams.get('page'));
-      setSortOrder(searchParams.get('sort'));
+      setSortBy(searchParams.get('sortBy'));
+      
+      setSortOrder(searchParams.get('sortOrder'));
       SetClientId(searchParams.get('clientid'));
       
       if(searchParams.get('limit')) {
@@ -167,8 +183,9 @@ const InvoiceTable: FC = () => {
       }
 
       if(searchParams.get('page')) {
+        setPage(searchParams.get('page'));
         let currentPage : any = searchParams.get('page');
-        setOffset((currentPage * 10) - 10);
+        setOffset((currentPage * limit) - limit);
       }
     }, [])
 
@@ -269,7 +286,7 @@ const InvoiceTable: FC = () => {
                     {invoices.length === 0 && (
                       <TableRow>
                         <TableCell component="th" scope="row"   sx={{ border: "none" }}>                          
-                              <Typography variant="body1" component="p" data-test="empty-placeholder">No invoice found...</Typography>                            
+                              <Typography variant="body1" component="p" data-test="empty-placeholder">No result found...</Typography>                            
                         </TableCell>                        
                       </TableRow>
                       )}
@@ -292,6 +309,7 @@ const InvoiceTable: FC = () => {
                             aria-haspopup="true"
                             aria-expanded={open ? "true" : undefined}
                             onClick={handleClick}
+                            data-test='invoice-actions'
                           >
                             <MoreVertIcon />
                           </IconButton>
@@ -315,13 +333,13 @@ const InvoiceTable: FC = () => {
                             }}
                           >
                             {" "}
-                            <MenuItem onClick={() => navigate(`/invoice/${invoiceItem.invoice.id}/view`, {replace: true})} data-test='invoice-actions'>
+                            <MenuItem onClick={() => navigate(`/invoice/${invoiceItem.invoice.id}/view`, {replace: true})} >
                               <ListItemIcon>
                                 <BorderColorOutlinedIcon fontSize="small" />
                               </ListItemIcon>
                               <ListItemText>Print invoice</ListItemText>
                             </MenuItem>
-                            <MenuItem onClick={() => navigate(`/invoice/${invoiceItem.invoice.id}/edit`, {replace: true})} data-test='invoice-actions'>
+                            <MenuItem onClick={() => navigate(`/invoice/${invoiceItem.invoice.id}/edit`, {replace: true})} >
                               <ListItemIcon>
                                 <DeleteOutlineOutlinedIcon fontSize="small" />
                               </ListItemIcon>
@@ -338,22 +356,23 @@ const InvoiceTable: FC = () => {
           </Card>
         )}
 
-        
-        <Stack spacing={2} direction="row" justifyContent="center" alignItems="center" mt={6}>
-          <Pagination
-            count={Math.ceil(totalInvoices/limit)}
-            color="primary"
-            shape="rounded"
-            onChange={handlePagination}
-            renderItem={(item) => (
-              <PaginationItem
-                data-test={`page-${item.page}`}
-                components={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}
-                {...item}
-              />
-            )}
-          />
-      </Stack>
+        {totalInvoices/limit > 1 && (
+          <Stack spacing={2} direction="row" justifyContent="center" alignItems="center" mt={6}>
+            <Pagination
+              count={Math.ceil(totalInvoices/limit)}
+              color="primary"
+              shape="rounded"
+              onChange={handlePagination}
+              renderItem={(item) => (
+                <PaginationItem
+                  data-test={`page-${item.page}`}
+                  components={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}
+                  {...item}
+                />
+              )}
+            />
+          </Stack>
+        )}
        
       </Wrapper>
     </>

@@ -141,7 +141,7 @@ const CreateClient: FC = () => {
     const emailValidRegex =
       /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
-    if (name === "" || name.length < 3) {
+    if (name === "" || name.length < 3 || name.length > 16) {
       setInvalidName(true);
       return;
     } else {
@@ -302,7 +302,7 @@ const CreateClient: FC = () => {
                 <Typography component="p" data-test="form-error"></Typography>
                 <TextField
                   error={invalidName ? true : false}
-                  helperText={invalidName ? "Company name is required!" : ""}
+                  helperText={invalidName ? "Client name must be 3-16 character long!" : ""}
                   variant="outlined"
                   margin="normal"
                   fullWidth

@@ -85,7 +85,7 @@ const DashboardInvoices: FC = () => {
   const [cookies] = useCookies(["authToken"]);
   const [isLoading, SetIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("No invoice found...");
+  const [errorMessage, setErrorMessage] = useState("No result found...");
 
   const formatDate = (timestamp: string) => {
     const date = new Date(timestamp);
@@ -102,8 +102,7 @@ const DashboardInvoices: FC = () => {
       setIsError(true);
       if (error.code === "ERR_NETWORK") {
         setErrorMessage(error.message);
-      }
-      if (error.status === 500) {
+      } else if (error.status === 500) {
         setErrorMessage("No internet connectivity");
       } else {
         setErrorMessage(error.response.data);
@@ -218,7 +217,7 @@ const DashboardInvoices: FC = () => {
                   {invoices.length === 0 && (
                     <TableRow>
                       <TableCell component="th" scope="row"  sx={{ border: "none" }}>                          
-                        <Typography variant="body1" component="p" data-test="empty-placeholder">No invoice found...</Typography>                            
+                        <Typography variant="body1" component="p" data-test="empty-placeholder">No result found...</Typography>                            
                       </TableCell>                        
                     </TableRow>
                       
