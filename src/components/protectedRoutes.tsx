@@ -1,7 +1,7 @@
 import { Navigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import jwt_decode from "jwt-decode";
-import useAddUser from "../hooks/customHooks";
+import {useAddUser} from "../hooks/customHooks";
 
 type propstype = {
   component: JSX.Element;

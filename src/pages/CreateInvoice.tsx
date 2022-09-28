@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../store/hooks";
 import { RootState } from "../store/store";
 import { createInvoice } from "../features/invoices/invoiceThunks";
+import { useCompanyDetailGuard } from '../hooks/customHooks'
 
 const Wrapper = styled.section`
   height: calc(100vh - 8%);
@@ -83,6 +84,7 @@ const Wrapper = styled.section`
 `;
 
 const CreateInvoice: FC = () => {
+  useCompanyDetailGuard();
   const [isLoading, setIsLoading] = useState(false);
   const [cookies] = useCookies(["authToken"]);
   const [clients, setClient] = useState([]);

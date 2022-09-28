@@ -15,6 +15,7 @@ import {
   updateClient,
 } from "../features/clients/clientThunks";
 import { useNavigate } from "react-router-dom";
+import { useCompanyDetailGuard } from '../hooks/customHooks';
 
 const Wrapper = styled.section`
 height: calc(100vh - 8%);
@@ -75,6 +76,7 @@ padding: 2%;
 `;
 
 const CreateClient: FC = () => {
+  useCompanyDetailGuard();
   const [cookies] = useCookies(["authToken"]);
   const { clientId } = useParams();
   const [name, setName] = useState("");

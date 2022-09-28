@@ -3,8 +3,10 @@ import Header from "../components/Header";
 import { Container } from "@mui/system";
 import InvoiceTable from "../components/InvoiceTable";
 import { Grid } from "@mui/material";
+import { useCompanyDetailGuard } from "../hooks/customHooks";
 
 const Invoices: FC = () => {
+  useCompanyDetailGuard();
   return (
     <>
       <Header />

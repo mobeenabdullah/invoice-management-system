@@ -13,11 +13,12 @@ import MenuItem from '@mui/material/MenuItem';
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import styled from "styled-components";
 import { useCookies } from "react-cookie";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../store/hooks";
 import { RootState } from "../store/store";
 import { Link } from "react-router-dom";
+import { useCompanyDetailGuard } from '../hooks/customHooks';
 
 const MenuWrapper = styled.section`
   .icon_box {
@@ -57,6 +58,8 @@ const Header = () => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
+  useCompanyDetailGuard();
+
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -75,10 +78,8 @@ const Header = () => {
   const [cookies, removeCookie] = useCookies(["authToken"]);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const navigate = useNavigate();
-  const userCompanyDetail = useAppSelector((state: RootState) => state.user.companyDetails);
   const userName = useAppSelector((state: RootState) => state.user.name);
 
-  const navItems: any = [{label: 'Home', link: "/"}, {label: 'Clients', link: '/clients'}, {label: 'Invoices', link: '/invoices'}];
 
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -93,13 +94,6 @@ const Header = () => {
     removeCookie("authToken", []);
     navigate('/login')
   }
-
-  useEffect(() => {
-     if(!userCompanyDetail) {
-        navigate('/company-detail')
-     }
-  }, [])
-
 
   return (
     <AppBar position="sticky">

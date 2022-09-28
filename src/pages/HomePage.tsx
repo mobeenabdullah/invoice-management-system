@@ -4,8 +4,10 @@ import { Container } from "@mui/system";
 import DashboardClients from "../components/DashboardClients";
 import DashboardInvoices from "../components/DashboardInvoices";
 import { Grid } from "@mui/material";
+import { useCompanyDetailGuard } from '../hooks/customHooks';
 
 const HomePage: FC = () => {
+  useCompanyDetailGuard();
   return (
     <>
       <Header />

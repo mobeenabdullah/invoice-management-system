@@ -4,12 +4,14 @@ import { RootState } from "../store/store";
 import { useEffect } from "react";
 import { userDetail } from "../features/user/userThunks";
 import { useCookies } from "react-cookie";
+import { useNavigate } from "react-router-dom";
 
-const useAddUser = () => {
+export const useAddUser = () => {
   const [cookies, removeCookie] = useCookies(["authToken"]);
   const userState = useAppSelector((state: RootState) => state.user);
   const dispatch = useAppDispatch();
-
+  const navigate = useNavigate();
+  
   const userDetailsFetch: any = async (token: string) => {
     if (token) {
       const response = await userDetail(token);
@@ -26,6 +28,7 @@ const useAddUser = () => {
         );
       } else {
         removeCookie("authToken", []);
+        navigate('/login');
       }
     }
   };
@@ -36,4 +39,15 @@ const useAddUser = () => {
   return [];
 };
 
-export default useAddUser;
+export const useCompanyDetailGuard = () => {
+  const navigate = useNavigate();
+  const userCompanyDetail = useAppSelector((state: RootState) => state.user.companyDetails);
+
+  useEffect(() => {
+    if(!userCompanyDetail) {
+      navigate('/company-detail');
+    }
+  }, [userCompanyDetail])
+
+  return;
+}
