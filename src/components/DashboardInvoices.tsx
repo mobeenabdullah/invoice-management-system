@@ -59,23 +59,6 @@ const ButtonStyle = styled.div`
   }
 `;
 
-function createData(
-  name: string,
-  company_name: number,
-  total_blled: number,
-  invoices: number
-) {
-  return { name, company_name, total_blled, invoices };
-}
-
-const rows = [
-  createData("Frozen yoghurt", 159, 6.0, 24),
-  createData("Ice cream sandwich", 237, 9.0, 37),
-  createData("Eclair", 262, 16.0, 24),
-  createData("Cupcake", 305, 3.7, 67),
-];
-
-const options = ["None", "Atria", "Callisto"];
 
 const DashboardInvoices: FC = () => {
 
@@ -94,8 +77,8 @@ const DashboardInvoices: FC = () => {
 
   const fetchInvoices = async () => {
     try {
-      const invoicesList = await getInvoices(cookies.authToken, {limit: 10});
-      setInvoices(invoicesList.data.invoices);
+      const invoicesList = await getInvoices(cookies.authToken, {});
+      setInvoices(invoicesList.data.invoices.slice(-10).reverse());
       SetIsLoading(false);
     } catch (error: any) {
       SetIsLoading(false);

@@ -159,10 +159,7 @@ const ViewInvoice: FC = () => {
               {!isError &&  (
                 <Grid item xs={12} sm={12} md={12}>
                     <Box sx={{flexGrow: '1',}} display="flex" alignItems="start" justifyContent="space-between" pt={4} pb={4}>                        
-                        <Box display="flex" alignItems="stretch" sx={{ gap: '20px'}} className="invoce_buttons">
-                            <Button variant="outlined" startIcon={<LocalPrintshopOutlinedIcon />} onClick={PrintInvoice}>
-                                Print Invoice
-                            </Button>                            
+                        <Box display="flex" alignItems="stretch" sx={{ gap: '20px'}} className="invoce_buttons"> 
                         </Box>
                         <Box sx={{ maxWidth: "380px", width: "100%" }}>
                             <Box display="flex" alignItems="center" justifyContent="space-between" sx={{ gap: "20px"}} data-test="invoice-date">
