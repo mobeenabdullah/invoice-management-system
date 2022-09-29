@@ -258,7 +258,6 @@ const CreateClient: FC = () => {
       setSuccessMessage("");
       setIsError(true);
       if (error.code === "ERR_NETWORK") {
-        console.log(error.message);
         setErrorMessage(error.message);
       } else if (error.status === 500) {
         setErrorMessage("No internet connectivity");

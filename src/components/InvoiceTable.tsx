@@ -388,7 +388,7 @@ const InvoiceTable: FC = () => {
                             }}
                           >
                             {" "}
-                            <MenuItem onClick={() => navigate(`/invoice/${invoiceItem.invoice.id}/view`, {replace: true})} >
+                            <MenuItem onClick={() => navigate(`/invoice/${invoiceItem.invoice.id}/view/?print=true`, {replace: true})} >
                               <ListItemIcon>
                                 <BorderColorOutlinedIcon fontSize="small" />
                               </ListItemIcon>

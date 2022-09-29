@@ -168,7 +168,7 @@ const SignIn: FC = () => {
       if (isLoggedIn && isLoggedIn.status === 200) {
         const { email, name, user_id } = isLoggedIn.data;
         dispatch(addUser({ ...userState, email, name, user_id }));
-        setCookie("authToken", isLoggedIn.data.token);
+        setCookie("authToken", isLoggedIn.data.token, { path: '/' });
         setIsLoading(false);
         setIsloggedIn(true);
       }

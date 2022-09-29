@@ -105,8 +105,10 @@ const CreateInvoice: FC = () => {
   const [projectCodeError, setProjectCodeError] = useState('');
   const [companyError, setCompanyError] = useState('');
   const [successMessage, setSuccessMessage] = useState("");
+  const [invoiceError, setInvoiceError] = useState(false);
+  const [invoiceErrorMessage, setInvoiceErrorMessage] = useState('');
   let [invoiceItemFields, setInvoiceItemFields] = useState([
-    { description: '', value: 0 }
+    { description: '', value: 0, error: '', errorType: '' }
   ]);
   const userId = useAppSelector((state: RootState) => state.user.user_id);
   const { invoiceId } = useParams();
@@ -119,13 +121,20 @@ const CreateInvoice: FC = () => {
   }
 
   const addInvoiceItem = () => {
-    let newfield = { description: '', value: 0 }
+    let newfield = { description: '', value: 0, error: '', errorType: '' }
     setInvoiceItemFields([...invoiceItemFields, newfield])
   }
 
   const removeInvoiceItem = (index: number) => {
     let invoiceItem: any = invoiceItemFields;
     invoiceItem.splice(index,1);
+    setInvoiceItemFields([...invoiceItem]);
+  }
+
+  const addErrorInvoiceItem = (index: number, type: string, error: string) => {
+    let invoiceItem: any = invoiceItemFields;
+    invoiceItem[index]['error'] = error;
+    invoiceItem[index]['errorType'] = type;
     setInvoiceItemFields([...invoiceItem]);
   }
 
@@ -249,9 +258,29 @@ const dateFormat = (format: string, timeStamp: any) => {
 
     let sumValue = 0;
 
-    invoiceItemFields.map((item) => {
+    invoiceItemFields.forEach((item, index) => {
+      if(item.description.length  < 3) {
+        addErrorInvoiceItem(index, 'description' ,'Description character should be greater than 3!');
+        sumValue = 0;
+        return;
+      } else {
+        addErrorInvoiceItem(index, '', '');
+      }
+
+      if(item.value < 1) {
+        addErrorInvoiceItem(index, 'value', 'Value should be greater than 0!');
+        sumValue = 0;
+        return;
+      } else {
+        addErrorInvoiceItem(index, '', '');
+      }
+
       sumValue = parseInt(sumValue.toString()) + parseInt(item.value.toString());
     })
+
+    if(sumValue === 0) {
+      return;
+    }
 
     const invoiceData = {
       "id": '',
@@ -287,7 +316,7 @@ const dateFormat = (format: string, timeStamp: any) => {
         setProjectCode('');
         setCompany({id: '', label: ''});
         setInvoiceItemFields([
-          { description: '', value: 0 }
+          { description: '', value: 0, error: '', errorType: ''}
         ]);
       } else if(response && response.status === 200 && invoiceId) {
         setIsLoading(false);
@@ -323,8 +352,14 @@ const dateFormat = (format: string, timeStamp: any) => {
       setCompany(getClient[0]);
       setInvoiceItemFields([...invoiceData.meta.items])
     } catch(error: any) {
-        setIsError(true);
-        setErrorMessage('Invalid invoice id!');
+        setInvoiceError(true);
+        if (error.code === "ERR_NETWORK") {
+          setInvoiceErrorMessage(error.message);
+        } else if (error.status === 500) {
+          setInvoiceErrorMessage("No internet connectivity");
+        } else {
+          setInvoiceErrorMessage(error.response.data);
+        }
     }
   }
 
@@ -359,8 +394,11 @@ const dateFormat = (format: string, timeStamp: any) => {
                   {isError && (
                     <Alert severity="error">{errorMessage}</Alert>
                   )}
+                  {(invoiceError && !invoiceNumber) && (
+                    <Alert severity="error" data-test='not-found-message'>{invoiceErrorMessage}</Alert>
+                  )}
                   {!isError && successMessage && (      
-                    <Alert severity="success">{successMessage}</Alert>                
+                    <Alert severity="success" >{successMessage}</Alert>                
                   )}
               </Stack>
               
@@ -452,7 +490,7 @@ const dateFormat = (format: string, timeStamp: any) => {
 
                 {invoiceItemFields.map((fields, index) => {
                   return (
-                    <Box sx={{display: 'flex', alignItems: 'center', gap: '10px'}} key={index}>
+                    <Box sx={{display: 'flex', alignItems: 'center', gap: '10px'}} key={index} data-test={`invoice-item-${index}`}>
                       <Box>
                         <TextField
                           variant="outlined"
@@ -465,6 +503,7 @@ const dateFormat = (format: string, timeStamp: any) => {
                           data-test="invoice-item-description"
                           onChange={event => handleInvoiceItemChange(index, event)}
                         />
+                        <Typography component="p" data-test="invoice-description-error">{fields.errorType === 'description' && fields.error}</Typography>
                       </Box>
                       <Box>                  
                         <TextField
@@ -479,6 +518,7 @@ const dateFormat = (format: string, timeStamp: any) => {
                           data-test="invoice-item-value"
                           onChange={event => handleInvoiceItemChange(index, event)}
                         />
+                        <Typography component="p" data-test="invoice-value-error">{fields.errorType === 'value' && fields.error}</Typography>
                       </Box>
                       <Box>
                         <IconButton

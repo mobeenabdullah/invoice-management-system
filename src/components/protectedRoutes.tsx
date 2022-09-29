@@ -19,15 +19,15 @@ const Protected = ({ component }: propstype) => {
           return component;
         
       } else {
-        removeCookie("authToken", []);
+        removeCookie("authToken", {path:'/'});
         return <Navigate to="/login" />;
       }
     } catch (error) {
-      removeCookie("authToken", []);
+      removeCookie("authToken", {path:'/'});
       return <Navigate to="/login" />;
     }
   } else {
-    removeCookie("authToken", []);
+    removeCookie("authToken", {path:'/'});
     return <Navigate to="/login" />;
   }
 };

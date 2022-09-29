@@ -218,18 +218,14 @@ const CompanyDetail: FC = () => {
 
       if (error.code === "ERR_NETWORK") {
         setErrorMessage(error.message);
-      }
-      if (error.status === 500) {
+      } else if (error.status === 500) {
         setErrorMessage("No internet connectivity");
+      } else {
+        setIsLoading(false);
+        setErrorMessage(error.response.data);
       }
-      setIsLoading(false);
-      setErrorMessage(error.response.data);
     }
   };
-
-  // if (companyAdded) {
-  //   return <Navigate to="/" />;
-  // }
 
   return (
     <>
