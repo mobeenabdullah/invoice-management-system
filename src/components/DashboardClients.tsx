@@ -69,8 +69,8 @@ const DashboardClients: FC = () => {
 
   const fetchClientsList = async () => {
     try {
-      const clientsList = await getClients(cookies.authToken, {limit: 10});
-      setClientRows(clientsList.data.clients);
+      const clientsList = await getClients(cookies.authToken, {});
+      setClientRows(clientsList.data.clients.slice(-10).reverse());
       SetIsLoading(false);
     } catch (error: any) {
       SetIsLoading(false);
