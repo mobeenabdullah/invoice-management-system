@@ -129,7 +129,7 @@ const CreateInvoice: FC = () => {
     setInvoiceItemFields([...invoiceItem]);
   }
 
-  function dateFormat(format: string, timeStamp: any) {
+const dateFormat = (format: string, timeStamp: any) => {
 
     let date;
     //parse the input date

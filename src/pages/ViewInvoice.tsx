@@ -18,8 +18,13 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import TableFooter from "@mui/material/TableFooter";
-import ReactToPrint from "react-to-print";
 import { useRef } from "react";
+import { useState, useEffect } from "react";
+import { useCookies } from "react-cookie";
+import { getSingleInvoice } from "../features/invoices/invoiceThunks";
+import { useParams } from "react-router-dom";
+import Card from "@mui/material/Card";
+import CircularProgress from "@mui/material/CircularProgress";
 
 
 function createData(
@@ -37,8 +42,6 @@ function createData(
     createData('Gingerbread', 353456),
   ];
 
-
-
 const InvoiceWrapper = styled.section`
   padding: 30px 0;
   .back_to_home {
@@ -49,6 +52,62 @@ const InvoiceWrapper = styled.section`
 const ViewInvoice: FC = () => {
   useCompanyDetailGuard();  
     const printDocument = useRef<HTMLInputElement | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isError, setIsError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
+    const [cookies] = useCookies(["authToken"]);
+    const { invoiceId } = useParams();
+    const [invoice , setInvoice] = useState<any>();
+
+    const getSingleInvoiceData = async (id:string, token: string) => {
+        try {
+            const invoiceData = await getSingleInvoice(token, id);
+            setInvoice(invoiceData.data.invoice);
+            setIsLoading(false);
+        } catch(error: any) {
+            setIsLoading(false);
+            setIsError(true);
+            setErrorMessage('Invalid invoice id!');
+        }
+    }
+
+    const dateFormat = (format: string, timeStamp: any) => {
+
+        let date;
+        //parse the input date
+        if(timeStamp) {
+          date = new Date(timeStamp);
+        } else {
+          date = new Date();
+        }
+          
+    
+        //extract the parts of the date
+        const day = date.getDate();
+        const month = date.getMonth() + 1;
+        const year = date.getFullYear();    
+    
+        //replace the month
+        format = format.replace("MM", month.toString().padStart(2,"0"));        
+    
+        //replace the year
+        if (format.indexOf("yyyy") > -1) {
+            format = format.replace("yyyy", year.toString());
+        } else if (format.indexOf("yy") > -1) {
+            format = format.replace("yy", year.toString().substr(2,2));
+        }
+    
+        //replace the day
+        format = format.replace("dd", day.toString().padStart(2,"0"));
+    
+        return format;
+      }
+    
+      useEffect(() => {
+    if(invoiceId && cookies.authToken) {
+        getSingleInvoiceData(invoiceId, cookies.authToken);
+    }
+    }, [invoice]);
 
   const PrintInvoice = () =>{                 
     if(printDocument){
@@ -58,6 +117,24 @@ const ViewInvoice: FC = () => {
         window.print();
         document.body.innerHTML = originalContents;
     }
+  }
+
+  if(isLoading) {
+      return <Card
+      sx={{
+        minWidth: 350,
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        position: "relative",
+      }}
+    >
+      <LoadingWrapper data-test="loading-overlay">
+        <CircularProgress color="primary" size="60px" />
+      </LoadingWrapper>
+      <p>Loading invoice...</p>
+    </Card>
   }
   
   return (
@@ -82,26 +159,22 @@ const ViewInvoice: FC = () => {
                                 Print Invoice
                             </Button>                            
                         </Box>
-                        <Box sx={{ maxWidth: "250px", width: "100%" }}>
+                        <Box sx={{ maxWidth: "380px", width: "100%" }}>
                             <Box display="flex" alignItems="center" justifyContent="space-between" sx={{ gap: "20px"}} data-test="invoice-date">
                                 <Typography variant="subtitle2" sx={{ fontWeight: "700", width: '70%' }}>Invoice Date:</Typography>
-                                <Typography variant="subtitle2" sx={{ width: '30%'}}>02/06/2022</Typography>
+                                <Typography variant="subtitle2" sx={{ width: '70%'}}>{dateFormat('dd/MM/yyyy', invoice.date)}</Typography>
                             </Box>
                             <Box display="flex" alignItems="center" justifyContent="space-between" sx={{ gap: "20px"}} data-test="invoice-due-date">
                                 <Typography variant="subtitle2"  sx={{ fontWeight: "700", width: '70%' }}>Invoice Due Date:</Typography>
-                                <Typography variant="subtitle2" sx={{ width: '30%'}}>02/06/2022</Typography>
+                                <Typography variant="subtitle2" sx={{ width: '70%'}}>{dateFormat('dd/MM/yyyy', invoice.dueDate)}</Typography>
                             </Box>
                             <Box display="flex" alignItems="center" justifyContent="space-between" sx={{ gap: "20px"}} data-test="invoice-number">
                                 <Typography variant="subtitle2"  sx={{ fontWeight: "700", width: '70%' }}>Invoice Number:</Typography>
-                                <Typography variant="subtitle2" sx={{ width: '30%'}}>12534</Typography>
+                                <Typography variant="subtitle2" sx={{ width: '70%'}}>{invoice.invoice_number}</Typography>
                             </Box>
                             <Box display="flex" alignItems="center" justifyContent="space-between" sx={{ gap: "20px"}} data-test="invoice-project-code">
                                 <Typography variant="subtitle2"  sx={{ fontWeight: "700", width: '70%' }}>Invoice Project Code:</Typography>
-                                <Typography variant="subtitle2" sx={{ width: '30%'}}>SGF1254</Typography>
-                            </Box>
-                            <Box display="flex" alignItems="center" justifyContent="space-between" sx={{ gap: "20px"}} data-test="invoice-project-code">
-                                <Typography variant="subtitle2"  sx={{ fontWeight: "700", width: '70%' }}>Invoice Project Code:</Typography>
-                                <Typography variant="subtitle2" sx={{ width: '30%'}}>12546</Typography>
+                                <Typography variant="subtitle2" sx={{ width: '70%'}}>{invoice.projectCode}</Typography>
                             </Box>
                         </Box>                        
                     </Box>
@@ -120,15 +193,15 @@ const ViewInvoice: FC = () => {
                                 </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                {rows.map((row) => (
+                                {invoice.meta.items.map((row: any, index: number) => (
                                     <TableRow
-                                    key={row.name}
+                                    key={index}
                                     sx={{ '&:last-child td, &:last-child th': { border: 0 }}}
                                     >
                                     <TableCell component="th" scope="row">
-                                        {row.name}
+                                        {row.description}
                                     </TableCell>
-                                    <TableCell align="right" padding="checkbox" sx={{padding: "1rem"}}>{row.calories}</TableCell>                                    
+                                    <TableCell align="right" padding="checkbox" sx={{padding: "1rem"}}>{row.value}</TableCell>                                    
                                     </TableRow>
                                 ))}
                                 </TableBody>
@@ -137,7 +210,7 @@ const ViewInvoice: FC = () => {
                                         <Typography variant="h6">Total Amount</Typography>
                                     </TableCell>
                                     <TableCell  variant="head" padding="checkbox" align="left" sx={{fontWeight:"700", textAlign:"right", padding: "1rem"}}>
-                                        <Typography variant="h6">95723432</Typography>
+                                        <Typography variant="h6">{invoice.value}</Typography>
                                     </TableCell>                                    
                                 </TableFooter>
                             </Table>
@@ -151,5 +224,18 @@ const ViewInvoice: FC = () => {
     </>
   );
 };
+
+const LoadingWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.6);
+`;
 
 export default ViewInvoice;
