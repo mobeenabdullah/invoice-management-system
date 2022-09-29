@@ -264,7 +264,7 @@ const DashboardInvoices: FC = () => {
                           }}
                         >
                           {" "}
-                          <MenuItem onClick={() => navigate(`/invoice/${invoiceItem.invoice.id}/view`, {replace: true})} data-test='invoice-actions'>
+                          <MenuItem onClick={() => navigate(`/invoice/${invoiceItem.invoice.id}/view/?print=true`, {replace: true})} data-test='invoice-actions'>
                             <ListItemIcon>
                               <BorderColorOutlinedIcon fontSize="small" />
                             </ListItemIcon>

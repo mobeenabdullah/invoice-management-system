@@ -1,13 +1,11 @@
 import { FC } from "react";
 import { Container } from "@mui/system";
-import { Grid } from "@mui/material";
+import { Grid, Stack } from "@mui/material";
 import { useCompanyDetailGuard } from "../hooks/customHooks";
 import { Box } from "@mui/system";
 import styled from "styled-components";
 import LocalPrintshopOutlinedIcon from '@mui/icons-material/LocalPrintshopOutlined';
-import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import { Button } from "@mui/material";
-import { Link } from "react-router-dom";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import Table from '@mui/material/Table';
@@ -25,22 +23,8 @@ import { getSingleInvoice } from "../features/invoices/invoiceThunks";
 import { useParams } from "react-router-dom";
 import Card from "@mui/material/Card";
 import CircularProgress from "@mui/material/CircularProgress";
-
-
-function createData(
-    name: string,
-    calories: number,    
-  ) {
-    return { name, calories };
-  }
-  
-  const rows = [
-    createData('Frozen yoghurt', 15453),
-    createData('Ice cream sandwich', 2334537),
-    createData('Eclair', 234534562),
-    createData('Cupcake', 303455),
-    createData('Gingerbread', 353456),
-  ];
+import Alert from "@mui/material/Alert";
+import { useSearchParams } from "react-router-dom";
 
 const InvoiceWrapper = styled.section`
   padding: 30px 0;
@@ -51,6 +35,7 @@ const InvoiceWrapper = styled.section`
 
 const ViewInvoice: FC = () => {
   useCompanyDetailGuard();  
+  const [searchParams, setSearchParams] = useSearchParams();
     const printDocument = useRef<HTMLInputElement | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isError, setIsError] = useState(false);
@@ -64,10 +49,18 @@ const ViewInvoice: FC = () => {
             const invoiceData = await getSingleInvoice(token, id);
             setInvoice(invoiceData.data.invoice);
             setIsLoading(false);
+            setIsError(false);
+            setErrorMessage('');
         } catch(error: any) {
             setIsLoading(false);
             setIsError(true);
-            setErrorMessage('Invalid invoice id!');
+            if (error.code === "ERR_NETWORK") {
+              setErrorMessage(error.message);
+            } else if (error.status === 500) {
+              setErrorMessage("No internet connectivity");
+            } else {
+              setErrorMessage(error.response.data);
+            }
         }
     }
 
@@ -101,21 +94,32 @@ const ViewInvoice: FC = () => {
         format = format.replace("dd", day.toString().padStart(2,"0"));
     
         return format;
-      }
-    
-      useEffect(() => {
-    if(invoiceId && cookies.authToken) {
-        getSingleInvoiceData(invoiceId, cookies.authToken);
     }
+    
+    useEffect(() => {
+      if(invoiceId && cookies.authToken) {
+          getSingleInvoiceData(invoiceId, cookies.authToken);
+      }
     }, [invoice]);
 
-  const PrintInvoice = () =>{                 
+    useEffect(() => {
+      if(searchParams.get('print')) {
+        const timer = setTimeout(() => {
+          PrintInvoice();
+          clearTimeout(timer);
+        }, 1000);
+      }
+    }, []);
+
+  const PrintInvoice = () =>{            
     if(printDocument){
         let printContents =  printDocument!.current!.innerHTML;
         let originalContents = document.body.innerHTML;
         document.body.innerHTML = printContents;
         window.print();
         document.body.innerHTML = originalContents;
+        window.history.go(0);
+        setSearchParams({});
     }
   }
 
@@ -147,14 +151,15 @@ const ViewInvoice: FC = () => {
             alignItems="center"
             columnSpacing={{ xs: 1, sm: 2, md: 3, p: 2 }}
             >
+              <Stack spacing={2} sx={{width: '100%',}}>
+                {isError && (
+                  <Alert severity="error" data-test='not-found-message'>{errorMessage}</Alert>
+                )}
+              </Stack>
+              {!isError &&  (
                 <Grid item xs={12} sm={12} md={12}>
                     <Box sx={{flexGrow: '1',}} display="flex" alignItems="start" justifyContent="space-between" pt={4} pb={4}>                        
                         <Box display="flex" alignItems="stretch" sx={{ gap: '20px'}} className="invoce_buttons">
-                            <Link to="/" className="back_to_home">
-                                <Button variant="outlined" startIcon={<ArrowBackRoundedIcon />}>
-                                Back to Homepage
-                                </Button>
-                            </Link>
                             <Button variant="outlined" startIcon={<LocalPrintshopOutlinedIcon />} onClick={PrintInvoice}>
                                 Print Invoice
                             </Button>                            
@@ -162,19 +167,19 @@ const ViewInvoice: FC = () => {
                         <Box sx={{ maxWidth: "380px", width: "100%" }}>
                             <Box display="flex" alignItems="center" justifyContent="space-between" sx={{ gap: "20px"}} data-test="invoice-date">
                                 <Typography variant="subtitle2" sx={{ fontWeight: "700", width: '70%' }}>Invoice Date:</Typography>
-                                <Typography variant="subtitle2" sx={{ width: '70%'}}>{dateFormat('dd/MM/yyyy', invoice.date)}</Typography>
+                                <Typography variant="subtitle2" sx={{ width: '70%'}} data-test='invoice-date'>{dateFormat('dd/MM/yyyy', invoice.date)}</Typography>
                             </Box>
                             <Box display="flex" alignItems="center" justifyContent="space-between" sx={{ gap: "20px"}} data-test="invoice-due-date">
                                 <Typography variant="subtitle2"  sx={{ fontWeight: "700", width: '70%' }}>Invoice Due Date:</Typography>
-                                <Typography variant="subtitle2" sx={{ width: '70%'}}>{dateFormat('dd/MM/yyyy', invoice.dueDate)}</Typography>
+                                <Typography variant="subtitle2" sx={{ width: '70%'}} data-test='invoice-due-date'>{dateFormat('dd/MM/yyyy', invoice.dueDate)}</Typography>
                             </Box>
                             <Box display="flex" alignItems="center" justifyContent="space-between" sx={{ gap: "20px"}} data-test="invoice-number">
                                 <Typography variant="subtitle2"  sx={{ fontWeight: "700", width: '70%' }}>Invoice Number:</Typography>
-                                <Typography variant="subtitle2" sx={{ width: '70%'}}>{invoice.invoice_number}</Typography>
+                                <Typography variant="subtitle2" sx={{ width: '70%'}} data-test='invoice-number'>{invoice.invoice_number}</Typography>
                             </Box>
                             <Box display="flex" alignItems="center" justifyContent="space-between" sx={{ gap: "20px"}} data-test="invoice-project-code">
                                 <Typography variant="subtitle2"  sx={{ fontWeight: "700", width: '70%' }}>Invoice Project Code:</Typography>
-                                <Typography variant="subtitle2" sx={{ width: '70%'}}>{invoice.projectCode}</Typography>
+                                <Typography variant="subtitle2" sx={{ width: '70%'}} data-test='invoice-project-code'>{invoice.projectCode}</Typography>
                             </Box>
                         </Box>                        
                     </Box>
@@ -193,15 +198,16 @@ const ViewInvoice: FC = () => {
                                 </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                {invoice.meta.items.map((row: any, index: number) => (
+                                {invoice.meta.items && invoice.meta.items.length && invoice.meta.items.map((row: any, index: number) => (
                                     <TableRow
                                     key={index}
+                                    data-test={`invoice-item-${index}`}
                                     sx={{ '&:last-child td, &:last-child th': { border: 0 }}}
                                     >
-                                    <TableCell component="th" scope="row">
+                                    <TableCell component="th" scope="row" data-test='invoice-item-description'>
                                         {row.description}
                                     </TableCell>
-                                    <TableCell align="right" padding="checkbox" sx={{padding: "1rem"}}>{row.value}</TableCell>                                    
+                                    <TableCell align="right" padding="checkbox" sx={{padding: "1rem"}} data-test='invoice-item-value'>{row.value}</TableCell>                                    
                                     </TableRow>
                                 ))}
                                 </TableBody>
@@ -210,7 +216,7 @@ const ViewInvoice: FC = () => {
                                         <Typography variant="h6">Total Amount</Typography>
                                     </TableCell>
                                     <TableCell  variant="head" padding="checkbox" align="left" sx={{fontWeight:"700", textAlign:"right", padding: "1rem"}}>
-                                        <Typography variant="h6">{invoice.value}</Typography>
+                                        <Typography variant="h6" data-test='invoice-total'>{invoice.value}</Typography>
                                     </TableCell>                                    
                                 </TableFooter>
                             </Table>
@@ -218,6 +224,8 @@ const ViewInvoice: FC = () => {
                         </Box>                      
                     </Box>
                 </Grid>
+              )}
+                
             </Grid>            
         </Container>
       </InvoiceWrapper>

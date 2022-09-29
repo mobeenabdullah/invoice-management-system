@@ -88,7 +88,7 @@ const Header = () => {
   };
 
   const logOut = () => {
-    removeCookie("authToken", []);
+    removeCookie("authToken", {path:'/'});
     navigate('/login')
   }
 

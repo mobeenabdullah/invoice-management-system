@@ -27,7 +27,7 @@ export const useAddUser = () => {
           })
         );
       } else {
-        removeCookie("authToken", []);
+        removeCookie("authToken", {path:'/'});
         navigate('/login');
       }
     }
