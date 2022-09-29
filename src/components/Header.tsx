@@ -13,7 +13,6 @@ import MenuItem from '@mui/material/MenuItem';
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import styled from "styled-components";
 import { useCookies } from "react-cookie";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../store/hooks";
 import { RootState } from "../store/store";
@@ -40,6 +39,7 @@ const MenuItemLink = styled.span`
   .menu_item-desktop {
     color: #ffffff;
   }
+  
 `;
 
 const HeaderLogoText = styled.div`
@@ -48,7 +48,6 @@ const HeaderLogoText = styled.div`
     text-decoration: none;
   }
 `;
-
 
 const pages: any = [{label: 'Home', link: "/"}, {label: 'Clients', link: '/clients'}, {label: 'Invoices', link: '/invoices'}];
 const settings: any = [{label: 'Logout', link: "/logout"}];
@@ -73,22 +72,12 @@ const Header = () => {
   };
 
   const [cookies, removeCookie] = useCookies(["authToken"]);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const navigate = useNavigate();
   const userName = useAppSelector((state: RootState) => state.user.name);
 
-
-
-  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);    
-  };
-
   const logOut = () => {
-    removeCookie("authToken", {path:'/'});
+    if(cookies.authToken || !cookies.authToken) 
+      removeCookie("authToken", {path:'/'});
     navigate('/login')
   }
 
@@ -100,8 +89,6 @@ const Header = () => {
             <Typography
               variant="h6"
               noWrap
-              component="a"
-              href="/"
               sx={{
                 mr: 2,
                 display: { xs: 'none', md: 'flex' },              
@@ -119,8 +106,6 @@ const Header = () => {
             <Typography
               variant="h5"
               noWrap
-              component="a"
-              href="/"
               sx={{
                 mr: 2,
                 display: { xs: 'flex', md: 'none' },
@@ -133,7 +118,8 @@ const Header = () => {
             >
               <Link to="/">Invoice Management System</Link>
             </Typography>
-          </HeaderLogoText>                    
+          </HeaderLogoText>
+                              
             <Menu
               id="menu-appbar"
               anchorEl={anchorElNav}
@@ -153,18 +139,17 @@ const Header = () => {
               }}
               data-test='nav-bar'
             >
-              {pages.map((page: any, index: number) => (
-                
-                  <MenuItem key={index} onClick={handleCloseNavMenu}>
-                    <Typography textAlign="center">
-                      <MenuItemLink>
-                        <Link to={page.link} className="menu_item">{page.label}</Link>  
-                      </MenuItemLink>
-                    </Typography>
-                  </MenuItem>
-                
+              {pages.map((page: any, index: number) => (                
+                    <MenuItem key={index} onClick={handleCloseNavMenu}>
+                      <Typography textAlign="center">
+                        <MenuItemLink>
+                          <Link to={page.link} className={`menu_item ${window.location.pathname === page.link ? 'active' : ''}`}>{page.label}</Link>  
+                        </MenuItemLink>
+                      </Typography>
+                    </MenuItem>                 
               ))}
             </Menu>
+            
           </Box>
       
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'center', gap: '30px' }}>
@@ -174,6 +159,7 @@ const Header = () => {
                   onClick={handleCloseNavMenu}
                   sx={{ my: 2, color: 'white', display: 'block', fontSize: '1.4rem' }}                  
                   component="div"
+                  className={`menu_item_btn ${window.location.pathname === page.link ? 'active' : ''}`}
                 >
                 <MenuItemLink>
                   <Link to={page.link} className="menu_item menu_item-desktop">{page.label}</Link>  
@@ -197,7 +183,6 @@ const Header = () => {
                   variant="body1"
                   component="p"
                   sx={{ flexGrow: 1, }}
-                  onClick={handleMenu}
                   className="profile_name"
                 >
                   {userName}

@@ -138,6 +138,7 @@ const DashboardInvoices: FC = () => {
                 <Button
                   variant="contained"              
                   data-test="add-client"
+                  component="span"
                 >              
                   Create Invoice
                 </Button>
@@ -151,6 +152,7 @@ const DashboardInvoices: FC = () => {
               <Button
                 variant="contained"              
                 data-test="view-all-clients"
+                component="span"
               >
                 ALl Invoices
               </Button>

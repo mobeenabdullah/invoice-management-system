@@ -129,6 +129,7 @@ const DashboardClients: FC = () => {
                 <Button
                   variant="contained"              
                   data-test="add-client"
+                  component="span"
                 >              
                   Create Client
                 </Button>
@@ -142,6 +143,7 @@ const DashboardClients: FC = () => {
               <Button
                 variant="contained"              
                 data-test="view-all-clients"
+                component="span"
               >
                 ALl Clients
               </Button>
