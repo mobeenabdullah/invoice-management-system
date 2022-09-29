@@ -250,6 +250,7 @@ const ClientTable: FC = () => {
                 <Button
                   variant="contained"              
                   data-test="add-client"
+                  component="span"
                 >              
                   Create Client
                 </Button>

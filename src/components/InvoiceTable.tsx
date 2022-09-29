@@ -249,6 +249,7 @@ const InvoiceTable: FC = () => {
                 <Button
                   variant="contained"              
                   data-test="add-client"
+                  component="span"
                 >              
                   Create Invoice
                 </Button>
