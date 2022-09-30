@@ -192,7 +192,7 @@ const SignIn: FC = () => {
                 onChange={(e) => setUserEmail(e.target.value)}
                 data-test="email"
               />
-              <Typography component="p" data-test="email-error"></Typography>
+              <Typography component="p" color="error" data-test="email-error"></Typography>
               <TextField
                 error={inValidPassword ? true : false}
                 helperText={inValidPassword ? inValidPasswordMessage : ""}
@@ -209,7 +209,7 @@ const SignIn: FC = () => {
                 onChange={(e) => setUserPassword(e.target.value)}
                 data-test="password"
               />
-              <Typography component="p" data-test="password-error"></Typography>
+              <Typography component="p" color="error" data-test="password-error"></Typography>
               <Button
                 type="submit"
                 fullWidth

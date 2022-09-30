@@ -195,7 +195,7 @@ const CompanyDetail: FC = () => {
 
               <form className="form" noValidate onSubmit={handleSubmit}>
                 <Typography
-                  component="p"
+                  component="p"                  
                   data-test="success-message"
                 ></Typography>
                 <TextField
@@ -213,6 +213,7 @@ const CompanyDetail: FC = () => {
                 />
                 <Typography
                   component="p"
+                  color="error"
                   data-test="company-name-error"
                 ></Typography>
                 <TextField
@@ -232,6 +233,7 @@ const CompanyDetail: FC = () => {
                 />
                 <Typography
                   component="p"
+                  color="error"
                   data-test="company-address-error"
                 ></Typography>
                 <TextField
@@ -247,6 +249,7 @@ const CompanyDetail: FC = () => {
                 />
                 <Typography
                   component="p"
+                  color="error"
                   data-test="company-iban-error"
                 ></Typography>
                 <TextField
@@ -268,6 +271,7 @@ const CompanyDetail: FC = () => {
                 />
                 <Typography
                   component="p"
+                  color="error"
                   data-test="company-vat-error"
                 ></Typography>
                 <TextField
@@ -293,6 +297,7 @@ const CompanyDetail: FC = () => {
                 />
                 <Typography
                   component="p"
+                  color="error"
                   data-test="company-reg-error"
                 ></Typography>
                 <TextField
@@ -308,6 +313,7 @@ const CompanyDetail: FC = () => {
                 />
                 <Typography
                   component="p"
+                  color="error"
                   data-test="company-swift-error"
                 ></Typography>
                 <Button

@@ -240,7 +240,7 @@ const CreateClient: FC = () => {
               </Stack>
               <form className="form" noValidate onSubmit={handleSubmit}>
                 <Typography component="p" data-test="form-success"></Typography>
-                <Typography component="p" data-test="form-error"></Typography>
+                <Typography component="p" color="error" data-test="form-error"></Typography>
                 <TextField
                   error={invalidName ? true : false}
                   helperText={invalidName ? "Client name must be 3-16 character long!" : ""}
@@ -257,6 +257,7 @@ const CreateClient: FC = () => {
                 />
                 <Typography
                   component="p"
+                  color="error"
                   data-test="client-name-error"
                 ></Typography>
                 <TextField
@@ -275,6 +276,7 @@ const CreateClient: FC = () => {
                 />
                 <Typography
                   component="p"
+                  color="error"
                   data-test="client-email-error"
                 ></Typography>
                 <TextField
@@ -295,6 +297,7 @@ const CreateClient: FC = () => {
                 />
                 <Typography
                   component="p"
+                  color="error"
                   data-test="client-company-name-error"
                 ></Typography>
                 <TextField
@@ -315,6 +318,7 @@ const CreateClient: FC = () => {
                 />
                 <Typography
                   component="p"
+                  color="error"
                   data-test="client-company-address-error"
                 ></Typography>
                 <TextField
@@ -333,6 +337,7 @@ const CreateClient: FC = () => {
                 />
                 <Typography
                   component="p"
+                  color="error"
                   data-test="client-company-iban-error"
                 ></Typography>
                 <TextField
@@ -359,6 +364,7 @@ const CreateClient: FC = () => {
                 />
                 <Typography
                   component="p"
+                  color="error"
                   data-test="client-company-reg-error"
                 ></Typography>
                 <TextField
@@ -377,6 +383,7 @@ const CreateClient: FC = () => {
                 />
                 <Typography
                   component="p"
+                  color="error"
                   data-test="client-company-swift-error"
                 ></Typography>
                 <TextField
@@ -399,6 +406,7 @@ const CreateClient: FC = () => {
                 />
                 <Typography
                   component="p"
+                  color="error"
                   data-test="client-company-vat-error"
                 ></Typography>
                 <Button

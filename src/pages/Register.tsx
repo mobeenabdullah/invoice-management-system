@@ -206,7 +206,7 @@ const Register: FC = () => {
                 onChange={(e) => setName(e.target.value)}
                 data-test="name"
               />
-              <Typography component="p" data-test="name-error"></Typography>
+              <Typography component="p" color="error" data-test="name-error"></Typography>
 
               <TextField
                 error={inValidEmail ? true : false}
@@ -220,7 +220,7 @@ const Register: FC = () => {
                 onChange={(e: any) => setEmail(e.target.value)}
                 data-test="email"
               />
-              <Typography component="p" data-test="email-error"></Typography>
+              <Typography component="p" color="error" data-test="email-error"></Typography>
               <TextField
                 error={inValidPassword ? true : false}
                 helperText={inValidPassword ? inValidPasswordMessage : ""}
@@ -235,7 +235,7 @@ const Register: FC = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 data-test="password"
               />
-              <Typography component="p" data-test="password-error"></Typography>
+              <Typography component="p" color="error" data-test="password-error"></Typography>
 
               <TextField
                 error={inValidConfirmPassword ? true : false}
@@ -255,6 +255,7 @@ const Register: FC = () => {
               />
               <Typography
                 component="p"
+                color="error"
                 data-test="confirm-password-error"
               ></Typography>
 

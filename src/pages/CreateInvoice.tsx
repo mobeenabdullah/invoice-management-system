@@ -340,7 +340,7 @@ const dateFormat = (format: string, timeStamp: any) => {
 
               <form className="form" noValidate onSubmit={handleSubmit}>
                 <Typography component="p" data-test="form-success"></Typography>
-                <Typography component="p" data-test="form-error"></Typography>
+                <Typography component="p" color="error" data-test="form-error"></Typography>
                 <TextField
                   variant="outlined"
                   margin="normal"
@@ -356,7 +356,7 @@ const dateFormat = (format: string, timeStamp: any) => {
                   helperText={dateError ? dateError : ""}
                   onChange={(e: any) => setDate(e.target.value)}
                 />
-                <Typography component="p" data-test="invoice-date-error"></Typography>
+                <Typography component="p" color="error" data-test="invoice-date-error"></Typography>
                 <TextField
                   variant="outlined"
                   margin="normal"
@@ -372,7 +372,7 @@ const dateFormat = (format: string, timeStamp: any) => {
                   helperText={dueDateError ? dueDateError : ""}
                   onChange={(e) => setDueDate(e.target.value)}
                 />
-                <Typography component="p" data-test="invoice-due-date-error"></Typography>
+                <Typography component="p" color="error" data-test="invoice-due-date-error"></Typography>
                 <TextField
                   variant="outlined"
                   margin="normal"
@@ -386,7 +386,7 @@ const dateFormat = (format: string, timeStamp: any) => {
                   helperText={invoiceNumberError ? invoiceNumberError : ""}
                   onChange={(e) => setInvoiceNumber(e.target.value)}
                 />
-                <Typography component="p" data-test="invoice-number-error"></Typography>
+                <Typography component="p" color="error" data-test="invoice-number-error"></Typography>
                 <TextField
                   variant="outlined"
                   margin="normal"
@@ -400,7 +400,7 @@ const dateFormat = (format: string, timeStamp: any) => {
                   helperText={projectCodeError ? projectCodeError : ""}
                   onChange={(e) => setProjectCode(e.target.value)}
                 />
-                <Typography component="p" data-test="invoice-project-code-error"></Typography>
+                <Typography component="p" color="error" data-test="invoice-project-code-error"></Typography>
                 
                 <Autocomplete
                   disablePortal
@@ -414,7 +414,7 @@ const dateFormat = (format: string, timeStamp: any) => {
                   }
                   renderInput={(params) => <TextField {...params} label="Invoice Client" />}
                 />
-                <Typography component="p" data-test="invoice-company-id-error">{companyError}</Typography>
+                <Typography component="p" color="error" data-test="invoice-company-id-error">{companyError}</Typography>
 
                 {invoiceItemFields.map((fields, index) => {
                   return (
@@ -431,7 +431,7 @@ const dateFormat = (format: string, timeStamp: any) => {
                           data-test="invoice-item-description"
                           onChange={event => handleInvoiceItemChange(index, event)}
                         />
-                        <Typography component="p" data-test="invoice-description-error">{fields.errorType === 'description' && fields.error}</Typography>
+                        <Typography component="p" color="error" data-test="invoice-description-error">{fields.errorType === 'description' && fields.error}</Typography>
                       </Box>
                       <Box>                  
                         <TextField
@@ -446,15 +446,14 @@ const dateFormat = (format: string, timeStamp: any) => {
                           data-test="invoice-item-value"
                           onChange={event => handleInvoiceItemChange(index, event)}
                         />
-                        <Typography component="p" data-test="invoice-value-error">{fields.errorType === 'value' && fields.error}</Typography>
+                        <Typography component="p" color="error" data-test="invoice-value-error">{fields.errorType === 'value' && fields.error}</Typography>
                       </Box>
                       <Box>
                         <IconButton
                             onClick={() => removeInvoiceItem(index)}
                           >
                             <DeleteOutlineOutlinedIcon/>
-                          </IconButton>
-                          
+                          </IconButton>                          
                       </Box>
                     </Box>
                   )
