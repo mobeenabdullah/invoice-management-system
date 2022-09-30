@@ -431,7 +431,7 @@ const dateFormat = (format: string, timeStamp: any) => {
                           data-test="invoice-item-description"
                           onChange={event => handleInvoiceItemChange(index, event)}
                         />
-                        <Typography component="p" color="error" data-test="invoice-description-error">{fields.errorType === 'description' && fields.error}</Typography>
+                        <Typography component="p" color="error" sx={{ fontSize: '12px', marginBottom: '10px', lineHeight: '1'}}  data-test="invoice-description-error">{fields.errorType === 'description' && fields.error}</Typography>
                       </Box>
                       <Box>                  
                         <TextField
