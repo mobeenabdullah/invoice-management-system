@@ -1,7 +1,8 @@
-import * as React from "react";
-import { FC } from "react";
+import { FC, useEffect, useState} from 'react';
+import { useCookies } from "react-cookie";
+import { useNavigate, Link } from 'react-router-dom'
 import styled from "styled-components";
-import { Button, Typography } from "@mui/material";
+import { Button, Typography, Grid } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Table from "@mui/material/Table";
@@ -18,52 +19,12 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import MenuItem from "@mui/material/MenuItem";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
-import { Grid } from "@mui/material";
-import {useEffect, useState} from 'react';
-import { useCookies } from "react-cookie";
-import { useNavigate } from 'react-router-dom'
 import Alert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
 import { getInvoices } from "../features/invoices/invoiceThunks";
-import { Link } from "react-router-dom";
-
-const Wrapper = styled.section`
-  padding: 30px 0;
-  .TableHeader {
-    display: flex;
-    justify-content: space-between;
-  }
-  .TableButtons {
-    display: flex;
-    gap: 10px;
-  }
-`;
-
-const LoadingWrapper = styled.div`
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  border-radius: 4px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: rgba(0, 0, 0, 0.6);
-`;
-
-const ButtonStyle = styled.div`
-  a {
-    text-decoration: none;
-    pointer-event: none;    
-  }
-`;
-
 
 const DashboardInvoices: FC = () => {
-
   const navigate = useNavigate();
-
   const [invoices, setInvoices] = useState([]);
   const [cookies] = useCookies(["authToken"]);
   const [isLoading, SetIsLoading] = useState(true);
@@ -98,7 +59,7 @@ const DashboardInvoices: FC = () => {
   }, []);
 
 
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -276,5 +237,37 @@ const DashboardInvoices: FC = () => {
     </>
   );
 };
+
+const Wrapper = styled.section`
+  padding: 30px 0;
+  .TableHeader {
+    display: flex;
+    justify-content: space-between;
+  }
+  .TableButtons {
+    display: flex;
+    gap: 10px;
+  }
+`;
+
+const LoadingWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.6);
+`;
+
+const ButtonStyle = styled.div`
+  a {
+    text-decoration: none;
+    pointer-event: none;    
+  }
+`;
 
 export default DashboardInvoices;

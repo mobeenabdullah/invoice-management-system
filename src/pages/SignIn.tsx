@@ -1,17 +1,10 @@
-import { signin } from "../features/user/userThunks";
-import { addUser } from "../features/user/userSlice";
-import { useState, useEffect } from "react";
+import { FC, useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { RootState } from "../store/store";
 import Loading from "../components/Loading";
-import { FC } from "react";
 import styled from "styled-components";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Alert from "@mui/material/Alert";
-import jwt_decode from "jwt-decode";
-
 import {
   Avatar,
   Button,
@@ -21,64 +14,11 @@ import {
   Typography,
   Stack,
 } from "@mui/material";
-
-const Wrapper = styled.section`
-height: 100vh;
-display: flex;
-align-items: center;
-justify-content: center;
-padding: 0 2%;
-.avatar {
-  background-color: #13a800;
-}
-.submit {
-  margin-top: 1rem;
-  padding: 1rem;
-}
-.login_image {
-  height: 95vh;
-  border-radius: 16px;
-  overflow: hidden;
-  background-image: url("invoice-login.jpg");
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-.login_image li {
-  height: 100% !important;
-}
-.login_image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-.login_form .paper {
-  max-width: 50%;
-  width: 100%;
-  margin: 0 auto;
-}
-@media screen and (max-width: 992px) {
-  padding: 2rem;
-  align-items: start;
-  .login_image {
-    height: 500px;
-  }  
-  .login_form .paper {
-    max-width: 80%;
-  }  
-}
-@media screen and (max-width: 767px) {
-  padding: 2rem;
-  align-items: start;
-  .login_image {
-    height: 300px;
-    width: 100%;
-  }
-  .login_form .paper {
-    max-width: 100%;
-  }
-}
-`;
+import jwt_decode from "jwt-decode";
+import { signin } from "../features/user/userThunks";
+import { addUser } from "../features/user/userSlice";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { RootState } from "../store/store";
 
 const SignIn: FC = () => {
   const dispatch = useAppDispatch();
@@ -301,5 +241,63 @@ const SignIn: FC = () => {
     </Wrapper>
   );
 };
+
+const Wrapper = styled.section`
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 2%;
+  .avatar {
+    background-color: #13a800;
+  }
+  .submit {
+    margin-top: 1rem;
+    padding: 1rem;
+  }
+  .login_image {
+    height: 95vh;
+    border-radius: 16px;
+    overflow: hidden;
+    background-image: url("invoice-login.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+  .login_image li {
+    height: 100% !important;
+  }
+  .login_image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .login_form .paper {
+    max-width: 50%;
+    width: 100%;
+    margin: 0 auto;
+  }
+  @media screen and (max-width: 992px) {
+    padding: 2rem;
+    align-items: start;
+    .login_image {
+      height: 500px;
+    }  
+    .login_form .paper {
+      max-width: 80%;
+    }  
+  }
+  @media screen and (max-width: 767px) {
+    padding: 2rem;
+    align-items: start;
+    .login_image {
+      height: 300px;
+      width: 100%;
+    }
+    .login_form .paper {
+      max-width: 100%;
+    }
+  }
+`;
 
 export default SignIn;

@@ -1,11 +1,10 @@
-import { FC } from "react";
+import { FC, useRef, useState, useEffect } from "react";
+import { useParams, useSearchParams } from "react-router-dom";
+import { useCookies } from "react-cookie";
+import styled from "styled-components";
 import { Container } from "@mui/system";
 import { Grid, Stack } from "@mui/material";
-import { useCompanyDetailGuard } from "../hooks/customHooks";
 import { Box } from "@mui/system";
-import styled from "styled-components";
-import LocalPrintshopOutlinedIcon from '@mui/icons-material/LocalPrintshopOutlined';
-import { Button } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import Table from '@mui/material/Table';
@@ -16,22 +15,11 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import TableFooter from "@mui/material/TableFooter";
-import { useRef } from "react";
-import { useState, useEffect } from "react";
-import { useCookies } from "react-cookie";
-import { getSingleInvoice } from "../features/invoices/invoiceThunks";
-import { useParams } from "react-router-dom";
 import Card from "@mui/material/Card";
 import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
-import { useSearchParams } from "react-router-dom";
-
-const InvoiceWrapper = styled.section`
-  padding: 30px 0;
-  .back_to_home {
-      text-decoration: none;
-  } 
-`;
+import { getSingleInvoice } from "../features/invoices/invoiceThunks";
+import { useCompanyDetailGuard } from "../hooks/customHooks";
 
 const ViewInvoice: FC = () => {
   useCompanyDetailGuard();  
@@ -241,6 +229,13 @@ const LoadingWrapper = styled.div`
   justify-content: center;
   align-items: center;
   background: rgba(0, 0, 0, 0.6);
+`;
+
+const InvoiceWrapper = styled.section`
+  padding: 30px 0;
+  .back_to_home {
+      text-decoration: none;
+  } 
 `;
 
 export default ViewInvoice;

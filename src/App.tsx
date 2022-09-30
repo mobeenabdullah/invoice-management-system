@@ -1,6 +1,6 @@
+import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Protected from "./components/protectedRoutes";
-import { useEffect } from 'react'
 import {
   Home,
   CompanyDetail,

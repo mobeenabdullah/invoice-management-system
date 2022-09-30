@@ -1,91 +1,19 @@
-import { Button, TextField, Grid, Typography, Stack, Box } from "@mui/material";
-import { FC } from "react";
-import styled from "styled-components";
-import Header from "../components/Header";
-import { useState, useEffect } from "react";
-import Loading from "../components/Loading";
-import Autocomplete from '@mui/material/Autocomplete';
-import { getClientsName } from "../features/clients/clientThunks";
+import { FC, useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
-import { useAppSelector } from "../store/hooks";
-import { RootState } from "../store/store";
-import { createInvoice } from "../features/invoices/invoiceThunks";
-import { useCompanyDetailGuard } from '../hooks/customHooks'
-import Alert from "@mui/material/Alert";
 import { useParams } from "react-router-dom";
-import { getSingleInvoice, updateInvoice } from "../features/invoices/invoiceThunks";
+import Header from "../components/Header";
+import Loading from "../components/Loading";
+import styled from "styled-components";
+import Autocomplete from '@mui/material/Autocomplete';
+import { Button, TextField, Grid, Typography, Stack, Box } from "@mui/material";
+import Alert from "@mui/material/Alert";
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import IconButton from "@mui/material/IconButton";
-
-const Wrapper = styled.section`
-  height: calc(100vh - 8%);
-  display: flex;
-  align-items: stretch;
-  justify-content: center;
-  padding: 2%;
-  .size {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-  .paper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  .avatar {
-    background-color: #1976d2;
-  }
-  .form {
-    width: 100%;
-  }
-  .submit {
-    margin-top: 1rem;
-    padding: 1rem;
-  }
-  .login_image {
-    height: 85vh;
-    border-radius: 16px;
-    overflow: hidden;
-    background-image: url("../../invoice.jpg");
-    background-repeat: no-repeat;
-    background-size: cover;
-  }
-  .login_image li {
-    height: 100% !important;
-  }
-  .login_image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-  .login_form .paper {
-    max-width: 50%;
-    width: 100%;
-    margin: 0 auto;
-  }
-  @media screen and (max-width: 992px) {
-    padding: 2rem;
-    align-items: start;
-    .login_image {
-      height: 500px;
-    }    
-    .login_form .paper {
-      max-width: 80%;
-    }
-  }
-  @media screen and (max-width: 767px) {
-    .login_image {
-      height: 300px;
-      width: 100%;
-    }
-    .login_form .paper {
-      max-width: 100%;
-    }
-  }
-`;
+import { useAppSelector } from "../store/hooks";
+import { RootState } from "../store/store";
+import { getClientsName } from "../features/clients/clientThunks";
+import { createInvoice, getSingleInvoice, updateInvoice } from "../features/invoices/invoiceThunks";
+import { useCompanyDetailGuard } from '../hooks/customHooks';
 
 const CreateInvoice: FC = () => {
   useCompanyDetailGuard();
@@ -550,5 +478,75 @@ const dateFormat = (format: string, timeStamp: any) => {
     </>
   );
 };
+
+const Wrapper = styled.section`
+  height: calc(100vh - 8%);
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  padding: 2%;
+  .size {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .paper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .avatar {
+    background-color: #1976d2;
+  }
+  .form {
+    width: 100%;
+  }
+  .submit {
+    margin-top: 1rem;
+    padding: 1rem;
+  }
+  .login_image {
+    height: 85vh;
+    border-radius: 16px;
+    overflow: hidden;
+    background-image: url("../../invoice.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+  .login_image li {
+    height: 100% !important;
+  }
+  .login_image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .login_form .paper {
+    max-width: 50%;
+    width: 100%;
+    margin: 0 auto;
+  }
+  @media screen and (max-width: 992px) {
+    padding: 2rem;
+    align-items: start;
+    .login_image {
+      height: 500px;
+    }    
+    .login_form .paper {
+      max-width: 80%;
+    }
+  }
+  @media screen and (max-width: 767px) {
+    .login_image {
+      height: 300px;
+      width: 100%;
+    }
+    .login_form .paper {
+      max-width: 100%;
+    }
+  }
+`;
 
 export default CreateInvoice;

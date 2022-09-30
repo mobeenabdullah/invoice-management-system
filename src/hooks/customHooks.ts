@@ -1,10 +1,10 @@
-import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { addUser } from "../features/user/userSlice";
-import { RootState } from "../store/store";
 import { useEffect } from "react";
 import { userDetail } from "../features/user/userThunks";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { addUser } from "../features/user/userSlice";
+import { RootState } from "../store/store";
 
 export const useAddUser = () => {
   const [cookies, removeCookie] = useCookies(["authToken"]);
