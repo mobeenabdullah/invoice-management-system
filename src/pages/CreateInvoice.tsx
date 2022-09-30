@@ -1,91 +1,19 @@
-import { Button, TextField, Grid, Typography, Stack, Box } from "@mui/material";
-import { FC } from "react";
-import styled from "styled-components";
-import Header from "../components/Header";
-import { useState, useEffect } from "react";
-import Loading from "../components/Loading";
-import Autocomplete from '@mui/material/Autocomplete';
-import { getClientsName } from "../features/clients/clientThunks";
+import { FC, useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
-import { useAppSelector } from "../store/hooks";
-import { RootState } from "../store/store";
-import { createInvoice } from "../features/invoices/invoiceThunks";
-import { useCompanyDetailGuard } from '../hooks/customHooks'
-import Alert from "@mui/material/Alert";
 import { useParams } from "react-router-dom";
-import { getSingleInvoice, updateInvoice } from "../features/invoices/invoiceThunks";
+import Header from "../components/Header";
+import Loading from "../components/Loading";
+import styled from "styled-components";
+import Autocomplete from '@mui/material/Autocomplete';
+import { Button, TextField, Grid, Typography, Stack, Box } from "@mui/material";
+import Alert from "@mui/material/Alert";
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import IconButton from "@mui/material/IconButton";
-
-const Wrapper = styled.section`
-  height: calc(100vh - 8%);
-  display: flex;
-  align-items: stretch;
-  justify-content: center;
-  padding: 2%;
-  .size {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-  .paper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  .avatar {
-    background-color: #1976d2;
-  }
-  .form {
-    width: 100%;
-  }
-  .submit {
-    margin-top: 1rem;
-    padding: 1rem;
-  }
-  .login_image {
-    height: 85vh;
-    border-radius: 16px;
-    overflow: hidden;
-    background-image: url("../../invoice.jpg");
-    background-repeat: no-repeat;
-    background-size: cover;
-  }
-  .login_image li {
-    height: 100% !important;
-  }
-  .login_image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-  .login_form .paper {
-    max-width: 50%;
-    width: 100%;
-    margin: 0 auto;
-  }
-  @media screen and (max-width: 992px) {
-    padding: 2rem;
-    align-items: start;
-    .login_image {
-      height: 500px;
-    }    
-    .login_form .paper {
-      max-width: 80%;
-    }
-  }
-  @media screen and (max-width: 767px) {
-    .login_image {
-      height: 300px;
-      width: 100%;
-    }
-    .login_form .paper {
-      max-width: 100%;
-    }
-  }
-`;
+import { useAppSelector } from "../store/hooks";
+import { RootState } from "../store/store";
+import { getClientsName } from "../features/clients/clientThunks";
+import { createInvoice, getSingleInvoice, updateInvoice } from "../features/invoices/invoiceThunks";
+import { useCompanyDetailGuard } from '../hooks/customHooks';
 
 const CreateInvoice: FC = () => {
   useCompanyDetailGuard();
@@ -412,7 +340,7 @@ const dateFormat = (format: string, timeStamp: any) => {
 
               <form className="form" noValidate onSubmit={handleSubmit}>
                 <Typography component="p" data-test="form-success"></Typography>
-                <Typography component="p" data-test="form-error"></Typography>
+                <Typography component="p" color="error" data-test="form-error"></Typography>
                 <TextField
                   variant="outlined"
                   margin="normal"
@@ -428,7 +356,7 @@ const dateFormat = (format: string, timeStamp: any) => {
                   helperText={dateError ? dateError : ""}
                   onChange={(e: any) => setDate(e.target.value)}
                 />
-                <Typography component="p" data-test="invoice-date-error"></Typography>
+                <Typography component="p" color="error" data-test="invoice-date-error"></Typography>
                 <TextField
                   variant="outlined"
                   margin="normal"
@@ -444,7 +372,7 @@ const dateFormat = (format: string, timeStamp: any) => {
                   helperText={dueDateError ? dueDateError : ""}
                   onChange={(e) => setDueDate(e.target.value)}
                 />
-                <Typography component="p" data-test="invoice-due-date-error"></Typography>
+                <Typography component="p" color="error" data-test="invoice-due-date-error"></Typography>
                 <TextField
                   variant="outlined"
                   margin="normal"
@@ -458,7 +386,7 @@ const dateFormat = (format: string, timeStamp: any) => {
                   helperText={invoiceNumberError ? invoiceNumberError : ""}
                   onChange={(e) => setInvoiceNumber(e.target.value)}
                 />
-                <Typography component="p" data-test="invoice-number-error"></Typography>
+                <Typography component="p" color="error" data-test="invoice-number-error"></Typography>
                 <TextField
                   variant="outlined"
                   margin="normal"
@@ -472,7 +400,7 @@ const dateFormat = (format: string, timeStamp: any) => {
                   helperText={projectCodeError ? projectCodeError : ""}
                   onChange={(e) => setProjectCode(e.target.value)}
                 />
-                <Typography component="p" data-test="invoice-project-code-error"></Typography>
+                <Typography component="p" color="error" data-test="invoice-project-code-error"></Typography>
                 
                 <Autocomplete
                   disablePortal
@@ -486,7 +414,7 @@ const dateFormat = (format: string, timeStamp: any) => {
                   }
                   renderInput={(params) => <TextField {...params} label="Invoice Client" />}
                 />
-                <Typography component="p" data-test="invoice-company-id-error">{companyError}</Typography>
+                <Typography component="p" color="error" data-test="invoice-company-id-error">{companyError}</Typography>
 
                 {invoiceItemFields.map((fields, index) => {
                   return (
@@ -503,7 +431,7 @@ const dateFormat = (format: string, timeStamp: any) => {
                           data-test="invoice-item-description"
                           onChange={event => handleInvoiceItemChange(index, event)}
                         />
-                        <Typography component="p" data-test="invoice-description-error">{fields.errorType === 'description' && fields.error}</Typography>
+                        <Typography component="p" color="error" data-test="invoice-description-error">{fields.errorType === 'description' && fields.error}</Typography>
                       </Box>
                       <Box>                  
                         <TextField
@@ -518,15 +446,14 @@ const dateFormat = (format: string, timeStamp: any) => {
                           data-test="invoice-item-value"
                           onChange={event => handleInvoiceItemChange(index, event)}
                         />
-                        <Typography component="p" data-test="invoice-value-error">{fields.errorType === 'value' && fields.error}</Typography>
+                        <Typography component="p" color="error" data-test="invoice-value-error">{fields.errorType === 'value' && fields.error}</Typography>
                       </Box>
                       <Box>
                         <IconButton
                             onClick={() => removeInvoiceItem(index)}
                           >
                             <DeleteOutlineOutlinedIcon/>
-                          </IconButton>
-                          
+                          </IconButton>                          
                       </Box>
                     </Box>
                   )
@@ -550,5 +477,75 @@ const dateFormat = (format: string, timeStamp: any) => {
     </>
   );
 };
+
+const Wrapper = styled.section`
+  height: calc(100vh - 8%);
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  padding: 2%;
+  .size {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .paper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .avatar {
+    background-color: #1976d2;
+  }
+  .form {
+    width: 100%;
+  }
+  .submit {
+    margin-top: 1rem;
+    padding: 1rem;
+  }
+  .login_image {
+    height: 85vh;
+    border-radius: 16px;
+    overflow: hidden;
+    background-image: url("../../invoice.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+  .login_image li {
+    height: 100% !important;
+  }
+  .login_image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .login_form .paper {
+    max-width: 50%;
+    width: 100%;
+    margin: 0 auto;
+  }
+  @media screen and (max-width: 992px) {
+    padding: 2rem;
+    align-items: start;
+    .login_image {
+      height: 500px;
+    }    
+    .login_form .paper {
+      max-width: 80%;
+    }
+  }
+  @media screen and (max-width: 767px) {
+    .login_image {
+      height: 300px;
+      width: 100%;
+    }
+    .login_form .paper {
+      max-width: 100%;
+    }
+  }
+`;
 
 export default CreateInvoice;

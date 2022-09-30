@@ -1,7 +1,8 @@
-import * as React from "react";
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
+import { useCookies } from "react-cookie";
+import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import styled from "styled-components";
-import { Button, Typography } from "@mui/material";
+import { Button, Typography, Grid } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Table from "@mui/material/Table";
@@ -18,11 +19,6 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import MenuItem from "@mui/material/MenuItem";
 import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
-import { Grid } from "@mui/material";
-import { useEffect, useState } from "react";
-import { useCookies } from "react-cookie";
-import { getInvoices } from "../features/invoices/invoiceThunks";
-import { useNavigate, useSearchParams } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
 import Pagination from '@mui/material/Pagination';
@@ -30,53 +26,9 @@ import PaginationItem from '@mui/material/PaginationItem';
 import Stack from '@mui/material/Stack';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { Link } from "react-router-dom";
 import ImportExportIcon from '@mui/icons-material/ImportExport';
 import Box from "@mui/material/Box";
-
-const Wrapper = styled.div`
-  padding: 30px 0;
-  .TableHeader {
-    display: flex;
-    justify-content: space-between;
-  }
-  .TableButtons {
-    display: flex;
-    gap: 10px;
-  }
-`;
-
-const LoadingWrapper = styled.div`
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  border-radius: 4px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: rgba(0, 0, 0, 0.6);
-`;
-const ButtonStyle = styled.div`
-  a {
-    text-decoration: none;
-    pointer-event: none;    
-  }
-`;
-
-const SortStyling = styled.div`    
-  .sort_icon {
-    opacity: 0.2;
-    transition: all .2s;    
-  }
-  &:hover {   
-    .sort_icon { 
-      opacity: 1;
-    }
-  }
-  
-`;
+import { getInvoices } from "../features/invoices/invoiceThunks";
 
 const InvoiceTable: FC = () => {
   const [cookies] = useCookies(["authToken"]);
@@ -208,7 +160,7 @@ const InvoiceTable: FC = () => {
     fetchInvoices();
   }, [page, sortBy, clientId , sortOrder]);
 
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -434,5 +386,49 @@ const InvoiceTable: FC = () => {
     </>
   );
 };
+
+const Wrapper = styled.div`
+  padding: 30px 0;
+  .TableHeader {
+    display: flex;
+    justify-content: space-between;
+  }
+  .TableButtons {
+    display: flex;
+    gap: 10px;
+  }
+`;
+
+const LoadingWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.6);
+`;
+const ButtonStyle = styled.div`
+  a {
+    text-decoration: none;
+    pointer-event: none;    
+  }
+`;
+
+const SortStyling = styled.div`    
+  .sort_icon {
+    opacity: 0.2;
+    transition: all .2s;    
+  }
+  &:hover {   
+    .sort_icon { 
+      opacity: 1;
+    }
+  }
+  
+`;
 
 export default InvoiceTable;

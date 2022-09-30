@@ -1,4 +1,9 @@
-import * as React from 'react';
+import { useState } from "react";
+import { useCookies } from "react-cookie";
+import { useNavigate, Link } from "react-router-dom";
+import { useAppSelector } from "../store/hooks";
+import { RootState } from "../store/store";
+import styled from "styled-components";
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -11,50 +16,13 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import styled from "styled-components";
-import { useCookies } from "react-cookie";
-import { useNavigate } from "react-router-dom";
-import { useAppSelector } from "../store/hooks";
-import { RootState } from "../store/store";
-import { Link } from "react-router-dom";
-
-const MenuWrapper = styled.section`
-  display: flex;
-  .icon_box {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .icon_box:hover {
-    background-color: transparent !important;
-  }
-`;
-const MenuItemLink = styled.span`
-  .menu_item {
-    color: #141414;
-    text-decoration: none;
-    font-size: 1rem;
-    line-height: 1;
-  }
-  .menu_item-desktop {
-    color: #ffffff;
-  }
-  
-`;
-
-const HeaderLogoText = styled.div`
-  a {
-    color: #ffffff;
-    text-decoration: none;
-  }
-`;
 
 const pages: any = [{label: 'Home', link: "/"}, {label: 'Clients', link: '/clients'}, {label: 'Invoices', link: '/invoices'}];
 const settings: any = [{label: 'Logout', link: "/logout"}];
 
 const Header = () => {
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -232,4 +200,36 @@ const Header = () => {
     </AppBar>
   );
 };
+
+const MenuWrapper = styled.section`
+  display: flex;
+  .icon_box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .icon_box:hover {
+    background-color: transparent !important;
+  }
+`;
+const MenuItemLink = styled.span`
+  .menu_item {
+    color: #141414;
+    text-decoration: none;
+    font-size: 1rem;
+    line-height: 1;
+  }
+  .menu_item-desktop {
+    color: #ffffff;
+  }
+  
+`;
+
+const HeaderLogoText = styled.div`
+  a {
+    color: #ffffff;
+    text-decoration: none;
+  }
+`;
+
 export default Header;

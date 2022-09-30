@@ -1,79 +1,19 @@
-import { Button, TextField, Grid, Typography, Stack } from "@mui/material";
-import { FC } from "react";
-import styled from "styled-components";
-import Header from "../components/Header";
+import { FC, useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
-import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import Header from "../components/Header";
 import Loading from "../components/Loading";
+import styled from "styled-components";
+import { Button, TextField, Grid, Typography, Stack } from "@mui/material";
+import Alert from "@mui/material/Alert";
 import { createClient } from "../features/clients/clientThunks";
 import { useAppSelector } from "../store/hooks";
 import { RootState } from "../store/store";
-import Alert from "@mui/material/Alert";
-import { useParams } from "react-router-dom";
 import {
   getSingleClient,
   updateClient,
 } from "../features/clients/clientThunks";
-import { useNavigate } from "react-router-dom";
 import { useCompanyDetailGuard } from '../hooks/customHooks';
-
-const Wrapper = styled.section`
-height: calc(100vh - 8%);
-display: flex;
-align-items: stretch;
-justify-content: center;
-padding: 2%;
-.avatar {
-  background-color: #13a800;
-}
-.submit {
-  margin-top: 1rem;
-  padding: 1rem;
-}
-.login_image {
-  height: 95vh;
-  border-radius: 16px;
-  overflow: hidden;
-  background-image: url("../clients.jpg");
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-.login_image li {
-  height: 100% !important;
-}
-.login_image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-.login_form .paper {
-  max-width: 50%;
-  width: 100%;
-  margin: 0 auto;
-}
-@media screen and (max-width: 992px) {
-  padding: 2rem;
-  align-items: start;
-  .login_image {
-    height: 500px;
-  }  
-  .login_form .paper {
-    max-width: 80%;
-  }  
-}
-@media screen and (max-width: 767px) {
-  padding: 2rem;
-  align-items: start;
-  .login_image {
-    height: 300px;
-    width: 100%;
-  }
-  .login_form .paper {
-    max-width: 100%;
-  }
-}
-`;
 
 const CreateClient: FC = () => {
   useCompanyDetailGuard();
@@ -300,7 +240,7 @@ const CreateClient: FC = () => {
               </Stack>
               <form className="form" noValidate onSubmit={handleSubmit}>
                 <Typography component="p" data-test="form-success"></Typography>
-                <Typography component="p" data-test="form-error"></Typography>
+                <Typography component="p" color="error" data-test="form-error"></Typography>
                 <TextField
                   error={invalidName ? true : false}
                   helperText={invalidName ? "Client name must be 3-16 character long!" : ""}
@@ -317,6 +257,7 @@ const CreateClient: FC = () => {
                 />
                 <Typography
                   component="p"
+                  color="error"
                   data-test="client-name-error"
                 ></Typography>
                 <TextField
@@ -335,6 +276,7 @@ const CreateClient: FC = () => {
                 />
                 <Typography
                   component="p"
+                  color="error"
                   data-test="client-email-error"
                 ></Typography>
                 <TextField
@@ -355,6 +297,7 @@ const CreateClient: FC = () => {
                 />
                 <Typography
                   component="p"
+                  color="error"
                   data-test="client-company-name-error"
                 ></Typography>
                 <TextField
@@ -375,6 +318,7 @@ const CreateClient: FC = () => {
                 />
                 <Typography
                   component="p"
+                  color="error"
                   data-test="client-company-address-error"
                 ></Typography>
                 <TextField
@@ -393,6 +337,7 @@ const CreateClient: FC = () => {
                 />
                 <Typography
                   component="p"
+                  color="error"
                   data-test="client-company-iban-error"
                 ></Typography>
                 <TextField
@@ -419,6 +364,7 @@ const CreateClient: FC = () => {
                 />
                 <Typography
                   component="p"
+                  color="error"
                   data-test="client-company-reg-error"
                 ></Typography>
                 <TextField
@@ -437,6 +383,7 @@ const CreateClient: FC = () => {
                 />
                 <Typography
                   component="p"
+                  color="error"
                   data-test="client-company-swift-error"
                 ></Typography>
                 <TextField
@@ -459,6 +406,7 @@ const CreateClient: FC = () => {
                 />
                 <Typography
                   component="p"
+                  color="error"
                   data-test="client-company-vat-error"
                 ></Typography>
                 <Button
@@ -480,5 +428,63 @@ const CreateClient: FC = () => {
     </>
   );
 };
+
+const Wrapper = styled.section`
+  height: calc(100vh - 8%);
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  padding: 2%;
+  .avatar {
+    background-color: #13a800;
+  }
+  .submit {
+    margin-top: 1rem;
+    padding: 1rem;
+  }
+  .login_image {
+    height: 95vh;
+    border-radius: 16px;
+    overflow: hidden;
+    background-image: url("../clients.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+  .login_image li {
+    height: 100% !important;
+  }
+  .login_image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .login_form .paper {
+    max-width: 50%;
+    width: 100%;
+    margin: 0 auto;
+  }
+  @media screen and (max-width: 992px) {
+    padding: 2rem;
+    align-items: start;
+    .login_image {
+      height: 500px;
+    }  
+    .login_form .paper {
+      max-width: 80%;
+    }  
+  }
+  @media screen and (max-width: 767px) {
+    padding: 2rem;
+    align-items: start;
+    .login_image {
+      height: 300px;
+      width: 100%;
+    }
+    .login_form .paper {
+      max-width: 100%;
+    }
+  }
+`;
 
 export default CreateClient;

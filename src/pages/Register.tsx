@@ -1,17 +1,10 @@
-import { signup } from "../features/user/userThunks";
+import { FC, useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
-import { addUser } from "../features/user/userSlice";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { RootState } from "../store/store";
 import { useCookies } from "react-cookie";
-import { useState, useEffect } from "react";
-import { FC } from "react";
+import Loading from "../components/Loading";
 import styled from "styled-components";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Loading from "../components/Loading";
 import Alert from "@mui/material/Alert";
-import jwt_decode from "jwt-decode";
-
 import {
   Avatar,
   Button,
@@ -21,64 +14,11 @@ import {
   Typography,
   Stack,
 } from "@mui/material";
-
-const Wrapper = styled.section`
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 2%;
-  .avatar {
-    background-color: #13a800;
-  }
-  .submit {
-    margin-top: 1rem;
-    padding: 1rem;
-  }
-  .login_image {
-    height: 95vh;
-    border-radius: 16px;
-    overflow: hidden;
-    background-image: url("sign-up-image.jpg");
-    background-repeat: no-repeat;
-    background-size: cover;
-  }
-  .login_image li {
-    height: 100% !important;
-  }
-  .login_image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-  .login_form .paper {
-    max-width: 50%;
-    width: 100%;
-    margin: 0 auto;
-  }
-  @media screen and (max-width: 992px) {
-    padding: 2rem;
-    align-items: start;
-    .login_image {
-      height: 500px;
-    }  
-    .login_form .paper {
-      max-width: 80%;
-    }  
-  }
-  @media screen and (max-width: 767px) {
-    padding: 2rem;
-    align-items: start;
-    .login_image {
-      height: 300px;
-      width: 100%;
-    }
-    .login_form .paper {
-      max-width: 100%;
-    }
-  }
-`;
+import jwt_decode from "jwt-decode";
+import { addUser } from "../features/user/userSlice";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { RootState } from "../store/store";
+import { signup } from "../features/user/userThunks";
 
 const Register: FC = () => {
   const dispatch = useAppDispatch();
@@ -266,7 +206,7 @@ const Register: FC = () => {
                 onChange={(e) => setName(e.target.value)}
                 data-test="name"
               />
-              <Typography component="p" data-test="name-error"></Typography>
+              <Typography component="p" color="error" data-test="name-error"></Typography>
 
               <TextField
                 error={inValidEmail ? true : false}
@@ -280,7 +220,7 @@ const Register: FC = () => {
                 onChange={(e: any) => setEmail(e.target.value)}
                 data-test="email"
               />
-              <Typography component="p" data-test="email-error"></Typography>
+              <Typography component="p" color="error" data-test="email-error"></Typography>
               <TextField
                 error={inValidPassword ? true : false}
                 helperText={inValidPassword ? inValidPasswordMessage : ""}
@@ -295,7 +235,7 @@ const Register: FC = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 data-test="password"
               />
-              <Typography component="p" data-test="password-error"></Typography>
+              <Typography component="p" color="error" data-test="password-error"></Typography>
 
               <TextField
                 error={inValidConfirmPassword ? true : false}
@@ -315,6 +255,7 @@ const Register: FC = () => {
               />
               <Typography
                 component="p"
+                color="error"
                 data-test="confirm-password-error"
               ></Typography>
 
@@ -351,5 +292,63 @@ const Register: FC = () => {
     </Wrapper>
   );
 };
+
+const Wrapper = styled.section`
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 2%;
+  .avatar {
+    background-color: #13a800;
+  }
+  .submit {
+    margin-top: 1rem;
+    padding: 1rem;
+  }
+  .login_image {
+    height: 95vh;
+    border-radius: 16px;
+    overflow: hidden;
+    background-image: url("sign-up-image.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+  .login_image li {
+    height: 100% !important;
+  }
+  .login_image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .login_form .paper {
+    max-width: 50%;
+    width: 100%;
+    margin: 0 auto;
+  }
+  @media screen and (max-width: 992px) {
+    padding: 2rem;
+    align-items: start;
+    .login_image {
+      height: 500px;
+    }  
+    .login_form .paper {
+      max-width: 80%;
+    }  
+  }
+  @media screen and (max-width: 767px) {
+    padding: 2rem;
+    align-items: start;
+    .login_image {
+      height: 300px;
+      width: 100%;
+    }
+    .login_form .paper {
+      max-width: 100%;
+    }
+  }
+`;
 
 export default Register;
